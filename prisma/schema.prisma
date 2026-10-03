@@ -1,0 +1,190 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  ADMIN
+  MEMBER
+}
+
+enum MemberStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+}
+
+enum AccountType {
+  CASH
+  BANK
+  UPI
+  CREDIT_CARD
+  WALLET
+}
+
+enum Frequency {
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
+}
+
+model User {
+  id           String         @id @default(cuid())
+  email        String         @unique
+  passwordHash String
+  name         String
+  avatarUrl    String?
+  memberships  FamilyMember[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+}
+
+model Family {
+  id                   String                 @id @default(cuid())
+  name                 String
+  currency             String                 @default("INR")
+  inviteCode           String                 @unique @default(cuid())
+  members              FamilyMember[]
+  categories           Category[]
+  accounts             Account[]
+  transactions         Transaction[]
+  budgets              Budget[]
+  recurringTransactions RecurringTransaction[]
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
+}
+
+model FamilyMember {
+  id           String         @id @default(cuid())
+  familyId     String
+  userId       String
+  role         Role           @default(MEMBER)
+  status       MemberStatus   @default(ACTIVE)
+  joinedAt     DateTime       @default(now())
+  
+  family       Family         @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions Transaction[]
+  recurring    RecurringTransaction[]
+
+  @@unique([familyId, userId])
+  @@index([familyId])
+  @@index([userId])
+}
+
+model Category {
+  id           String                 @id @default(cuid())
+  familyId     String
+  name         String
+  type         TransactionType
+  icon         String                 @default("tag")
+  color        String                 @default("#0F766E")
+  isDefault    Boolean                @default(false)
+  isArchived   Boolean                @default(false)
+  
+  family       Family                 @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  transactions Transaction[]
+  budgets      Budget[]
+  recurring    RecurringTransaction[]
+  createdAt    DateTime               @default(now())
+  updatedAt    DateTime               @updatedAt
+
+  @@index([familyId])
+  @@index([familyId, type])
+  @@index([familyId, isArchived])
+}
+
+model Account {
+  id             String                 @id @default(cuid())
+  familyId       String
+  name           String
+  type           AccountType            @default(BANK)
+  openingBalance Decimal                @default(0.00) @db.Decimal(12, 2)
+  currentBalance Decimal                @default(0.00) @db.Decimal(12, 2)
+  isArchived     Boolean                @default(false)
+  
+  family         Family                 @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  transactions   Transaction[]
+  recurring      RecurringTransaction[]
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+
+  @@index([familyId])
+  @@index([familyId, isArchived])
+}
+
+model Transaction {
+  id          String          @id @default(cuid())
+  familyId    String
+  memberId    String
+  type        TransactionType
+  amount      Decimal         @db.Decimal(12, 2)
+  categoryId  String
+  accountId   String?
+  date        DateTime        @default(now())
+  description String?
+  notes       String?         @db.Text
+  
+  family      Family          @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  member      FamilyMember    @relation(fields: [memberId], references: [id], onDelete: Restrict)
+  category    Category        @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  account     Account?        @relation(fields: [accountId], references: [id], onDelete: SetNull)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@index([familyId, date])
+  @@index([familyId, type, date])
+  @@index([familyId, categoryId])
+  @@index([familyId, memberId])
+  @@index([familyId, accountId])
+}
+
+model Budget {
+  id         String   @id @default(cuid())
+  familyId   String
+  categoryId String
+  amount     Decimal  @db.Decimal(12, 2)
+  month      Int
+  year       Int
+  
+  family     Family   @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([familyId, categoryId, month, year])
+  @@index([familyId, month, year])
+}
+
+model RecurringTransaction {
+  id         String          @id @default(cuid())
+  familyId   String
+  memberId   String
+  type       TransactionType
+  amount     Decimal         @db.Decimal(12, 2)
+  categoryId String
+  accountId  String?
+  frequency  Frequency       @default(MONTHLY)
+  startDate  DateTime
+  endDate    DateTime?
+  isActive   Boolean         @default(true)
+  lastRunAt  DateTime?
+
+  family     Family          @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  member     FamilyMember    @relation(fields: [memberId], references: [id], onDelete: Restrict)
+  category   Category        @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  account    Account?        @relation(fields: [accountId], references: [id], onDelete: SetNull)
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+
+  @@index([familyId, isActive])
+}
