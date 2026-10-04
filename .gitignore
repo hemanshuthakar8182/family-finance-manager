@@ -9,3 +9,4 @@ dist/
 Thumbs.db
 prisma/*.db
 *.sqlite
+tsconfig.tsbuildinfo

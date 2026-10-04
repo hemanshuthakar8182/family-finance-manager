@@ -59,7 +59,7 @@ export function BottomNav({ onOpenQuickAdd }: BottomNavProps) {
             <button
               onClick={onOpenQuickAdd}
               aria-label="Add Transaction"
-              className="w-13 h-13 p-3.5 rounded-full bg-primary hover:bg-primary-hover text-white shadow-floating flex items-center justify-center transform active:scale-90 transition-all duration-150 ring-4 ring-slate-100"
+              className="w-13 h-13 p-3.5 rounded-full bg-primary hover:bg-primary-hover text-primary-foreground shadow-floating flex items-center justify-center transform active:scale-90 transition-all duration-150 ring-4 ring-background"
             >
               <Plus className="w-6 h-6 stroke-[2.5]" />
             </button>

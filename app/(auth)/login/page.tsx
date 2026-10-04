@@ -56,7 +56,7 @@ export default function LoginPage() {
     <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-8 px-4 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         {/* Brand emblem */}
-        <div className="w-14 h-14 rounded-2xl bg-primary text-white font-bold text-2xl flex items-center justify-center mx-auto shadow-md">
+        <div className="w-14 h-14 rounded-2xl bg-primary text-primary-foreground font-bold text-2xl flex items-center justify-center mx-auto shadow-md">
           ₹
         </div>
         <h2 className="mt-4 text-center text-2xl font-bold tracking-tight text-slate-900">

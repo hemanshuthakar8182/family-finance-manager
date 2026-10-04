@@ -139,16 +139,16 @@ export default function FamilyPage() {
 
       {/* Family Info Banner */}
       {family && (
-        <div className="p-5 rounded-card bg-teal-50 border border-teal-200">
+        <div className="p-5 rounded-card bg-primary/10 border border-primary/20">
           <div className="flex items-start justify-between">
             <div>
               <div className="flex items-center gap-2 mb-1">
-                <div className="w-9 h-9 rounded-full bg-primary text-white font-bold text-base flex items-center justify-center">
+                <div className="w-9 h-9 rounded-full bg-primary text-primary-foreground font-bold text-base flex items-center justify-center">
                   {family.name.charAt(0)}
                 </div>
                 <div>
-                  <h3 className="font-bold text-teal-900 text-base">{family.name}</h3>
-                  <p className="text-[11px] text-teal-700">
+                  <h3 className="font-bold text-slate-900 text-base">{family.name}</h3>
+                  <p className="text-[11px] text-slate-500">
                     {members.length} active member{members.length !== 1 ? "s" : ""} •{" "}
                     {family._count?.transactions || 0} total transactions
                   </p>
@@ -161,8 +161,8 @@ export default function FamilyPage() {
           </div>
 
           {isAdmin && (
-            <div className="mt-3 pt-3 border-t border-teal-200">
-              <p className="text-[11px] text-teal-700 font-medium">
+            <div className="mt-3 pt-3 border-t border-primary/20">
+              <p className="text-[11px] text-primary font-medium">
                 Invite Code:{" "}
                 <span className="font-mono font-bold text-teal-900 bg-white/70 px-2 py-0.5 rounded">
                   {family.inviteCode}
@@ -204,7 +204,7 @@ export default function FamilyPage() {
                 >
                   <div className="flex items-center gap-3">
                     {/* Avatar */}
-                    <div className="w-10 h-10 rounded-full bg-teal-100 text-teal-800 font-bold flex items-center justify-center text-sm border-2 border-white shadow-sm">
+                    <div className="w-10 h-10 rounded-full bg-primary/10 text-primary font-bold flex items-center justify-center text-sm border-2 border-surface shadow-sm">
                       {m.user.name.charAt(0).toUpperCase()}
                     </div>
 
@@ -321,8 +321,8 @@ export default function FamilyPage() {
                   onClick={() => setNewMember({ ...newMember, role: "MEMBER" })}
                   className={`p-3 rounded-btn border text-left transition-all ${
                     newMember.role === "MEMBER"
-                      ? "border-primary bg-teal-50"
-                      : "border-border bg-surface hover:bg-slate-50"
+                      ? "border-primary bg-primary/10"
+                      : "border-border bg-surface hover:bg-surface-muted"
                   }`}
                 >
                   <Users className="w-4 h-4 text-slate-500 mb-1" />
@@ -337,8 +337,8 @@ export default function FamilyPage() {
                   onClick={() => setNewMember({ ...newMember, role: "ADMIN" })}
                   className={`p-3 rounded-btn border text-left transition-all ${
                     newMember.role === "ADMIN"
-                      ? "border-primary bg-teal-50"
-                      : "border-border bg-surface hover:bg-slate-50"
+                      ? "border-primary bg-primary/10"
+                      : "border-border bg-surface hover:bg-surface-muted"
                   }`}
                 >
                   <Shield className="w-4 h-4 text-primary mb-1" />

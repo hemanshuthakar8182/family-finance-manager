@@ -49,22 +49,29 @@ export async function getFinancialReports(
       break;
   }
 
-  const transactions = await prisma.transaction.findMany({
-    where: {
-      familyId,
-      date: { gte: startDate, lte: endDate },
-    },
-    include: {
-      category: true,
-      account: true,
-      member: {
-        include: {
-          user: { select: { name: true } },
+  const [family, transactions] = await Promise.all([
+    prisma.family.findUnique({
+      where: { id: familyId },
+      select: { name: true },
+    }),
+    prisma.transaction.findMany({
+      where: {
+        familyId,
+        date: { gte: startDate, lte: endDate },
+        deletedAt: null,
+      },
+      include: {
+        category: true,
+        account: true,
+        member: {
+          include: {
+            user: { select: { name: true } },
+          },
         },
       },
-    },
-    orderBy: { date: "asc" },
-  });
+      orderBy: { date: "asc" },
+    }),
+  ]);
 
   let totalIncome = 0;
   let totalExpense = 0;
@@ -74,6 +81,8 @@ export async function getFinancialReports(
   const accountMap: Record<string, { name: string; amount: number }> = {};
 
   for (const t of transactions) {
+    if (t.type === "TRANSFER") continue;
+
     const amt = Number(t.amount);
     if (t.type === "INCOME") {
       totalIncome += amt;
@@ -81,15 +90,17 @@ export async function getFinancialReports(
       totalExpense += amt;
 
       // Category breakdown
-      if (!categoryMap[t.categoryId]) {
-        categoryMap[t.categoryId] = {
-          name: t.category.name,
-          color: t.category.color,
-          icon: t.category.icon,
-          amount: 0,
-        };
+      if (t.categoryId && t.category) {
+        if (!categoryMap[t.categoryId]) {
+          categoryMap[t.categoryId] = {
+            name: t.category.name,
+            color: t.category.color,
+            icon: t.category.icon,
+            amount: 0,
+          };
+        }
+        categoryMap[t.categoryId].amount += amt;
       }
-      categoryMap[t.categoryId].amount += amt;
 
       // Member breakdown
       const mName = t.member.user.name;
@@ -117,6 +128,7 @@ export async function getFinancialReports(
   // Single-pass O(N) aggregation into map to avoid O(Days * Transactions) nested loop
   const dateBucketMap = new Map<string, { income: number; expense: number }>();
   for (const t of transactions) {
+    if (t.type === "TRANSFER") continue;
     const key = format(new Date(t.date), isDaily ? "yyyy-MM-dd" : "yyyy-MM");
     const bucket = dateBucketMap.get(key) || { income: 0, expense: 0 };
     const amt = Number(t.amount);
@@ -168,7 +180,20 @@ export async function getFinancialReports(
 
   const accountBreakdown = Object.values(accountMap).sort((a, b) => b.amount - a.amount);
 
+  // Top 5 largest expenses
+  const topTransactions = transactions
+    .filter((t) => t.type === "EXPENSE")
+    .sort((a, b) => Number(b.amount) - Number(a.amount))
+    .slice(0, 5)
+    .map((t) => ({
+      date: format(new Date(t.date), "dd MMM yyyy"),
+      description: t.description || "Expense",
+      category: t.category?.name || "General",
+      amount: Number(t.amount),
+    }));
+
   return {
+    familyName: family?.name || "Family",
     period,
     startDate,
     endDate,
@@ -180,6 +205,7 @@ export async function getFinancialReports(
     categoryBreakdown,
     memberBreakdown,
     accountBreakdown,
+    topTransactions,
     transactionCount: transactions.length,
   };
 }

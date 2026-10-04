@@ -34,12 +34,12 @@ export function IncomeExpenseChart({ data }: IncomeExpenseChartProps) {
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="p-3 bg-slate-900 text-white rounded-btn shadow-xl text-xs space-y-1">
-          <p className="font-semibold text-slate-200">{label}</p>
-          <p className="text-emerald-400">
+        <div className="p-3 bg-surface border border-border rounded-btn shadow-xl text-xs space-y-1">
+          <p className="font-semibold text-slate-800">{label}</p>
+          <p className="text-emerald-500 font-medium">
             Income: {formatCurrency(payload[0]?.value)}
           </p>
-          <p className="text-red-400">
+          <p className="text-red-500 font-medium">
             Expense: {formatCurrency(payload[1]?.value)}
           </p>
         </div>

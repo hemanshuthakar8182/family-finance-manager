@@ -29,7 +29,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             ref={ref}
             type={type}
             className={cn(
-              "w-full h-11 rounded-input border border-border bg-white px-3.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all",
+              "w-full h-11 rounded-input border border-border bg-surface px-3.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all",
               prefixText && "pl-8",
               error && "border-expense focus:ring-expense",
               className

@@ -18,6 +18,7 @@ export async function getFamilyBudgets(familyId: string, month: number, year: nu
     where: {
       familyId,
       type: "EXPENSE",
+      deletedAt: null,
       date: { gte: mStart, lte: mEnd },
     },
     _sum: { amount: true },
@@ -25,7 +26,9 @@ export async function getFamilyBudgets(familyId: string, month: number, year: nu
 
   const expenseMap = new Map<string, number>();
   for (const e of expenses) {
-    expenseMap.set(e.categoryId, Number(e._sum.amount || 0));
+    if (e.categoryId) {
+      expenseMap.set(e.categoryId, Number(e._sum.amount || 0));
+    }
   }
 
   return budgets.map((b) => {

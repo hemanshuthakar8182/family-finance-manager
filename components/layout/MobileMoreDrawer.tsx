@@ -14,8 +14,13 @@ import {
   ChevronRight,
   Shield,
   HelpCircle,
+  Repeat,
+  FileSpreadsheet,
+  HandCoins,
+  Palette,
 } from "lucide-react";
 import { Modal } from "@/components/ui/Modal";
+import { ThemeSelector } from "@/components/theme/ThemeSelector";
 
 interface MobileMoreDrawerProps {
   isOpen: boolean;
@@ -51,6 +56,24 @@ export function MobileMoreDrawer({ isOpen, onClose }: MobileMoreDrawerProps) {
       desc: "Category monthly spending limits",
     },
     {
+      label: "Recurring",
+      href: "/recurring",
+      icon: Repeat,
+      desc: "Manage automated recurring bills & subscriptions",
+    },
+    {
+      label: "Splits & Settle",
+      href: "/splits",
+      icon: HandCoins,
+      desc: "Shared household bills & member balances",
+    },
+    {
+      label: "Import Statement",
+      href: "/import",
+      icon: FileSpreadsheet,
+      desc: "Upload CSV or Excel bank statement",
+    },
+    {
       label: "Settings",
       href: "/settings",
       icon: Settings,
@@ -67,6 +90,20 @@ export function MobileMoreDrawer({ isOpen, onClose }: MobileMoreDrawerProps) {
       maxWidth="md"
     >
       <div className="space-y-2 py-1">
+        {/* Quick Theme Selector Row */}
+        <div className="flex items-center justify-between p-3 rounded-card border border-border bg-surface">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-btn flex items-center justify-center bg-primary/10 text-primary">
+              <Palette className="w-5 h-5" />
+            </div>
+            <div className="text-left">
+              <p className="text-sm font-semibold">Appearance Theme</p>
+              <p className="text-xs text-slate-500">Pick system accent & dark mode</p>
+            </div>
+          </div>
+          <ThemeSelector />
+        </div>
+
         {menuItems.map((item) => {
           const Icon = item.icon;
           const active = pathname === item.href;
@@ -77,14 +114,14 @@ export function MobileMoreDrawer({ isOpen, onClose }: MobileMoreDrawerProps) {
               onClick={onClose}
               className={`flex items-center justify-between p-3 rounded-card border transition-all ${
                 active
-                  ? "bg-teal-50 border-teal-200 text-primary"
-                  : "bg-surface border-border hover:bg-slate-50 text-slate-800"
+                  ? "bg-primary/10 border-primary/20 text-primary"
+                  : "bg-surface border-border hover:bg-surface-muted text-slate-800"
               }`}
             >
               <div className="flex items-center gap-3">
                 <div
                   className={`w-9 h-9 rounded-btn flex items-center justify-center ${
-                    active ? "bg-primary text-white" : "bg-slate-100 text-slate-600"
+                    active ? "bg-primary text-primary-foreground" : "bg-surface-muted text-slate-600"
                   }`}
                 >
                   <Icon className="w-5 h-5" />

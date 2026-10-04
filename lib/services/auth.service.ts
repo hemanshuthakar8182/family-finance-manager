@@ -111,7 +111,35 @@ export async function verifyUserCredentials(email: string, passwordPlain: string
     avatarUrl: user.avatarUrl,
     familyId: primaryMembership?.familyId || null,
     familyName: primaryMembership?.family.name || null,
+    familyLogoUrl: primaryMembership?.family.logoUrl || null,
     memberId: primaryMembership?.id || null,
     role: primaryMembership?.role || null,
   };
+}
+
+export async function updateUserPassword(
+  userId: string,
+  currentPasswordPlain: string,
+  newPasswordPlain: string
+) {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+  });
+
+  if (!user) {
+    throw new Error("User not found.");
+  }
+
+  const isMatch = await bcrypt.compare(currentPasswordPlain, user.passwordHash);
+  if (!isMatch) {
+    throw new Error("Incorrect current password.");
+  }
+
+  const newHash = await bcrypt.hash(newPasswordPlain, 10);
+  await prisma.user.update({
+    where: { id: userId },
+    data: { passwordHash: newHash },
+  });
+
+  return { success: true };
 }

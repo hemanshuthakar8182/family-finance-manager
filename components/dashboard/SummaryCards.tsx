@@ -26,63 +26,63 @@ export function SummaryCards({ metrics }: SummaryCardsProps) {
   return (
     <>
       {/* ── MOBILE: Unified Financial Health Hero (< lg) ── */}
-      <div className="lg:hidden rounded-card overflow-hidden shadow-card border border-teal-100 bg-gradient-to-br from-primary via-teal-600 to-teal-500">
+      <div className="lg:hidden rounded-card overflow-hidden shadow-card border border-border bg-gradient-to-br from-primary via-primary-hover to-accent text-primary-foreground">
         <div className="px-5 pt-5 pb-4">
           {/* Balance primary */}
-          <p className="text-xs font-semibold text-teal-100 mb-0.5 tracking-wide uppercase">
+          <p className="text-xs font-semibold opacity-80 mb-0.5 tracking-wide uppercase">
             Total Family Balance
           </p>
-          <div className="text-3xl font-bold font-amount text-white tracking-tight">
+          <div className="text-3xl font-bold font-amount tracking-tight">
             {formatCurrency(metrics.currentBalance)}
           </div>
-          <p className="text-[11px] text-teal-200 mt-0.5">Across all accounts</p>
+          <p className="text-[11px] opacity-75 mt-0.5">Across all accounts</p>
         </div>
 
         {/* Three sub-metrics row */}
-        <div className="grid grid-cols-3 border-t border-teal-400/30">
-          <div className="px-4 py-3 border-r border-teal-400/30">
-            <p className="text-[10px] font-semibold text-teal-200 uppercase tracking-wide mb-0.5">
+        <div className="grid grid-cols-3 border-t border-primary-foreground/15">
+          <div className="px-4 py-3 border-r border-primary-foreground/15">
+            <p className="text-[10px] font-semibold opacity-75 uppercase tracking-wide mb-0.5">
               Today
             </p>
-            <div className="text-base font-bold font-amount text-white">
+            <div className="text-base font-bold font-amount">
               {formatCurrency(metrics.todayExpense)}
             </div>
-            <p className="text-[10px] text-teal-300">spent</p>
+            <p className="text-[10px] opacity-70">spent</p>
           </div>
 
-          <div className="px-4 py-3 border-r border-teal-400/30">
-            <p className="text-[10px] font-semibold text-teal-200 uppercase tracking-wide mb-0.5">
+          <div className="px-4 py-3 border-r border-primary-foreground/15">
+            <p className="text-[10px] font-semibold opacity-75 uppercase tracking-wide mb-0.5">
               Income
             </p>
-            <div className="text-base font-bold font-amount text-emerald-300">
+            <div className="text-base font-bold font-amount">
               {formatCurrency(metrics.totalIncome)}
             </div>
-            <p className="text-[10px] text-teal-300">this month</p>
+            <p className="text-[10px] opacity-70">this month</p>
           </div>
 
           <div className="px-4 py-3">
-            <p className="text-[10px] font-semibold text-teal-200 uppercase tracking-wide mb-0.5">
+            <p className="text-[10px] font-semibold opacity-75 uppercase tracking-wide mb-0.5">
               Spent
             </p>
-            <div className="text-base font-bold font-amount text-red-300">
+            <div className="text-base font-bold font-amount">
               {formatCurrency(metrics.totalExpense)}
             </div>
-            <p className="text-[10px] text-teal-300">this month</p>
+            <p className="text-[10px] opacity-70">this month</p>
           </div>
         </div>
 
         {/* Savings rate strip */}
         <div
           className={cn(
-            "flex items-center justify-between px-5 py-2.5 border-t border-teal-400/30",
-            savingsHealthy ? "bg-emerald-600/40" : "bg-amber-600/30"
+            "flex items-center justify-between px-5 py-2.5 border-t border-primary-foreground/15",
+            savingsHealthy ? "bg-black/10" : "bg-black/20"
           )}
         >
-          <span className="text-[11px] text-white font-semibold">Monthly Savings Rate</span>
+          <span className="text-[11px] font-semibold">Monthly Savings Rate</span>
           <span
             className={cn(
-              "text-xs font-bold px-2.5 py-0.5 rounded-full",
-              savingsHealthy ? "bg-emerald-500/50 text-emerald-100" : "bg-amber-500/40 text-amber-100"
+              "text-xs font-bold px-2.5 py-0.5 rounded-full backdrop-blur-xs",
+              savingsHealthy ? "bg-white/20 text-current" : "bg-amber-500/30 text-amber-200"
             )}
           >
             {savingsRate}%{savingsHealthy ? " 👍" : " ⚠️"}
@@ -93,10 +93,10 @@ export function SummaryCards({ metrics }: SummaryCardsProps) {
       {/* ── DESKTOP: 4-card grid (≥ lg) ── */}
       <div className="hidden lg:grid grid-cols-4 gap-4">
         {/* Balance */}
-        <div className="p-4 rounded-card border border-teal-100 bg-surface shadow-soft flex flex-col justify-between transition-all hover:shadow-card group">
+        <div className="p-4 rounded-card border border-border bg-surface shadow-soft flex flex-col justify-between transition-all hover:shadow-card group">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-semibold text-slate-500">Current Balance</span>
-            <div className="w-8 h-8 rounded-btn flex items-center justify-center bg-teal-50 text-primary shrink-0">
+            <div className="w-8 h-8 rounded-btn flex items-center justify-center bg-primary/10 text-primary shrink-0">
               <Wallet className="w-4 h-4" />
             </div>
           </div>
@@ -114,10 +114,10 @@ export function SummaryCards({ metrics }: SummaryCardsProps) {
         </div>
 
         {/* Today */}
-        <div className="p-4 rounded-card border border-amber-100 bg-surface shadow-soft flex flex-col justify-between transition-all hover:shadow-card">
+        <div className="p-4 rounded-card border border-border bg-surface shadow-soft flex flex-col justify-between transition-all hover:shadow-card">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-semibold text-slate-500">Today&apos;s Spending</span>
-            <div className="w-8 h-8 rounded-btn flex items-center justify-center bg-amber-50 text-amber-600 shrink-0">
+            <div className="w-8 h-8 rounded-btn flex items-center justify-center bg-amber-500/10 text-amber-500 shrink-0">
               <CalendarDays className="w-4 h-4" />
             </div>
           </div>
@@ -130,10 +130,10 @@ export function SummaryCards({ metrics }: SummaryCardsProps) {
         </div>
 
         {/* Month Income */}
-        <div className="p-4 rounded-card border border-green-100 bg-surface shadow-soft flex flex-col justify-between transition-all hover:shadow-card">
+        <div className="p-4 rounded-card border border-border bg-surface shadow-soft flex flex-col justify-between transition-all hover:shadow-card">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-semibold text-slate-500">Month Income</span>
-            <div className="w-8 h-8 rounded-btn flex items-center justify-center bg-green-50 text-income shrink-0">
+            <div className="w-8 h-8 rounded-btn flex items-center justify-center bg-income/10 text-income shrink-0">
               <TrendingUp className="w-4 h-4" />
             </div>
           </div>
@@ -146,10 +146,10 @@ export function SummaryCards({ metrics }: SummaryCardsProps) {
         </div>
 
         {/* Month Expense + savings rate */}
-        <div className="p-4 rounded-card border border-red-100 bg-surface shadow-soft flex flex-col justify-between transition-all hover:shadow-card">
+        <div className="p-4 rounded-card border border-border bg-surface shadow-soft flex flex-col justify-between transition-all hover:shadow-card">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-semibold text-slate-500">Month Expense</span>
-            <div className="w-8 h-8 rounded-btn flex items-center justify-center bg-red-50 text-expense shrink-0">
+            <div className="w-8 h-8 rounded-btn flex items-center justify-center bg-expense/10 text-expense shrink-0">
               <TrendingDown className="w-4 h-4" />
             </div>
           </div>
@@ -164,8 +164,8 @@ export function SummaryCards({ metrics }: SummaryCardsProps) {
                   className={cn(
                     "text-[10px] font-bold px-1.5 py-0.5 rounded-full ml-auto",
                     savingsHealthy
-                      ? "bg-green-50 text-income"
-                      : "bg-amber-50 text-amber-700"
+                      ? "bg-income/10 text-income"
+                      : "bg-warning/10 text-warning"
                   )}
                 >
                   {savingsRate}% saved

@@ -6,7 +6,6 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Family Personal Finance Management",
   description: "Production-ready, mobile-first shared family finance assistant",
-  manifest: "/manifest.json",
   icons: {
     icon: [
       { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
@@ -24,17 +23,41 @@ export const viewport: Viewport = {
   themeColor: "#0F766E",
 };
 
+import { ThemeProvider } from "@/components/theme/ThemeProvider";
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="antialiased min-h-screen bg-background text-slate-900">
-        <AuthProvider>
-          <ToastProvider>{children}</ToastProvider>
-        </AuthProvider>
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                var savedTheme = localStorage.getItem('app_theme') || 'classic-teal';
+                document.documentElement.setAttribute('data-theme', savedTheme);
+                var darkThemes = ['midnight-obsidian', 'dark-emerald', 'dark-amethyst', 'carbon-titanium'];
+                var isDark = darkThemes.indexOf(savedTheme) !== -1;
+                document.documentElement.setAttribute('data-is-dark', isDark ? 'true' : 'false');
+                if (isDark) {
+                  document.documentElement.classList.add('dark');
+                } else {
+                  document.documentElement.classList.remove('dark');
+                }
+              } catch(e) {}
+            `,
+          }}
+        />
+      </head>
+      <body className="antialiased min-h-screen bg-background text-slate-900 transition-colors duration-150">
+        <ThemeProvider>
+          <AuthProvider>
+            <ToastProvider>{children}</ToastProvider>
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

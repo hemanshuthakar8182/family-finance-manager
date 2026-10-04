@@ -1,3 +1,12 @@
+function withOpacity(variableName) {
+  return ({ opacityValue }) => {
+    if (opacityValue !== undefined) {
+      return `rgba(var(${variableName}), ${opacityValue})`;
+    }
+    return `rgb(var(${variableName}))`;
+  };
+}
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ["class"],
@@ -18,22 +27,22 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          DEFAULT: "#0F766E", // Teal 700
-          hover: "#0D665F",
-          light: "#F0FDFA",
-          foreground: "#FFFFFF",
+          DEFAULT: withOpacity("--primary-rgb"),
+          hover: withOpacity("--primary-hover-rgb"),
+          light: "var(--primary-light)",
+          foreground: "var(--primary-foreground)",
         },
         accent: {
-          DEFAULT: "#059669", // Emerald 600
-          hover: "#047857",
-          light: "#ECFDF5",
-          foreground: "#FFFFFF",
+          DEFAULT: withOpacity("--accent-rgb"),
+          hover: withOpacity("--accent-hover-rgb"),
+          light: "var(--accent-light)",
+          foreground: "var(--accent-foreground)",
         },
         surface: {
-          DEFAULT: "#FFFFFF",
-          muted: "#F8FAFC",
+          DEFAULT: "var(--surface)",
+          muted: "var(--surface-muted)",
         },
-        background: "#F8FAFC",
+        background: "var(--bg)",
         income: {
           DEFAULT: "#16A34A", // Green 600
           light: "#F0FDF4",
@@ -56,7 +65,7 @@ module.exports = {
           light: "#EFF6FF",
           foreground: "#1D4ED8",
         },
-        border: "#E2E8F0",
+        border: "var(--border)",
         slate: {
           900: "#0F172A",
           500: "#64748B",

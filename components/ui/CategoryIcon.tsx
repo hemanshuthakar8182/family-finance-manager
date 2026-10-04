@@ -64,8 +64,11 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
+import { resolveCategoryIcon } from "@/lib/utils/category-helper";
+
 interface CategoryIconProps {
   name: string;
+  categoryName?: string;
   className?: string;
   size?: number;
 }
@@ -180,14 +183,20 @@ const ICON_MAP: Record<string, LucideIcon> = {
   tag: Tag,
 };
 
-export function CategoryIcon({ name, className = "w-5 h-5", size = 20 }: CategoryIconProps) {
-  if (!name) {
-    return <Tag className={className} size={size} />;
+export function CategoryIcon({ name, categoryName, className = "w-5 h-5", size = 20 }: CategoryIconProps) {
+  // Normalize string to alphanumeric lowercase
+  const normalized = (name || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+  let IconComponent = ICON_MAP[normalized];
+
+  // If icon is not matched or generic "tag", try resolving by categoryName
+  if ((!IconComponent || normalized === "tag") && categoryName) {
+    const resolved = resolveCategoryIcon(categoryName);
+    const resolvedNorm = resolved.icon.toLowerCase().replace(/[^a-z0-9]/g, "");
+    if (ICON_MAP[resolvedNorm]) {
+      IconComponent = ICON_MAP[resolvedNorm];
+    }
   }
 
-  // Normalize string to alphanumeric lowercase
-  const normalized = name.toLowerCase().replace(/[^a-z0-9]/g, "");
-  const IconComponent = ICON_MAP[normalized] || Tag;
-
-  return <IconComponent className={className} size={size} />;
+  const FinalIcon = IconComponent || Tag;
+  return <FinalIcon className={className} size={size} />;
 }

@@ -14,7 +14,10 @@ import {
   Smartphone,
   Wallet,
   Archive,
+  Sliders,
+  Pencil,
 } from "lucide-react";
+import { ReconciliationModal } from "@/components/accounts/ReconciliationModal";
 
 const ACCOUNT_TYPE_CONFIG: Record<string, { label: string; icon: any; color: string; bg: string }> = {
   CASH: { label: "Cash", icon: Banknote, color: "text-amber-700", bg: "bg-amber-50" },
@@ -30,6 +33,13 @@ export default function AccountsPage() {
   const [accounts, setAccounts] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isAddOpen, setIsAddOpen] = useState(false);
+  const [editAccount, setEditAccount] = useState<any | null>(null);
+  const [editFormData, setEditFormData] = useState({
+    name: "",
+    type: "BANK",
+  });
+  const [editSubmitting, setEditSubmitting] = useState(false);
+  const [reconcileAccount, setReconcileAccount] = useState<any | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -37,6 +47,33 @@ export default function AccountsPage() {
     type: "BANK",
     openingBalance: "",
   });
+
+  const handleEdit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editAccount || !editFormData.name.trim()) {
+      showToast({ type: "error", title: "Account name is required" });
+      return;
+    }
+
+    setEditSubmitting(true);
+    try {
+      const res = await fetch(`/api/accounts/${editAccount.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(editFormData),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to update account");
+
+      showToast({ type: "success", title: "Account Updated", message: editFormData.name });
+      setEditAccount(null);
+      fetchAccounts();
+    } catch (err: any) {
+      showToast({ type: "error", title: "Error", message: err.message });
+    } finally {
+      setEditSubmitting(false);
+    }
+  };
 
   const fetchAccounts = () => {
     setIsLoading(true);
@@ -125,7 +162,7 @@ export default function AccountsPage() {
       </div>
 
       {/* Total Balance Banner */}
-      <div className="p-5 rounded-card bg-gradient-to-r from-primary to-teal-500 text-white shadow-md">
+      <div className="p-5 rounded-card bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-md">
         <p className="text-xs font-semibold opacity-80">Total Family Balance</p>
         <div className="text-3xl font-bold font-amount mt-1">
           {formatCurrency(totalBalance)}
@@ -164,13 +201,32 @@ export default function AccountsPage() {
                   <div className={`w-9 h-9 rounded-btn flex items-center justify-center ${config.bg} ${config.color}`}>
                     <Icon className="w-5 h-5" />
                   </div>
-                  <button
-                    onClick={() => handleArchive(acc.id, acc.name)}
-                    title="Archive Account"
-                    className="text-slate-400 hover:text-slate-700 p-1.5 rounded-btn hover:bg-slate-100 transition-colors"
-                  >
-                    <Archive className="w-4 h-4" />
-                  </button>
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => {
+                        setEditAccount(acc);
+                        setEditFormData({ name: acc.name, type: acc.type });
+                      }}
+                      title="Edit Account Details"
+                      className="text-slate-400 hover:text-primary p-1.5 rounded-btn hover:bg-slate-100 transition-colors"
+                    >
+                      <Pencil className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => setReconcileAccount(acc)}
+                      title="Reconcile balance with statement"
+                      className="text-slate-400 hover:text-primary p-1.5 rounded-btn hover:bg-primary/10 transition-colors"
+                    >
+                      <Sliders className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => handleArchive(acc.id, acc.name)}
+                      title="Archive Account"
+                      className="text-slate-400 hover:text-slate-700 p-1.5 rounded-btn hover:bg-slate-100 transition-colors"
+                    >
+                      <Archive className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
 
                 <h3 className="font-bold text-slate-900 text-sm truncate">{acc.name}</h3>
@@ -226,8 +282,8 @@ export default function AccountsPage() {
                     onClick={() => setFormData({ ...formData, type: key })}
                     className={`flex flex-col items-center p-2.5 rounded-btn border text-center transition-all ${
                       formData.type === key
-                        ? "bg-primary border-primary text-white shadow-xs"
-                        : "bg-surface border-border text-slate-700 hover:bg-slate-50"
+                        ? "bg-primary border-primary text-primary-foreground shadow-xs"
+                        : "bg-surface border-border text-slate-700 hover:bg-surface-muted"
                     }`}
                   >
                     <Icon className="w-5 h-5 mb-1" />
@@ -283,6 +339,92 @@ export default function AccountsPage() {
           </div>
         </form>
       </Modal>
+
+      {/* Edit Account Modal */}
+      <Modal
+        isOpen={Boolean(editAccount)}
+        onClose={() => setEditAccount(null)}
+        title="Edit Account"
+        description="Update account name and category type"
+      >
+        <form onSubmit={handleEdit} className="space-y-4 pt-2">
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              Account Name *
+            </label>
+            <input
+              required
+              value={editFormData.name}
+              onChange={(e) =>
+                setEditFormData({ ...editFormData, name: e.target.value })
+              }
+              placeholder="e.g. HDFC Salary, Emergency Cash"
+              className="w-full h-11 px-3 rounded-input border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+              Account Type *
+            </label>
+            <div className="grid grid-cols-2 gap-2">
+              {Object.entries(ACCOUNT_TYPE_CONFIG).map(([key, cfg]) => {
+                const Icon = cfg.icon;
+                const isSelected = editFormData.type === key;
+                return (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() =>
+                      setEditFormData({ ...editFormData, type: key })
+                    }
+                    className={`flex items-center gap-2.5 p-3 rounded-card border text-left transition-all ${
+                      isSelected
+                        ? "border-primary bg-primary/10 ring-2 ring-primary/20 text-primary"
+                        : "border-border hover:border-slate-300 text-slate-700"
+                    }`}
+                  >
+                    <div
+                      className={`w-7 h-7 rounded-btn flex items-center justify-center shrink-0 ${cfg.bg} ${cfg.color}`}
+                    >
+                      <Icon className="w-4 h-4" />
+                    </div>
+                    <span className="text-[11px] font-semibold">{cfg.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="flex gap-2 pt-2">
+            <Button
+              type="submit"
+              variant="primary"
+              size="lg"
+              isLoading={editSubmitting}
+              className="flex-1 font-bold shadow-xs"
+            >
+              Save Changes
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="lg"
+              onClick={() => setEditAccount(null)}
+            >
+              Cancel
+            </Button>
+          </div>
+        </form>
+      </Modal>
+
+      {/* Reconciliation Modal */}
+      <ReconciliationModal
+        account={reconcileAccount}
+        isOpen={!!reconcileAccount}
+        onClose={() => setReconcileAccount(null)}
+        onSuccess={() => fetchAccounts()}
+      />
     </div>
   );
 }

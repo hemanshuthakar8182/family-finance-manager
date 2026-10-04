@@ -19,7 +19,7 @@ export function RecentTransactionsWidget({
   if (!transactions || transactions.length === 0) {
     return (
       <div className="py-8 text-center bg-surface rounded-card border border-border p-6 shadow-soft">
-        <div className="w-12 h-12 rounded-full bg-teal-50 text-primary flex items-center justify-center mx-auto mb-3">
+        <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto mb-3">
           <Receipt className="w-6 h-6" />
         </div>
         <h4 className="text-sm font-bold text-slate-800">No transactions yet</h4>
@@ -28,7 +28,7 @@ export function RecentTransactionsWidget({
         </p>
         <button
           onClick={onOpenQuickAdd}
-          className="mt-4 px-4 py-2 bg-primary hover:bg-primary-hover text-white text-xs font-semibold rounded-btn shadow-sm transition-all"
+          className="mt-4 px-4 py-2 bg-primary hover:bg-primary-hover text-primary-foreground text-xs font-semibold rounded-btn shadow-sm transition-all"
         >
           + Add First Transaction
         </button>

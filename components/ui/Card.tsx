@@ -22,7 +22,7 @@ export function Card({ className, hoverEffect = false, children, ...props }: Car
 
 export function CardHeader({ className, children, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={cn("flex items-center justify-between pb-3 mb-3 border-b border-slate-100", className)} {...props}>
+    <div className={cn("flex items-center justify-between pb-3 mb-3 border-b border-border", className)} {...props}>
       {children}
     </div>
   );

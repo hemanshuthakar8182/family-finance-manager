@@ -8,8 +8,9 @@ export const addMemberSchema = z.object({
 });
 
 export const updateFamilySchema = z.object({
-  name: z.string().min(2, "Family name must be at least 2 characters"),
-  currency: z.string().default("INR"),
+  name: z.string().min(2, "Family name must be at least 2 characters").optional(),
+  currency: z.string().default("INR").optional(),
+  logoUrl: z.string().nullable().optional(),
 });
 
 export type AddMemberInput = z.infer<typeof addMemberSchema>;

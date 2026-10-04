@@ -55,10 +55,10 @@ export function Modal({
         )}
       >
         {/* Mobile drag handle */}
-        <div className="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-4 sm:hidden" />
+        <div className="w-12 h-1.5 bg-border rounded-full mx-auto mb-4 sm:hidden" />
 
         {(title || description) && (
-          <div className="flex items-start justify-between pb-3 mb-4 border-b border-slate-100">
+          <div className="flex items-start justify-between pb-3 mb-4 border-b border-border">
             <div>
               {title && (
                 <h3 className="text-lg font-bold text-slate-900 tracking-tight">
@@ -71,7 +71,7 @@ export function Modal({
             </div>
             <button
               onClick={onClose}
-              className="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-100 transition-colors"
+              className="text-slate-400 hover:text-slate-900 p-1.5 rounded-lg hover:bg-surface-muted transition-colors"
             >
               <X className="w-5 h-5" />
             </button>

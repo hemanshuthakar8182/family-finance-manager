@@ -37,9 +37,9 @@ export function CategoryExpenseChart({ data }: CategoryExpenseChartProps) {
       const item = payload[0].payload;
       const percentage = total > 0 ? Math.round((item.amount / total) * 100) : 0;
       return (
-        <div className="p-2.5 bg-slate-900 text-white rounded-btn shadow-lg text-xs space-y-0.5">
-          <p className="font-bold">{item.name}</p>
-          <p className="text-slate-300 font-amount">
+        <div className="p-2.5 bg-surface border border-border rounded-btn shadow-lg text-xs space-y-0.5">
+          <p className="font-bold text-slate-800">{item.name}</p>
+          <p className="text-slate-500 font-amount">
             {formatCurrency(item.amount)} ({percentage}%)
           </p>
         </div>

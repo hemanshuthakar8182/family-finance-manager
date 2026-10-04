@@ -7,7 +7,12 @@ import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
 import { Card, CardHeader, CardTitle } from "@/components/ui/Card";
 import { useToast } from "@/components/ui/Toast";
-import { Plus, Archive, Tags, Tag } from "lucide-react";
+import { Plus, Archive, Sparkles, Pencil } from "lucide-react";
+import { IconPicker, ColorPicker } from "@/components/categories/IconPicker";
+import {
+  resolveCategoryIcon,
+  PRESET_CATEGORY_COLORS,
+} from "@/lib/utils/category-helper";
 
 export default function CategoriesPage() {
   const { showToast } = useToast();
@@ -23,6 +28,44 @@ export default function CategoriesPage() {
     icon: "Tag",
     color: "#0F766E",
   });
+  const [isIconCustom, setIsIconCustom] = useState(false);
+  const [isColorCustom, setIsColorCustom] = useState(false);
+
+  // Edit Category state
+  const [editCategory, setEditCategory] = useState<any | null>(null);
+  const [editFormData, setEditFormData] = useState({
+    name: "",
+    icon: "Tag",
+    color: "#0F766E",
+  });
+  const [editSubmitting, setEditSubmitting] = useState(false);
+
+  const handleUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editCategory || !editFormData.name.trim()) {
+      showToast({ type: "error", title: "Category name is required" });
+      return;
+    }
+
+    setEditSubmitting(true);
+    try {
+      const res = await fetch(`/api/categories/${editCategory.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(editFormData),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to update category");
+
+      showToast({ type: "success", title: "Category Updated", message: editFormData.name });
+      setEditCategory(null);
+      fetchCategories();
+    } catch (err: any) {
+      showToast({ type: "error", title: "Error", message: err.message });
+    } finally {
+      setEditSubmitting(false);
+    }
+  };
 
   const fetchCategories = () => {
     setIsLoading(true);
@@ -40,6 +83,37 @@ export default function CategoriesPage() {
 
   const expenseCategories = categories.filter((c) => c.type === "EXPENSE");
   const incomeCategories = categories.filter((c) => c.type === "INCOME");
+
+  const handleNameChange = (name: string) => {
+    setFormData((prev) => {
+      const updated = { ...prev, name };
+      if (!isIconCustom || !isColorCustom) {
+        const suggestion = resolveCategoryIcon(name, prev.type as any);
+        if (!isIconCustom) updated.icon = suggestion.icon;
+        if (!isColorCustom) updated.color = suggestion.color;
+      }
+      return updated;
+    });
+  };
+
+  const handleTypeChange = (type: "EXPENSE" | "INCOME") => {
+    setFormData((prev) => {
+      const updated = { ...prev, type };
+      if (!isIconCustom || !isColorCustom) {
+        const suggestion = resolveCategoryIcon(prev.name, type);
+        if (!isIconCustom) updated.icon = suggestion.icon;
+        if (!isColorCustom) updated.color = suggestion.color;
+      }
+      return updated;
+    });
+  };
+
+  const openAddModal = () => {
+    setFormData({ name: "", type: "EXPENSE", icon: "Tag", color: "#0F766E" });
+    setIsIconCustom(false);
+    setIsColorCustom(false);
+    setIsAddOpen(true);
+  };
 
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,6 +134,8 @@ export default function CategoriesPage() {
 
       showToast({ type: "success", title: "Category Created", message: formData.name });
       setFormData({ name: "", type: "EXPENSE", icon: "Tag", color: "#0F766E" });
+      setIsIconCustom(false);
+      setIsColorCustom(false);
       setIsAddOpen(false);
       fetchCategories();
     } catch (err: any) {
@@ -101,10 +177,10 @@ export default function CategoriesPage() {
           >
             <div className="flex items-center gap-3">
               <div
-                className="w-9 h-9 rounded-full flex items-center justify-center text-white shrink-0"
+                className="w-9 h-9 rounded-full flex items-center justify-center text-white shrink-0 shadow-xs"
                 style={{ backgroundColor: cat.color }}
               >
-                <CategoryIcon name={cat.icon} size={16} />
+                <CategoryIcon name={cat.icon} categoryName={cat.name} size={16} />
               </div>
               <div>
                 <p className="text-sm font-semibold text-slate-900">{cat.name}</p>
@@ -113,20 +189,36 @@ export default function CategoriesPage() {
                 </p>
               </div>
             </div>
-            {!cat.isDefault && (
+            <div className="flex items-center gap-1">
               <button
-                onClick={() => handleArchive(cat.id, cat.name)}
-                title="Archive Category"
-                className="text-slate-400 hover:text-slate-700 p-1.5 rounded-btn hover:bg-slate-100 transition-colors"
+                onClick={() => {
+                  setEditCategory(cat);
+                  setEditFormData({
+                    name: cat.name,
+                    icon: cat.icon || "Tag",
+                    color: cat.color || "#0F766E",
+                  });
+                }}
+                title="Edit Category"
+                className="text-slate-400 hover:text-primary p-1.5 rounded-btn hover:bg-slate-100 transition-colors"
               >
-                <Archive className="w-4 h-4" />
+                <Pencil className="w-3.5 h-3.5" />
               </button>
-            )}
-            {cat.isDefault && (
-              <Badge variant="secondary" className="text-[10px]">
-                Default
-              </Badge>
-            )}
+              {!cat.isDefault && (
+                <button
+                  onClick={() => handleArchive(cat.id, cat.name)}
+                  title="Archive Category"
+                  className="text-slate-400 hover:text-slate-700 p-1.5 rounded-btn hover:bg-slate-100 transition-colors"
+                >
+                  <Archive className="w-3.5 h-3.5" />
+                </button>
+              )}
+              {cat.isDefault && (
+                <Badge variant="secondary" className="text-[10px]">
+                  Default
+                </Badge>
+              )}
+            </div>
           </div>
         ))
       )}
@@ -145,7 +237,7 @@ export default function CategoriesPage() {
             Manage family expense and income categories
           </p>
         </div>
-        <Button size="md" onClick={() => setIsAddOpen(true)} className="font-semibold shadow-sm">
+        <Button size="md" onClick={openAddModal} className="font-semibold shadow-sm">
           <Plus className="w-4 h-4 mr-1.5" />
           New Category
         </Button>
@@ -190,35 +282,36 @@ export default function CategoriesPage() {
         isOpen={isAddOpen}
         onClose={() => setIsAddOpen(false)}
         title="Create New Category"
-        description="Add a custom expense or income category"
+        description="Add a custom expense or income category with smart icon detection"
       >
         <form onSubmit={handleAdd} className="space-y-4 pt-2">
           {/* Type Toggle */}
           <div className="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-btn">
             <button
               type="button"
-              onClick={() => setFormData({ ...formData, type: "EXPENSE" })}
+              onClick={() => handleTypeChange("EXPENSE")}
               className={`py-2 rounded-btn text-xs font-semibold transition-all ${
                 formData.type === "EXPENSE"
                   ? "bg-expense text-white shadow-xs"
-                  : "text-slate-600"
+                  : "text-slate-600 hover:text-slate-900"
               }`}
             >
               Expense
             </button>
             <button
               type="button"
-              onClick={() => setFormData({ ...formData, type: "INCOME" })}
+              onClick={() => handleTypeChange("INCOME")}
               className={`py-2 rounded-btn text-xs font-semibold transition-all ${
                 formData.type === "INCOME"
                   ? "bg-income text-white shadow-xs"
-                  : "text-slate-600"
+                  : "text-slate-600 hover:text-slate-900"
               }`}
             >
               Income
             </button>
           </div>
 
+          {/* Category Name */}
           <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1">
               Category Name *
@@ -226,50 +319,61 @@ export default function CategoriesPage() {
             <input
               required
               value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              placeholder="e.g. Pet Care, Gym, OTT Subscriptions"
-              className="w-full h-11 px-3 rounded-input border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+              onChange={(e) => handleNameChange(e.target.value)}
+              placeholder="e.g. Pet Care, Gym, Electricity, Grocery, Uber"
+              className="w-full h-11 px-3 rounded-input border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary placeholder:text-slate-400"
             />
+            {!isIconCustom && formData.name.trim().length > 0 && (
+              <p className="flex items-center gap-1 text-[11px] text-teal-700 mt-1.5 font-medium">
+                <Sparkles className="w-3.5 h-3.5 text-teal-600 shrink-0" />
+                Icon & color auto-detected from name
+              </p>
+            )}
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
-                Icon Name (Lucide)
-              </label>
-              <input
-                value={formData.icon}
-                onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
-                placeholder="e.g. Heart, Car, Home"
-                className="w-full h-10 px-3 rounded-input border border-border text-xs focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
-                Color
-              </label>
-              <input
-                type="color"
-                value={formData.color}
-                onChange={(e) => setFormData({ ...formData, color: e.target.value })}
-                className="w-full h-10 rounded-input border border-border cursor-pointer"
-              />
-            </div>
-          </div>
+          {/* Visual Icon Picker */}
+          <IconPicker
+            value={formData.icon}
+            onChange={(iconName) => {
+              setFormData((prev) => ({ ...prev, icon: iconName }));
+              setIsIconCustom(true);
+            }}
+            color={formData.color}
+            isAutoDetected={!isIconCustom && Boolean(formData.name.trim())}
+          />
 
-          {/* Icon Preview */}
-          <div className="flex items-center gap-3 p-3 rounded-card border border-border bg-slate-50">
+          {/* Palette Color Picker */}
+          <ColorPicker
+            value={formData.color}
+            onChange={(colorHex) => {
+              setFormData((prev) => ({ ...prev, color: colorHex }));
+              setIsColorCustom(true);
+            }}
+            presetColors={PRESET_CATEGORY_COLORS}
+            isAutoDetected={!isColorCustom && Boolean(formData.name.trim())}
+          />
+
+          {/* Live Category Preview */}
+          <div className="flex items-center gap-3 p-3 rounded-card border border-border/80 bg-slate-50/80">
             <div
-              className="w-10 h-10 rounded-full flex items-center justify-center text-white"
+              className="w-10 h-10 rounded-full flex items-center justify-center text-white shrink-0 shadow-xs"
               style={{ backgroundColor: formData.color }}
             >
-              <CategoryIcon name={formData.icon} size={18} />
+              <CategoryIcon name={formData.icon} categoryName={formData.name} size={18} />
             </div>
-            <div>
-              <p className="text-xs font-semibold text-slate-700">{formData.name || "Preview"}</p>
-              <p className="text-[11px] text-slate-400">
-                {formData.type === "EXPENSE" ? "Expense" : "Income"} Category
+            <div className="min-w-0">
+              <p className="text-xs font-bold text-slate-900 truncate">
+                {formData.name || "Category Preview"}
               </p>
+              <div className="flex items-center gap-1.5 mt-0.5">
+                <span className="text-[10px] text-slate-500 font-medium">
+                  {formData.type === "EXPENSE" ? "Expense" : "Income"} Category
+                </span>
+                <span className="text-[10px] text-slate-300">•</span>
+                <span className="text-[10px] text-slate-500 font-medium">
+                  Icon: {formData.icon}
+                </span>
+              </div>
             </div>
           </div>
 
@@ -279,7 +383,7 @@ export default function CategoriesPage() {
               variant="primary"
               size="lg"
               isLoading={submitting}
-              className="flex-1 font-bold"
+              className="flex-1 font-bold shadow-xs"
             >
               Create Category
             </Button>
@@ -288,6 +392,100 @@ export default function CategoriesPage() {
               variant="outline"
               size="lg"
               onClick={() => setIsAddOpen(false)}
+            >
+              Cancel
+            </Button>
+          </div>
+        </form>
+      </Modal>
+
+      {/* Edit Category Modal */}
+      <Modal
+        isOpen={Boolean(editCategory)}
+        onClose={() => setEditCategory(null)}
+        title="Edit Category"
+        description="Update category name, icon, and theme color"
+      >
+        <form onSubmit={handleUpdate} className="space-y-4 pt-2">
+          {/* Category Name */}
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              Category Name *
+            </label>
+            <input
+              required
+              value={editFormData.name}
+              onChange={(e) =>
+                setEditFormData({ ...editFormData, name: e.target.value })
+              }
+              placeholder="Category name"
+              className="w-full h-11 px-3 rounded-input border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+            />
+          </div>
+
+          {/* Visual Icon Picker */}
+          <IconPicker
+            value={editFormData.icon}
+            onChange={(iconName) =>
+              setEditFormData((prev) => ({ ...prev, icon: iconName }))
+            }
+            color={editFormData.color}
+            isAutoDetected={false}
+          />
+
+          {/* Palette Color Picker */}
+          <ColorPicker
+            value={editFormData.color}
+            onChange={(colorHex) =>
+              setEditFormData((prev) => ({ ...prev, color: colorHex }))
+            }
+            presetColors={PRESET_CATEGORY_COLORS}
+            isAutoDetected={false}
+          />
+
+          {/* Live Preview */}
+          <div className="flex items-center gap-3 p-3 rounded-card border border-border/80 bg-slate-50/80">
+            <div
+              className="w-10 h-10 rounded-full flex items-center justify-center text-white shrink-0 shadow-xs"
+              style={{ backgroundColor: editFormData.color }}
+            >
+              <CategoryIcon
+                name={editFormData.icon}
+                categoryName={editFormData.name}
+                size={18}
+              />
+            </div>
+            <div className="min-w-0">
+              <p className="text-xs font-bold text-slate-900 truncate">
+                {editFormData.name || "Category Preview"}
+              </p>
+              <div className="flex items-center gap-1.5 mt-0.5">
+                <span className="text-[10px] text-slate-500 font-medium">
+                  {editCategory?.type === "EXPENSE" ? "Expense" : "Income"} Category
+                </span>
+                <span className="text-[10px] text-slate-300">•</span>
+                <span className="text-[10px] text-slate-500 font-medium">
+                  Icon: {editFormData.icon}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex gap-2 pt-1">
+            <Button
+              type="submit"
+              variant="primary"
+              size="lg"
+              isLoading={editSubmitting}
+              className="flex-1 font-bold shadow-xs"
+            >
+              Save Changes
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="lg"
+              onClick={() => setEditCategory(null)}
             >
               Cancel
             </Button>

@@ -95,14 +95,14 @@ export default function DashboardPage() {
           <button
             onClick={fetchAll}
             title="Refresh Dashboard"
-            className="p-2 rounded-btn border border-border bg-white text-slate-600 hover:bg-slate-50 text-xs flex items-center gap-1.5"
+            className="p-2 rounded-btn border border-border bg-surface text-slate-600 hover:bg-surface-muted text-xs flex items-center gap-1.5"
           >
             <RefreshCw className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Refresh</span>
           </button>
           <button
             onClick={onOpenQuickAdd}
-            className="px-3.5 py-2 rounded-btn bg-primary hover:bg-primary-hover text-white text-xs font-semibold shadow-sm flex items-center gap-1.5"
+            className="px-3.5 py-2 rounded-btn bg-primary hover:bg-primary-hover text-primary-foreground text-xs font-semibold shadow-sm flex items-center gap-1.5"
           >
             <Plus className="w-4 h-4" />
             <span>Quick Expense</span>

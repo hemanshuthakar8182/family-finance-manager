@@ -3,22 +3,26 @@
 import React from "react";
 import { CategoryIcon } from "@/components/ui/CategoryIcon";
 import { formatCurrency, formatTransactionDate } from "@/lib/utils/formatters";
+import { ArrowRightLeft } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 
 export interface TransactionCardProps {
   transaction: {
     id: string;
-    type: "INCOME" | "EXPENSE";
+    type: "INCOME" | "EXPENSE" | "TRANSFER";
     amount: number | string;
     date: Date | string;
     description?: string | null;
     notes?: string | null;
-    category: {
+    category?: {
       name: string;
       icon: string;
       color: string;
-    };
+    } | null;
     account?: {
+      name: string;
+    } | null;
+    toAccount?: {
       name: string;
     } | null;
     member: {
@@ -32,6 +36,7 @@ export interface TransactionCardProps {
 
 export function TransactionCard({ transaction, onClick }: TransactionCardProps) {
   const isIncome = transaction.type === "INCOME";
+  const isTransfer = transaction.type === "TRANSFER";
 
   return (
     <div
@@ -41,19 +46,29 @@ export function TransactionCard({ transaction, onClick }: TransactionCardProps) 
       className="flex items-center justify-between p-3.5 sm:p-4 rounded-card border border-border bg-surface hover:bg-slate-50/80 transition-all active:scale-[0.99] cursor-pointer shadow-soft text-left"
     >
       <div className="flex items-center gap-3 min-w-0">
-        {/* Category Icon */}
+        {/* Category or Transfer Icon */}
         <div
           className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 text-white shadow-sm"
-          style={{ backgroundColor: transaction.category.color || "#0F766E" }}
+          style={{
+            backgroundColor: isTransfer
+              ? "#0284C7"
+              : transaction.category?.color || "#0F766E",
+          }}
         >
-          <CategoryIcon name={transaction.category.icon} size={18} />
+          {isTransfer ? (
+            <ArrowRightLeft className="w-4 h-4" />
+          ) : (
+            <CategoryIcon name={transaction.category?.icon || "tag"} size={18} />
+          )}
         </div>
 
         {/* Details */}
         <div className="min-w-0">
           <div className="flex items-center gap-2">
             <h4 className="text-sm font-semibold text-slate-900 truncate">
-              {transaction.category.name}
+              {isTransfer
+                ? `${transaction.account?.name || "Account"} → ${transaction.toAccount?.name || "Account"}`
+                : transaction.category?.name || "Uncategorized"}
             </h4>
             {transaction.description && (
               <span className="text-xs text-slate-500 truncate hidden sm:inline">
@@ -66,7 +81,7 @@ export function TransactionCard({ transaction, onClick }: TransactionCardProps) 
             <span className="font-medium text-slate-700">
               {transaction.member.user.name}
             </span>
-            {transaction.account && (
+            {!isTransfer && transaction.account && (
               <>
                 <span>•</span>
                 <span className="text-slate-600 truncate">{transaction.account.name}</span>
@@ -89,18 +104,27 @@ export function TransactionCard({ transaction, onClick }: TransactionCardProps) 
         <div
           className={cn(
             "text-base sm:text-lg font-bold font-amount tracking-tight",
-            isIncome ? "text-income" : "text-slate-900"
+            isIncome
+              ? "text-income"
+              : isTransfer
+              ? "text-blue-600"
+              : "text-slate-900"
           )}
         >
-          {isIncome ? "+" : "-"} {formatCurrency(transaction.amount)}
+          {isIncome ? "+" : isTransfer ? "⇄ " : "- "}
+          {formatCurrency(transaction.amount)}
         </div>
         <span
           className={cn(
             "text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded",
-            isIncome ? "bg-green-50 text-income" : "bg-red-50 text-expense"
+            isIncome
+              ? "bg-green-50 text-income"
+              : isTransfer
+              ? "bg-blue-50 text-blue-700"
+              : "bg-red-50 text-expense"
           )}
         >
-          {isIncome ? "Income" : "Expense"}
+          {isIncome ? "Income" : isTransfer ? "Transfer" : "Expense"}
         </span>
       </div>
     </div>

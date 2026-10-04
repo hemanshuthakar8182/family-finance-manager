@@ -47,7 +47,7 @@ async function main() {
   // 1. Create Users
   const himanshu = await prisma.user.create({
     data: {
-      name: "Himanshu Sharma",
+      name: "Hemanshu Thakar",
       email: "himanshu@family.local",
       passwordHash,
     },
@@ -55,7 +55,7 @@ async function main() {
 
   const priya = await prisma.user.create({
     data: {
-      name: "Priya Sharma",
+      name: "Hina Thakar",
       email: "priya@family.local",
       passwordHash,
     },
@@ -64,9 +64,9 @@ async function main() {
   // 2. Create Family
   const family = await prisma.family.create({
     data: {
-      name: "Sharma Family",
+      name: "Thakar Family's",
       currency: "INR",
-      inviteCode: "SHARMA-2026",
+      inviteCode: "THAKAR-2026",
     },
   });
 

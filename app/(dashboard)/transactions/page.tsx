@@ -1,14 +1,14 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useDashboard } from "@/components/providers/DashboardProvider";
 import { TransactionFilters } from "@/components/transactions/TransactionFilters";
 import { TransactionCard } from "@/components/transactions/TransactionCard";
 import { TransactionTable } from "@/components/transactions/TransactionTable";
 import { Button } from "@/components/ui/Button";
 import { formatCurrency } from "@/lib/utils/formatters";
-import { Plus, Receipt, ChevronLeft, ChevronRight } from "lucide-react";
-import { cn } from "@/lib/utils/cn";
+import { Plus, Receipt, ChevronLeft, ChevronRight, Download, UploadCloud } from "lucide-react";
+import Link from "next/link";
 
 function getDateLabel(dateStr: string): string {
   const txDate = new Date(dateStr);
@@ -35,37 +35,28 @@ function groupTransactionsByDate(transactions: any[]) {
   return groups;
 }
 
-type QuickFilter = "ALL" | "EXPENSE" | "INCOME" | "THIS_WEEK" | "TODAY";
-
-const QUICK_FILTERS: { label: string; value: QuickFilter }[] = [
-  { label: "All", value: "ALL" },
-  { label: "Expenses", value: "EXPENSE" },
-  { label: "Income", value: "INCOME" },
-  { label: "Today", value: "TODAY" },
-  { label: "This Week", value: "THIS_WEEK" },
-];
-
 export default function TransactionsPage() {
   const { openQuickAdd: onOpenQuickAdd, openTransaction: onSelectTransaction, refreshTrigger } = useDashboard();
   const [transactions, setTransactions] = useState<any[]>([]);
   const [pagination, setPagination] = useState({ page: 1, limit: 20, totalPages: 1, totalCount: 0 });
   const [isLoading, setIsLoading] = useState(true);
-  const [quickFilter, setQuickFilter] = useState<QuickFilter>("ALL");
 
   const [categories, setCategories] = useState<any[]>([]);
   const [accounts, setAccounts] = useState<any[]>([]);
   const [members, setMembers] = useState<any[]>([]);
 
-  const today = new Date().toISOString().split("T")[0];
-  const weekStart = (() => {
-    const d = new Date();
-    d.setDate(d.getDate() - d.getDay());
-    return d.toISOString().split("T")[0];
-  })();
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("quickAdd") === "true") {
+        onOpenQuickAdd();
+      }
+    }
+  }, [onOpenQuickAdd]);
 
   const initialFilters = {
     search: "",
-    type: "ALL" as "ALL" | "EXPENSE" | "INCOME",
+    type: "ALL" as "ALL" | "EXPENSE" | "INCOME" | "TRANSFER",
     categoryId: "",
     accountId: "",
     memberId: "",
@@ -74,16 +65,6 @@ export default function TransactionsPage() {
   };
 
   const [filters, setFilters] = useState(initialFilters);
-
-  // Merge quickFilter into effective API params
-  const effectiveFilters = useMemo(() => {
-    const f = { ...filters };
-    if (quickFilter === "EXPENSE") f.type = "EXPENSE";
-    else if (quickFilter === "INCOME") f.type = "INCOME";
-    else if (quickFilter === "TODAY") { f.startDate = today; f.endDate = today; }
-    else if (quickFilter === "THIS_WEEK") { f.startDate = weekStart; f.endDate = today; }
-    return f;
-  }, [filters, quickFilter]);
 
   useEffect(() => {
     Promise.all([
@@ -97,19 +78,19 @@ export default function TransactionsPage() {
     });
   }, []);
 
-  const fetchTransactions = (page = 1) => {
+  const fetchTransactions = useCallback((page = 1) => {
     setIsLoading(true);
     const params = new URLSearchParams();
     params.set("page", String(page));
     params.set("limit", String(pagination.limit));
 
-    if (effectiveFilters.search) params.set("search", effectiveFilters.search);
-    if (effectiveFilters.type !== "ALL") params.set("type", effectiveFilters.type);
-    if (effectiveFilters.categoryId) params.set("categoryId", effectiveFilters.categoryId);
-    if (effectiveFilters.accountId) params.set("accountId", effectiveFilters.accountId);
-    if (effectiveFilters.memberId) params.set("memberId", effectiveFilters.memberId);
-    if (effectiveFilters.startDate) params.set("startDate", effectiveFilters.startDate);
-    if (effectiveFilters.endDate) params.set("endDate", effectiveFilters.endDate);
+    if (filters.search) params.set("search", filters.search);
+    if (filters.type !== "ALL") params.set("type", filters.type);
+    if (filters.categoryId) params.set("categoryId", filters.categoryId);
+    if (filters.accountId) params.set("accountId", filters.accountId);
+    if (filters.memberId) params.set("memberId", filters.memberId);
+    if (filters.startDate) params.set("startDate", filters.startDate);
+    if (filters.endDate) params.set("endDate", filters.endDate);
 
     fetch(`/api/transactions?${params.toString()}`)
       .then((res) => res.json())
@@ -119,11 +100,11 @@ export default function TransactionsPage() {
       })
       .catch((err) => console.error("Error fetching transactions:", err))
       .finally(() => setIsLoading(false));
-  };
+  }, [filters, pagination.limit]);
 
   useEffect(() => {
     fetchTransactions(1);
-  }, [effectiveFilters, refreshTrigger]);
+  }, [fetchTransactions, refreshTrigger]);
 
   // Group mobile transactions by date
   const grouped = useMemo(() => groupTransactionsByDate(transactions), [transactions]);
@@ -136,12 +117,25 @@ export default function TransactionsPage() {
       let expense = 0;
       for (const t of txs) {
         if (t.type === "INCOME") income += Number(t.amount);
-        else expense += Number(t.amount);
+        else if (t.type === "EXPENSE") expense += Number(t.amount);
       }
       out[label] = { income, expense };
     }
     return out;
   }, [grouped]);
+
+  const handleExportCSV = () => {
+    const params = new URLSearchParams();
+    if (filters.search) params.set("search", filters.search);
+    if (filters.type !== "ALL") params.set("type", filters.type);
+    if (filters.categoryId) params.set("categoryId", filters.categoryId);
+    if (filters.accountId) params.set("accountId", filters.accountId);
+    if (filters.memberId) params.set("memberId", filters.memberId);
+    if (filters.startDate) params.set("startDate", filters.startDate);
+    if (filters.endDate) params.set("endDate", filters.endDate);
+
+    window.location.href = `/api/transactions/export?${params.toString()}`;
+  };
 
   return (
     <div className="space-y-5">
@@ -156,54 +150,45 @@ export default function TransactionsPage() {
           </p>
         </div>
 
-        <Button
-          size="md"
-          onClick={onOpenQuickAdd}
-          className="shadow-sm font-semibold text-xs sm:text-sm"
-        >
-          <Plus className="w-4 h-4 mr-1.5" />
-          <span>Add Transaction</span>
-        </Button>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/import"
+            title="Import bank statement (CSV/Excel)"
+            className="h-10 px-3 rounded-btn border border-border bg-white text-slate-700 hover:bg-slate-50 text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-colors"
+          >
+            <UploadCloud className="w-4 h-4 text-primary" />
+            <span className="hidden sm:inline">Import Statement</span>
+          </Link>
+
+          <button
+            onClick={handleExportCSV}
+            title="Export filtered transactions to CSV"
+            className="h-10 px-3 rounded-btn border border-border bg-white text-slate-700 hover:bg-slate-50 text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-colors"
+          >
+            <Download className="w-4 h-4 text-primary" />
+            <span className="hidden sm:inline">Export CSV</span>
+          </button>
+
+          <Button
+            size="md"
+            onClick={onOpenQuickAdd}
+            className="shadow-sm font-semibold text-xs sm:text-sm"
+          >
+            <Plus className="w-4 h-4 mr-1.5" />
+            <span>Add Transaction</span>
+          </Button>
+        </div>
       </div>
 
-      {/* ── Quick Filter Chips (above search) ── */}
-      <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
-        {QUICK_FILTERS.map((qf) => (
-          <button
-            key={qf.value}
-            onClick={() => {
-              setQuickFilter(qf.value);
-              // Clear advanced type/date from manual filters when quick filter changes
-              setFilters((f) => ({ ...f, type: "ALL", startDate: "", endDate: "" }));
-            }}
-            className={cn(
-              "shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all whitespace-nowrap",
-              quickFilter === qf.value
-                ? "bg-primary text-white border-primary shadow-xs"
-                : "bg-white text-slate-700 border-border hover:bg-slate-50"
-            )}
-          >
-            {qf.label}
-          </button>
-        ))}
-        {quickFilter !== "ALL" && (
-          <button
-            onClick={() => setQuickFilter("ALL")}
-            className="shrink-0 px-2 py-1 rounded-full text-[11px] font-semibold text-slate-400 hover:text-slate-700 transition-colors"
-          >
-            Clear
-          </button>
-        )}
-      </div>
-
-      {/* ── Advanced Filters ── */}
+      {/* ── Unified Filters (Single clear row with type, presets, accounts, categories, members) ── */}
       <TransactionFilters
         filters={filters}
         categories={categories}
         accounts={accounts}
         members={members}
-        onChange={(newFilters) => { setFilters(newFilters); setQuickFilter("ALL"); }}
-        onReset={() => { setFilters(initialFilters); setQuickFilter("ALL"); }}
+        totalResults={pagination.totalCount}
+        onChange={(newFilters) => setFilters(newFilters)}
+        onReset={() => setFilters(initialFilters)}
       />
 
       {/* ── Transaction List ── */}
@@ -215,7 +200,7 @@ export default function TransactionsPage() {
         </div>
       ) : transactions.length === 0 ? (
         <div className="py-14 text-center bg-surface rounded-card border border-border p-6 shadow-soft">
-          <div className="w-14 h-14 rounded-full bg-teal-50 text-primary flex items-center justify-center mx-auto mb-3">
+          <div className="w-14 h-14 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto mb-3">
             <Receipt className="w-7 h-7" />
           </div>
           <h3 className="text-base font-bold text-slate-900">No transactions found</h3>
@@ -224,7 +209,7 @@ export default function TransactionsPage() {
           </p>
           <button
             onClick={onOpenQuickAdd}
-            className="mt-4 px-4 py-2 bg-primary hover:bg-primary-hover text-white text-xs font-semibold rounded-btn shadow-sm transition-all"
+            className="mt-4 px-4 py-2 bg-primary hover:bg-primary-hover text-primary-foreground text-xs font-semibold rounded-btn shadow-sm transition-all"
           >
             + Add New Expense
           </button>

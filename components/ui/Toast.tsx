@@ -1,11 +1,11 @@
 "use client";
 
 import React, { createContext, useContext, useState, useCallback } from "react";
-import { CheckCircle2, AlertCircle, Info, X } from "lucide-react";
+import { CheckCircle2, AlertCircle, AlertTriangle, Info, X } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 
 export interface ToastOptions {
-  type?: "success" | "error" | "info";
+  type?: "success" | "error" | "info" | "warning";
   title: string;
   message?: string;
   actionText?: string;
@@ -47,6 +47,8 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
               "pointer-events-auto flex items-start gap-3 p-4 rounded-card border shadow-card bg-surface transition-all duration-300 animate-in slide-in-from-top-3",
               toast.type === "error"
                 ? "border-red-200 bg-red-50/90 text-red-900"
+                : toast.type === "warning"
+                ? "border-amber-200 bg-amber-50/95 text-amber-950"
                 : toast.type === "info"
                 ? "border-blue-200 bg-blue-50/90 text-blue-900"
                 : "border-emerald-200 bg-emerald-50/95 text-emerald-950"
@@ -54,6 +56,8 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
           >
             {toast.type === "error" ? (
               <AlertCircle className="w-5 h-5 text-expense flex-shrink-0 mt-0.5" />
+            ) : toast.type === "warning" ? (
+              <AlertTriangle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
             ) : toast.type === "info" ? (
               <Info className="w-5 h-5 text-info flex-shrink-0 mt-0.5" />
             ) : (

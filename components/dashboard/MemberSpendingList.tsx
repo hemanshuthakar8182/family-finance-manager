@@ -47,9 +47,9 @@ export function MemberSpendingList({ data, totalExpense }: MemberSpendingListPro
             </div>
 
             {/* Progress bar */}
-            <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
+            <div className="w-full h-2 rounded-full bg-surface-muted overflow-hidden">
               <div
-                className="h-full rounded-full bg-teal-600 transition-all duration-300"
+                className="h-full rounded-full bg-primary transition-all duration-300"
                 style={{ width: `${Math.min(100, percentage)}%` }}
               />
             </div>

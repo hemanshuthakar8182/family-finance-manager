@@ -21,5 +21,21 @@ export default function manifest(): MetadataRoute.Manifest {
         type: 'image/png',
       },
     ],
+    shortcuts: [
+      {
+        name: 'Quick Expense',
+        short_name: 'Add Expense',
+        description: 'Quickly record a daily household expense',
+        url: '/transactions?quickAdd=true',
+        icons: [{ src: '/icon-192.png', sizes: '192x192' }],
+      },
+      {
+        name: 'Financial Reports',
+        short_name: 'Reports',
+        description: 'View monthly spending trends & savings',
+        url: '/reports',
+        icons: [{ src: '/icon-192.png', sizes: '192x192' }],
+      },
+    ],
   }
 }

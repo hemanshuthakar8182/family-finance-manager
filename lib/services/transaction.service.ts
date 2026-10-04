@@ -11,25 +11,43 @@ export async function createTransaction(
   const amount = new Prisma.Decimal(input.amount);
   const date = new Date(input.date);
 
-  // Validate category belongs to family
-  const category = await prisma.category.findFirst({
-    where: { id: input.categoryId, familyId, isArchived: false },
-  });
-  if (!category) {
-    throw new Error("Invalid category selected.");
+  // Validate category if specified
+  if (input.categoryId) {
+    const category = await prisma.category.findFirst({
+      where: { id: input.categoryId, familyId, isArchived: false },
+    });
+    if (!category) {
+      throw new Error("Invalid category selected.");
+    }
   }
 
-  // Validate account if specified
+  // Validate source account if specified
   if (input.accountId) {
     const account = await prisma.account.findFirst({
       where: { id: input.accountId, familyId, isArchived: false },
     });
     if (!account) {
-      throw new Error("Invalid account selected.");
+      throw new Error("Invalid source account selected.");
     }
   }
 
-  // Atomically create transaction and update account balance
+  // Validate destination account for transfers
+  if (input.type === "TRANSFER") {
+    if (!input.accountId || !input.toAccountId) {
+      throw new Error("Both source and destination accounts are required for a transfer.");
+    }
+    if (input.accountId === input.toAccountId) {
+      throw new Error("Source and destination accounts must be different.");
+    }
+    const toAccount = await prisma.account.findFirst({
+      where: { id: input.toAccountId, familyId, isArchived: false },
+    });
+    if (!toAccount) {
+      throw new Error("Invalid destination account selected.");
+    }
+  }
+
+  // Atomically create transaction and update account balance(s)
   return await prisma.$transaction(async (tx) => {
     const transaction = await tx.transaction.create({
       data: {
@@ -37,15 +55,18 @@ export async function createTransaction(
         memberId,
         type: input.type,
         amount,
-        categoryId: input.categoryId,
+        categoryId: input.categoryId || null,
         accountId: input.accountId || null,
+        toAccountId: input.toAccountId || null,
         date,
         description: input.description?.trim() || null,
         notes: input.notes?.trim() || null,
+        receiptUrl: input.receiptUrl || null,
       },
       include: {
         category: true,
         account: true,
+        toAccount: true,
         member: {
           include: {
             user: {
@@ -56,19 +77,71 @@ export async function createTransaction(
       },
     });
 
-    if (input.accountId) {
+    if (input.type === "TRANSFER") {
+      // Source account debited
+      if (input.accountId) {
+        await tx.account.update({
+          where: { id: input.accountId },
+          data: { currentBalance: { decrement: amount } },
+        });
+      }
+      // Destination account credited
+      if (input.toAccountId) {
+        await tx.account.update({
+          where: { id: input.toAccountId },
+          data: { currentBalance: { increment: amount } },
+        });
+      }
+    } else if (input.accountId) {
       const balanceDelta = input.type === "INCOME" ? amount : amount.negated();
       await tx.account.update({
         where: { id: input.accountId },
-        data: {
-          currentBalance: {
-            increment: balanceDelta,
-          },
-        },
+        data: { currentBalance: { increment: balanceDelta } },
       });
     }
 
-    return transaction;
+    // Check budget alert for expense
+    let budgetAlert = null;
+    if (input.type === "EXPENSE" && input.categoryId) {
+      const budget = await tx.budget.findFirst({
+        where: {
+          familyId,
+          categoryId: input.categoryId,
+          month: date.getMonth() + 1,
+          year: date.getFullYear(),
+        },
+        include: { category: true },
+      });
+
+      if (budget) {
+        const sumResult = await tx.transaction.aggregate({
+          where: {
+            familyId,
+            categoryId: input.categoryId,
+            type: "EXPENSE",
+            deletedAt: null,
+            date: { gte: startOfMonth(date), lte: endOfMonth(date) },
+          },
+          _sum: { amount: true },
+        });
+
+        const totalSpent = Number(sumResult._sum.amount || 0);
+        const budgetLimit = Number(budget.amount);
+        const percentage = budgetLimit > 0 ? Math.round((totalSpent / budgetLimit) * 100) : 0;
+
+        if (percentage >= 80) {
+          budgetAlert = {
+            categoryName: budget.category.name,
+            spent: totalSpent,
+            limit: budgetLimit,
+            percentage,
+            status: percentage >= 100 ? "EXCEEDED" : "WARNING",
+          };
+        }
+      }
+    }
+
+    return { ...transaction, budgetAlert };
   });
 }
 
@@ -80,7 +153,7 @@ export async function updateTransaction(
   input: TransactionInput
 ) {
   const existing = await prisma.transaction.findFirst({
-    where: { id: transactionId, familyId },
+    where: { id: transactionId, familyId, deletedAt: null },
   });
 
   if (!existing) {
@@ -96,8 +169,21 @@ export async function updateTransaction(
   const newDate = new Date(input.date);
 
   return await prisma.$transaction(async (tx) => {
-    // Revert old account balance effect
-    if (existing.accountId) {
+    // 1. Revert old account balance effects
+    if (existing.type === "TRANSFER") {
+      if (existing.accountId) {
+        await tx.account.update({
+          where: { id: existing.accountId },
+          data: { currentBalance: { increment: existing.amount } },
+        });
+      }
+      if (existing.toAccountId) {
+        await tx.account.update({
+          where: { id: existing.toAccountId },
+          data: { currentBalance: { decrement: existing.amount } },
+        });
+      }
+    } else if (existing.accountId) {
       const revertDelta =
         existing.type === "INCOME" ? existing.amount.negated() : existing.amount;
       await tx.account.update({
@@ -106,8 +192,21 @@ export async function updateTransaction(
       });
     }
 
-    // Apply new account balance effect
-    if (input.accountId) {
+    // 2. Apply new account balance effects
+    if (input.type === "TRANSFER") {
+      if (input.accountId) {
+        await tx.account.update({
+          where: { id: input.accountId },
+          data: { currentBalance: { decrement: newAmount } },
+        });
+      }
+      if (input.toAccountId) {
+        await tx.account.update({
+          where: { id: input.toAccountId },
+          data: { currentBalance: { increment: newAmount } },
+        });
+      }
+    } else if (input.accountId) {
       const applyDelta = input.type === "INCOME" ? newAmount : newAmount.negated();
       await tx.account.update({
         where: { id: input.accountId },
@@ -120,15 +219,18 @@ export async function updateTransaction(
       data: {
         type: input.type,
         amount: newAmount,
-        categoryId: input.categoryId,
+        categoryId: input.categoryId || null,
         accountId: input.accountId || null,
+        toAccountId: input.toAccountId || null,
         date: newDate,
         description: input.description?.trim() || null,
         notes: input.notes?.trim() || null,
+        receiptUrl: input.receiptUrl !== undefined ? input.receiptUrl : undefined,
       },
       include: {
         category: true,
         account: true,
+        toAccount: true,
         member: {
           include: {
             user: { select: { name: true, email: true, avatarUrl: true } },
@@ -148,7 +250,7 @@ export async function deleteTransaction(
   transactionId: string
 ) {
   const existing = await prisma.transaction.findFirst({
-    where: { id: transactionId, familyId },
+    where: { id: transactionId, familyId, deletedAt: null },
   });
 
   if (!existing) {
@@ -160,7 +262,21 @@ export async function deleteTransaction(
   }
 
   return await prisma.$transaction(async (tx) => {
-    if (existing.accountId) {
+    // Revert account balances
+    if (existing.type === "TRANSFER") {
+      if (existing.accountId) {
+        await tx.account.update({
+          where: { id: existing.accountId },
+          data: { currentBalance: { increment: existing.amount } },
+        });
+      }
+      if (existing.toAccountId) {
+        await tx.account.update({
+          where: { id: existing.toAccountId },
+          data: { currentBalance: { decrement: existing.amount } },
+        });
+      }
+    } else if (existing.accountId) {
       const revertDelta =
         existing.type === "INCOME" ? existing.amount.negated() : existing.amount;
       await tx.account.update({
@@ -169,8 +285,59 @@ export async function deleteTransaction(
       });
     }
 
-    return await tx.transaction.delete({
+    // Soft delete to support Undo action
+    return await tx.transaction.update({
       where: { id: transactionId },
+      data: { deletedAt: new Date() },
+    });
+  });
+}
+
+export async function restoreTransaction(
+  familyId: string,
+  userMemberId: string,
+  userRole: "ADMIN" | "MEMBER",
+  transactionId: string
+) {
+  const existing = await prisma.transaction.findFirst({
+    where: { id: transactionId, familyId, deletedAt: { not: null } },
+  });
+
+  if (!existing) {
+    throw new Error("Deleted transaction not found.");
+  }
+
+  if (userRole !== "ADMIN" && existing.memberId !== userMemberId) {
+    throw new Error("You do not have permission to restore this transaction.");
+  }
+
+  return await prisma.$transaction(async (tx) => {
+    // Re-apply account balances
+    if (existing.type === "TRANSFER") {
+      if (existing.accountId) {
+        await tx.account.update({
+          where: { id: existing.accountId },
+          data: { currentBalance: { decrement: existing.amount } },
+        });
+      }
+      if (existing.toAccountId) {
+        await tx.account.update({
+          where: { id: existing.toAccountId },
+          data: { currentBalance: { increment: existing.amount } },
+        });
+      }
+    } else if (existing.accountId) {
+      const applyDelta =
+        existing.type === "INCOME" ? existing.amount : existing.amount.negated();
+      await tx.account.update({
+        where: { id: existing.accountId },
+        data: { currentBalance: { increment: applyDelta } },
+      });
+    }
+
+    return await tx.transaction.update({
+      where: { id: transactionId },
+      data: { deletedAt: null },
     });
   });
 }
@@ -185,18 +352,15 @@ export async function getTransactions(
 
   const where: Prisma.TransactionWhereInput = {
     familyId,
+    deletedAt: null,
   };
 
   if (filters.type && filters.type !== "ALL") {
-    where.type = filters.type;
+    where.type = filters.type as any;
   }
 
   if (filters.categoryId) {
     where.categoryId = filters.categoryId;
-  }
-
-  if (filters.accountId) {
-    where.accountId = filters.accountId;
   }
 
   if (filters.memberId) {
@@ -206,7 +370,7 @@ export async function getTransactions(
   if (filters.startDate || filters.endDate) {
     where.date = {};
     if (filters.startDate) {
-      where.date.gte = new Date(filters.startDate);
+      where.date.gte = startOfDay(new Date(filters.startDate));
     }
     if (filters.endDate) {
       where.date.lte = endOfDay(new Date(filters.endDate));
@@ -223,15 +387,33 @@ export async function getTransactions(
     }
   }
 
+  const andConditions: Prisma.TransactionWhereInput[] = [];
+
+  if (filters.accountId) {
+    andConditions.push({
+      OR: [
+        { accountId: filters.accountId },
+        { toAccountId: filters.accountId },
+      ],
+    });
+  }
+
   if (filters.search) {
     const q = filters.search.trim();
-    where.OR = [
-      { description: { contains: q } },
-      { notes: { contains: q } },
-      { category: { name: { contains: q } } },
-      { account: { name: { contains: q } } },
-      { member: { user: { name: { contains: q } } } },
-    ];
+    andConditions.push({
+      OR: [
+        { description: { contains: q } },
+        { notes: { contains: q } },
+        { category: { name: { contains: q } } },
+        { account: { name: { contains: q } } },
+        { toAccount: { name: { contains: q } } },
+        { member: { user: { name: { contains: q } } } },
+      ],
+    });
+  }
+
+  if (andConditions.length > 0) {
+    where.AND = andConditions;
   }
 
   const [totalCount, items] = await Promise.all([
@@ -244,6 +426,7 @@ export async function getTransactions(
       include: {
         category: true,
         account: true,
+        toAccount: true,
         member: {
           include: {
             user: { select: { id: true, name: true, email: true, avatarUrl: true } },
@@ -272,16 +455,18 @@ export async function getDashboardMetrics(familyId: string, referenceDate = new 
   const todayEnd = endOfDay(referenceDate);
   const sixMonthsAgoStart = startOfMonth(subMonths(referenceDate, 5));
 
-  // Run all 4 queries in parallel rather than 9 sequential round-trips
   const [monthTransactions, accounts, recentTransactions, pastSixMonthTxs] = await Promise.all([
-    // 1. Current month transactions with category and user
+    // 1. Current month transactions
     prisma.transaction.findMany({
       where: {
         familyId,
         date: { gte: startMonth, lte: endMonth },
+        deletedAt: null,
       },
       include: {
         category: true,
+        account: true,
+        toAccount: true,
         member: {
           include: { user: { select: { id: true, name: true, avatarUrl: true } } },
         },
@@ -295,23 +480,25 @@ export async function getDashboardMetrics(familyId: string, referenceDate = new 
 
     // 3. Recent 6 transactions
     prisma.transaction.findMany({
-      where: { familyId },
+      where: { familyId, deletedAt: null },
       orderBy: { date: "desc" },
       take: 6,
       include: {
         category: true,
         account: true,
+        toAccount: true,
         member: {
           include: { user: { select: { name: true } } },
         },
       },
     }),
 
-    // 4. Past 6 months in a SINGLE query instead of 6 sequential queries
+    // 4. Past 6 months
     prisma.transaction.findMany({
       where: {
         familyId,
         date: { gte: sixMonthsAgoStart, lte: endMonth },
+        deletedAt: null,
       },
       select: {
         date: true,
@@ -321,7 +508,6 @@ export async function getDashboardMetrics(familyId: string, referenceDate = new 
     }),
   ]);
 
-  // Calculate current month totals
   let totalIncome = 0;
   let totalExpense = 0;
   let todayExpense = 0;
@@ -330,6 +516,9 @@ export async function getDashboardMetrics(familyId: string, referenceDate = new 
   const memberTotals: Record<string, { name: string; amount: number }> = {};
 
   for (const t of monthTransactions) {
+    // Account transfers do not count toward total household Income or Expense!
+    if (t.type === "TRANSFER") continue;
+
     const amt = Number(t.amount);
     const tDate = new Date(t.date);
 
@@ -338,23 +527,22 @@ export async function getDashboardMetrics(familyId: string, referenceDate = new 
     } else {
       totalExpense += amt;
 
-      // Today's spending check
       if (tDate >= todayStart && tDate <= todayEnd) {
         todayExpense += amt;
       }
 
-      // Category breakdown
-      if (!categoryTotals[t.categoryId]) {
-        categoryTotals[t.categoryId] = {
-          name: t.category.name,
-          color: t.category.color,
-          icon: t.category.icon,
-          amount: 0,
-        };
+      if (t.categoryId && t.category) {
+        if (!categoryTotals[t.categoryId]) {
+          categoryTotals[t.categoryId] = {
+            name: t.category.name,
+            color: t.category.color,
+            icon: t.category.icon,
+            amount: 0,
+          };
+        }
+        categoryTotals[t.categoryId].amount += amt;
       }
-      categoryTotals[t.categoryId].amount += amt;
 
-      // Member breakdown
       const memberName = t.member.user.name;
       if (!memberTotals[memberName]) {
         memberTotals[memberName] = { name: memberName, amount: 0 };
@@ -363,10 +551,8 @@ export async function getDashboardMetrics(familyId: string, referenceDate = new 
     }
   }
 
-  // Total balance across accounts
   const currentBalance = accounts.reduce((acc, a) => acc + Number(a.currentBalance), 0);
 
-  // Group 6-month data in-memory (O(N) single pass)
   const monthMap = new Map<string, { income: number; expense: number }>();
   for (let i = 5; i >= 0; i--) {
     const mDate = subMonths(referenceDate, i);
@@ -375,6 +561,7 @@ export async function getDashboardMetrics(familyId: string, referenceDate = new 
   }
 
   for (const tx of pastSixMonthTxs) {
+    if (tx.type === "TRANSFER") continue;
     const d = new Date(tx.date);
     const key = `${d.getFullYear()}-${d.getMonth()}`;
     const bucket = monthMap.get(key);
