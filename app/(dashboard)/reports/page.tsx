@@ -120,27 +120,27 @@ export default function ReportsPage() {
   return (
     <div className="space-y-6">
       {/* Header & Period Selector */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
             Financial Reports
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+          <p className="text-xs sm:text-sm text-muted mt-0.5">
             Deep dive into family spending trends, savings rate, and category distribution
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full lg:w-auto">
           {/* Period Selector Tabs */}
-          <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-btn overflow-x-auto">
+          <div className="flex items-center gap-1 bg-surface-muted p-1 rounded-btn overflow-x-auto no-scrollbar">
             {periods.map((p) => (
               <button
                 key={p.value}
                 onClick={() => setPeriod(p.value)}
-                className={`px-3 py-1.5 rounded-btn text-xs font-semibold whitespace-nowrap transition-all ${
+                className={`px-3 py-1.5 rounded-btn text-xs font-semibold whitespace-nowrap transition-all flex-1 sm:flex-initial text-center ${
                   period === p.value
-                    ? "bg-white text-slate-900 shadow-xs"
-                    : "text-slate-600 hover:text-slate-900"
+                    ? "bg-surface text-foreground shadow-xs font-bold"
+                    : "text-muted hover:text-foreground"
                 }`}
               >
                 {p.label}
@@ -148,24 +148,26 @@ export default function ReportsPage() {
             ))}
           </div>
 
-          <button
-            onClick={handleDownloadPDF}
-            disabled={!report || isLoading}
-            title="Download formatted PDF financial statement"
-            className="px-3 py-1.5 rounded-btn border border-emerald-300 bg-emerald-50 text-emerald-800 hover:bg-emerald-100 text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-colors shrink-0 disabled:opacity-50"
-          >
-            <FileText className="w-3.5 h-3.5 text-emerald-600" />
-            <span className="hidden sm:inline">PDF Statement</span>
-          </button>
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={handleDownloadPDF}
+              disabled={!report || isLoading}
+              title="Download formatted PDF financial statement"
+              className="flex-1 sm:flex-initial px-3 py-1.5 rounded-btn border border-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-100 text-xs font-semibold flex items-center justify-center gap-1.5 shadow-xs transition-colors shrink-0 disabled:opacity-50"
+            >
+              <FileText className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+              <span>PDF Statement</span>
+            </button>
 
-          <button
-            onClick={handleExportCSV}
-            title="Download CSV report"
-            className="px-3 py-1.5 rounded-btn border border-border bg-white text-slate-700 hover:bg-slate-50 text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-colors shrink-0"
-          >
-            <Download className="w-3.5 h-3.5 text-primary" />
-            <span className="hidden sm:inline">Export CSV</span>
-          </button>
+            <button
+              onClick={handleExportCSV}
+              title="Download CSV report"
+              className="flex-1 sm:flex-initial px-3 py-1.5 rounded-btn border border-border bg-surface text-foreground hover:bg-surface-muted text-xs font-semibold flex items-center justify-center gap-1.5 shadow-xs transition-colors shrink-0"
+            >
+              <Download className="w-3.5 h-3.5 text-primary" />
+              <span>Export CSV</span>
+            </button>
+          </div>
         </div>
       </div>
 

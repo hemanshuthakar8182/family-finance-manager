@@ -28,14 +28,14 @@ export function BottomNav({ onOpenQuickAdd }: BottomNavProps) {
 
   return (
     <>
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface/95 backdrop-blur-md border-t border-border px-3 py-2 shadow-lg">
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface/95 backdrop-blur-md border-t border-border px-3 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom,8px))] shadow-lg">
         <div className="max-w-md mx-auto flex items-center justify-around relative">
           {/* Home */}
           <Link
             href="/dashboard"
             className={cn(
               "flex flex-col items-center justify-center py-1 px-3 rounded-lg transition-colors",
-              isHome ? "text-primary font-semibold" : "text-slate-500 hover:text-slate-800"
+              isHome ? "text-primary font-semibold" : "text-muted hover:text-foreground"
             )}
           >
             <LayoutDashboard className="w-5 h-5 mb-0.5" />
@@ -47,7 +47,7 @@ export function BottomNav({ onOpenQuickAdd }: BottomNavProps) {
             href="/transactions"
             className={cn(
               "flex flex-col items-center justify-center py-1 px-3 rounded-lg transition-colors",
-              isTransactions ? "text-primary font-semibold" : "text-slate-500 hover:text-slate-800"
+              isTransactions ? "text-primary font-semibold" : "text-muted hover:text-foreground"
             )}
           >
             <Receipt className="w-5 h-5 mb-0.5" />
@@ -71,7 +71,7 @@ export function BottomNav({ onOpenQuickAdd }: BottomNavProps) {
             href="/reports"
             className={cn(
               "flex flex-col items-center justify-center py-1 px-3 rounded-lg transition-colors",
-              isReports ? "text-primary font-semibold" : "text-slate-500 hover:text-slate-800"
+              isReports ? "text-primary font-semibold" : "text-muted hover:text-foreground"
             )}
           >
             <BarChart3 className="w-5 h-5 mb-0.5" />
@@ -83,7 +83,7 @@ export function BottomNav({ onOpenQuickAdd }: BottomNavProps) {
             onClick={() => setIsMoreOpen(true)}
             className={cn(
               "flex flex-col items-center justify-center py-1 px-3 rounded-lg transition-colors",
-              isOther ? "text-primary font-semibold" : "text-slate-500 hover:text-slate-800"
+              isOther ? "text-primary font-semibold" : "text-muted hover:text-foreground"
             )}
           >
             <Menu className="w-5 h-5 mb-0.5" />

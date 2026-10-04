@@ -116,12 +116,12 @@ export default function FamilyPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
             Family Management
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+          <p className="text-xs sm:text-sm text-muted mt-0.5">
             Manage household members and access roles
           </p>
         </div>
@@ -129,7 +129,7 @@ export default function FamilyPage() {
           <Button
             size="md"
             onClick={() => setIsAddMemberOpen(true)}
-            className="font-semibold shadow-sm"
+            className="w-full sm:w-auto justify-center font-semibold shadow-sm"
           >
             <UserPlus className="w-4 h-4 mr-1.5" />
             Add Member
@@ -200,32 +200,32 @@ export default function FamilyPage() {
               return (
                 <div
                   key={m.id}
-                  className="flex items-center justify-between p-3.5 rounded-card border border-border bg-surface hover:bg-slate-50 transition-all"
+                  className="flex items-center justify-between p-3.5 rounded-card border border-border bg-surface hover:bg-surface-muted transition-all gap-2"
                 >
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
                     {/* Avatar */}
-                    <div className="w-10 h-10 rounded-full bg-primary/10 text-primary font-bold flex items-center justify-center text-sm border-2 border-surface shadow-sm">
+                    <div className="w-10 h-10 rounded-full bg-primary/10 text-primary font-bold flex items-center justify-center text-sm border-2 border-surface shadow-sm shrink-0">
                       {m.user.name.charAt(0).toUpperCase()}
                     </div>
 
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-bold text-slate-900">
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-sm font-bold text-foreground truncate">
                           {m.user.name}
                         </span>
                         {isSelf && (
-                          <Badge variant="info" className="text-[10px] py-0 px-1.5">
+                          <Badge variant="info" className="text-[10px] py-0 px-1.5 shrink-0">
                             You
                           </Badge>
                         )}
                       </div>
-                      <p className="text-[11px] text-slate-500 mt-0.5">
+                      <p className="text-[11px] text-muted mt-0.5 truncate">
                         {m.user.email} •{" "}
                         <span className={isAdminRole ? "text-primary font-semibold" : ""}>
                           {isAdminRole ? "Family Admin" : "Member"}
                         </span>
                       </p>
-                      <p className="text-[10px] text-slate-400">
+                      <p className="text-[10px] text-muted/70 truncate">
                         Joined {formatShortDate(m.joinedAt)} •{" "}
                         {m._count?.transactions || 0} transactions
                       </p>
@@ -234,18 +234,18 @@ export default function FamilyPage() {
 
                   {/* Actions (Admin only, not on self for safety) */}
                   {isAdmin && !isSelf && (
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-1 shrink-0">
                       <button
                         onClick={() => handleRoleToggle(m.id, m.role)}
                         title={isAdminRole ? "Remove Admin" : "Make Admin"}
-                        className="p-1.5 rounded-btn text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors"
+                        className="p-1.5 rounded-btn text-muted hover:bg-surface-muted hover:text-foreground transition-colors"
                       >
                         <Crown className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => handleDeactivate(m.id, m.user.name)}
                         title="Deactivate Member"
-                        className="p-1.5 rounded-btn text-slate-400 hover:bg-red-50 hover:text-expense transition-colors"
+                        className="p-1.5 rounded-btn text-muted hover:bg-red-50 hover:text-expense transition-colors"
                       >
                         <UserMinus className="w-4 h-4" />
                       </button>
@@ -350,7 +350,7 @@ export default function FamilyPage() {
               </div>
             </div>
 
-            <div className="flex gap-2 pt-1">
+            <div className="sticky bottom-0 -mx-4 -mb-3.5 sm:-mx-6 sm:-mb-4 px-4 sm:px-6 py-3 bg-surface/95 backdrop-blur-md border-t border-border mt-auto flex gap-2 z-20">
               <Button
                 type="submit"
                 variant="primary"

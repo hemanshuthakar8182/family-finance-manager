@@ -391,12 +391,12 @@ export function SettlementHub() {
               Recording this settlement marks pending split shares as settled and aligns the family ledger.
             </p>
 
-            <div className="flex items-center justify-end gap-2 pt-2 border-t border-border">
+            <div className="sticky bottom-0 -mx-4 -mb-3.5 sm:-mx-6 sm:-mb-4 px-4 sm:px-6 py-3 bg-surface/95 backdrop-blur-md border-t border-border mt-auto flex items-center justify-end gap-2 z-20">
               <button
                 type="button"
                 onClick={() => setSettleTarget(null)}
                 disabled={isSettling}
-                className="px-4 py-2 border border-border rounded-btn text-xs font-semibold text-slate-700 hover:bg-slate-100"
+                className="px-4 py-2 border border-border rounded-btn text-xs font-semibold text-muted hover:bg-surface-muted"
               >
                 Cancel
               </button>

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { CategoryIcon } from "@/components/ui/CategoryIcon";
 import { useToast } from "@/components/ui/Toast";
 import { formatCurrency } from "@/lib/utils/formatters";
-import { ArrowRight, ChevronDown, ChevronUp, Clock, ArrowRightLeft, Plus } from "lucide-react";
+import { ArrowRight, ChevronDown, ChevronUp, Clock, ArrowRightLeft, Plus, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { ReceiptUploader } from "@/components/transactions/ReceiptUploader";
 import { SplitExpenseForm } from "@/components/splits/SplitExpenseForm";
@@ -297,7 +297,7 @@ export function QuickAddModal({ isOpen, onClose, onSuccess }: QuickAddModalProps
       }
       maxWidth="md"
     >
-      <div className="space-y-4 pt-1 flex flex-col">
+      <div className="space-y-4 flex flex-col min-h-full">
         {/* Type Toggle: Expense / Income / Transfer */}
         <div className="grid grid-cols-3 gap-1.5 p-1 bg-slate-100 rounded-btn">
           <button
@@ -384,56 +384,58 @@ export function QuickAddModal({ isOpen, onClose, onSuccess }: QuickAddModalProps
           {error && <p className="text-xs text-expense font-semibold mt-1">{error}</p>}
         </div>
 
-        {/* Date Shortcuts & Time Picker */}
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center gap-1.5 flex-wrap">
-            <button
-              type="button"
-              onClick={() => setDate(todayStr)}
-              className={cn(
-                "px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all border",
-                isToday
-                  ? "bg-primary/10 border-primary text-primary shadow-xs"
-                  : "bg-surface-muted border-border text-slate-600 hover:bg-slate-100"
-              )}
-            >
-              Today
-            </button>
-            <button
-              type="button"
-              onClick={() => setDate(yesterdayStr)}
-              className={cn(
-                "px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all border",
-                isYesterday
-                  ? "bg-primary/10 border-primary text-primary shadow-xs"
-                  : "bg-surface-muted border-border text-slate-600 hover:bg-slate-100"
-              )}
-            >
-              Yesterday
-            </button>
-            <div className="relative inline-flex items-center">
+        {/* Date & Time Picker */}
+        <div className="space-y-1.5">
+          <div className="flex items-center justify-between">
+            <label className="text-xs font-semibold text-slate-700">
+              Transaction Date &amp; Time
+            </label>
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() => setDate(todayStr)}
+                className={cn(
+                  "px-2 py-0.5 rounded-full text-[10px] font-semibold border transition-all",
+                  isToday
+                    ? "bg-primary/10 border-primary text-primary"
+                    : "bg-surface-muted border-border text-slate-600 hover:bg-slate-100"
+                )}
+              >
+                Today
+              </button>
+              <button
+                type="button"
+                onClick={() => setDate(yesterdayStr)}
+                className={cn(
+                  "px-2 py-0.5 rounded-full text-[10px] font-semibold border transition-all",
+                  isYesterday
+                    ? "bg-primary/10 border-primary text-primary"
+                    : "bg-surface-muted border-border text-slate-600 hover:bg-slate-100"
+                )}
+              >
+                Yesterday
+              </button>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <div className="relative flex items-center">
+              <Calendar className="w-3.5 h-3.5 text-slate-400 absolute left-3 pointer-events-none" />
               <input
                 type="date"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className={cn(
-                  "px-2 py-0.5 rounded-full text-[11px] font-medium border bg-white focus:outline-none focus:ring-1 focus:ring-primary",
-                  isCustomDate
-                    ? "border-primary text-primary bg-primary/10 font-semibold"
-                    : "border-border text-slate-500"
-                )}
+                className="w-full h-10 pl-8 pr-2 rounded-input border border-border text-xs text-slate-800 bg-surface focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
-          </div>
-
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium border border-slate-200 bg-white text-slate-600 shadow-xs">
-            <Clock className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-            <input
-              type="time"
-              value={time}
-              onChange={(e) => setTime(e.target.value)}
-              className="bg-transparent text-[11px] font-semibold text-slate-700 focus:outline-none"
-            />
+            <div className="relative flex items-center">
+              <Clock className="w-3.5 h-3.5 text-slate-400 absolute left-3 pointer-events-none" />
+              <input
+                type="time"
+                value={time}
+                onChange={(e) => setTime(e.target.value)}
+                className="w-full h-10 pl-8 pr-2 rounded-input border border-border text-xs text-slate-800 bg-surface focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+            </div>
           </div>
         </div>
 
@@ -676,7 +678,7 @@ export function QuickAddModal({ isOpen, onClose, onSuccess }: QuickAddModalProps
         </div>
 
         {/* Footer Buttons */}
-        <div className="sticky bottom-0 bg-surface/95 backdrop-blur-md pt-3 pb-1 border-t border-slate-100 -mx-1 px-1 flex flex-col sm:flex-row gap-2 mt-auto">
+        <div className="sticky bottom-0 -mx-4 -mb-3.5 sm:-mx-6 sm:-mb-4 px-4 sm:px-6 py-3 bg-surface/95 backdrop-blur-md border-t border-border mt-auto flex flex-col sm:flex-row gap-2 z-20">
           <Button
             type="button"
             variant={

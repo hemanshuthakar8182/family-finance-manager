@@ -95,8 +95,8 @@ export function TransactionDetailModal({
     >
       <div className="space-y-4 pt-1">
         {/* Top Header Card */}
-        <div className="p-4 rounded-card border border-border bg-slate-50/75 flex items-center justify-between">
-          <div className="flex items-center gap-3">
+        <div className="p-4 rounded-card border border-border bg-slate-50/75 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3 min-w-0">
             <div
               className="w-12 h-12 rounded-full flex items-center justify-center text-white shadow-sm shrink-0"
               style={{
@@ -111,22 +111,22 @@ export function TransactionDetailModal({
                 <CategoryIcon name={transaction.category?.icon || "Tag"} size={22} />
               )}
             </div>
-            <div>
-              <h3 className="text-base font-bold text-slate-900">
+            <div className="min-w-0 flex-1">
+              <h3 className="text-base font-bold text-foreground truncate">
                 {isTransfer
                   ? `${transaction.account?.name || "Account"} → ${transaction.toAccount?.name || "Account"}`
                   : transaction.category?.name || "Transaction"}
               </h3>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-muted truncate">
                 {transaction.description || (isTransfer ? "Account transfer" : "No description provided")}
               </p>
             </div>
           </div>
 
-          <div className="text-right">
+          <div className="text-left sm:text-right shrink-0 flex items-center sm:flex-col justify-between sm:justify-start gap-1">
             <div
               className={`text-xl sm:text-2xl font-bold font-amount tracking-tight ${
-                isIncome ? "text-income" : isTransfer ? "text-blue-600" : "text-slate-900"
+                isIncome ? "text-income" : isTransfer ? "text-blue-600" : "text-foreground"
               }`}
             >
               {isIncome ? "+" : isTransfer ? "⇄ " : "-"} {formatCurrency(transaction.amount)}
@@ -244,7 +244,7 @@ export function TransactionDetailModal({
 
         {/* Actions (Delete confirmation / Buttons) */}
         {canModify && (
-          <div className="pt-2 border-t border-slate-100">
+          <div className="sticky bottom-0 -mx-4 -mb-3.5 sm:-mx-6 sm:-mb-4 px-4 sm:px-6 py-3 bg-surface/95 backdrop-blur-md border-t border-border mt-auto z-20">
             {confirmDelete ? (
               <div className="p-3 rounded-card bg-red-50 border border-red-200 space-y-2">
                 <p className="text-xs font-semibold text-red-900">
@@ -280,7 +280,7 @@ export function TransactionDetailModal({
                   variant="outline"
                   size="md"
                   onClick={() => setIsEditOpen(true)}
-                  className="flex-1 font-semibold text-xs flex items-center justify-center gap-1.5 hover:bg-slate-50"
+                  className="flex-1 font-semibold text-xs flex items-center justify-center gap-1.5 hover:bg-surface-muted"
                 >
                   <Edit3 className="w-3.5 h-3.5 text-primary" />
                   <span>Edit</span>

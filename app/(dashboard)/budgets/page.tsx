@@ -166,16 +166,16 @@ export default function BudgetsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
             Monthly Budgets
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+          <p className="text-xs sm:text-sm text-muted mt-0.5">
             Set category spending limits and track progress
           </p>
         </div>
-        <Button size="md" onClick={() => setIsAddOpen(true)} className="font-semibold shadow-sm">
+        <Button size="md" onClick={() => setIsAddOpen(true)} className="w-full sm:w-auto justify-center font-semibold shadow-sm">
           <Plus className="w-4 h-4 mr-1.5" />
           Set Budget
         </Button>
@@ -433,7 +433,7 @@ export default function BudgetsPage() {
             You&apos;ll get a visual warning when spending reaches 80% and an alert when exceeded.
           </p>
 
-          <div className="flex gap-2 pt-1">
+          <div className="sticky bottom-0 -mx-4 -mb-3.5 sm:-mx-6 sm:-mb-4 px-4 sm:px-6 py-3 bg-surface/95 backdrop-blur-md border-t border-border mt-auto flex gap-2 z-20">
             <Button
               type="submit"
               variant="primary"
@@ -506,7 +506,7 @@ export default function BudgetsPage() {
             </div>
           </div>
 
-          <div className="flex gap-2 pt-1">
+          <div className="sticky bottom-0 -mx-4 -mb-3.5 sm:-mx-6 sm:-mb-4 px-4 sm:px-6 py-3 bg-surface/95 backdrop-blur-md border-t border-border mt-auto flex gap-2 z-20">
             <Button
               type="submit"
               variant="primary"

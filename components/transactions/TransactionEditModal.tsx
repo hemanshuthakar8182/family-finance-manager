@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { CategoryIcon } from "@/components/ui/CategoryIcon";
 import { useToast } from "@/components/ui/Toast";
 import { formatCurrency } from "@/lib/utils/formatters";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Calendar, Clock } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { ReceiptUploader } from "@/components/transactions/ReceiptUploader";
 
@@ -46,6 +46,7 @@ export function TransactionEditModal({
   const [selectedAccountId, setSelectedAccountId] = useState<string>("");
   const [selectedToAccountId, setSelectedToAccountId] = useState<string>("");
   const [date, setDate] = useState<string>("");
+  const [time, setTime] = useState<string>("12:00");
   const [description, setDescription] = useState<string>("");
   const [notes, setNotes] = useState<string>("");
   const [receiptUrl, setReceiptUrl] = useState<string | null>(null);
@@ -62,11 +63,16 @@ export function TransactionEditModal({
       setSelectedCategoryId(transaction.categoryId || "");
       setSelectedAccountId(transaction.accountId || "");
       setSelectedToAccountId(transaction.toAccountId || "");
-      setDate(
-        transaction.date
-          ? new Date(transaction.date).toISOString().split("T")[0]
-          : new Date().toISOString().split("T")[0]
-      );
+      
+      const txDate = transaction.date ? new Date(transaction.date) : new Date();
+      const y = txDate.getFullYear();
+      const m = String(txDate.getMonth() + 1).padStart(2, "0");
+      const d = String(txDate.getDate()).padStart(2, "0");
+      const hr = String(txDate.getHours()).padStart(2, "0");
+      const mn = String(txDate.getMinutes()).padStart(2, "0");
+      setDate(`${y}-${m}-${d}`);
+      setTime(`${hr}:${mn}`);
+
       setDescription(transaction.description || "");
       setNotes(transaction.notes || "");
       setReceiptUrl(transaction.receiptUrl || null);
@@ -133,6 +139,11 @@ export function TransactionEditModal({
     setError("");
 
     try {
+      // Accurately combine Date and Time in local time
+      const [yearNum, monthNum, dayNum] = (date || new Date().toISOString().split("T")[0]).split("-").map(Number);
+      const [hoursNum, minsNum] = (time || "12:00").split(":").map(Number);
+      const combinedDate = new Date(yearNum, monthNum - 1, dayNum, hoursNum || 0, minsNum || 0);
+
       const res = await fetch(`/api/transactions/${transaction.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -142,7 +153,7 @@ export function TransactionEditModal({
           categoryId: type === "TRANSFER" ? null : selectedCategoryId,
           accountId: selectedAccountId || null,
           toAccountId: type === "TRANSFER" ? selectedToAccountId : null,
-          date: new Date(date).toISOString(),
+          date: combinedDate.toISOString(),
           description: description || undefined,
           notes: notes || undefined,
           receiptUrl: receiptUrl || null,
@@ -171,6 +182,14 @@ export function TransactionEditModal({
 
   const filteredCategories = categories.filter((c) => c.type === type);
 
+  const todayStr = new Date().toISOString().split("T")[0];
+  const yDate = new Date();
+  yDate.setDate(yDate.getDate() - 1);
+  const yesterdayStr = yDate.toISOString().split("T")[0];
+
+  const isToday = date === todayStr;
+  const isYesterday = date === yesterdayStr;
+
   return (
     <Modal
       isOpen={isOpen}
@@ -179,7 +198,7 @@ export function TransactionEditModal({
       description="Update record details and account adjustments"
       maxWidth="md"
     >
-      <form onSubmit={handleSubmit} className="space-y-4 pt-1">
+      <form onSubmit={handleSubmit} className="flex flex-col min-h-full space-y-4">
         {/* Type Toggle */}
         <div className="grid grid-cols-3 gap-1.5 p-1 bg-slate-100 rounded-btn">
           <button
@@ -251,18 +270,62 @@ export function TransactionEditModal({
           {error && <p className="text-xs text-expense font-semibold mt-1">{error}</p>}
         </div>
 
-        {/* Date */}
-        <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1">
-            Transaction Date *
-          </label>
-          <input
-            type="date"
-            required
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            className="w-full h-10 px-3 rounded-input border border-border text-xs text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-primary"
-          />
+        {/* Date & Time Picker */}
+        <div className="space-y-1.5">
+          <div className="flex items-center justify-between">
+            <label className="block text-xs font-semibold text-slate-700">
+              Transaction Date &amp; Time *
+            </label>
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() => setDate(todayStr)}
+                className={cn(
+                  "px-2 py-0.5 rounded-full text-[10px] font-semibold border transition-all",
+                  isToday
+                    ? "bg-primary/10 border-primary text-primary"
+                    : "bg-surface-muted border-border text-slate-600 hover:bg-slate-100"
+                )}
+              >
+                Today
+              </button>
+              <button
+                type="button"
+                onClick={() => setDate(yesterdayStr)}
+                className={cn(
+                  "px-2 py-0.5 rounded-full text-[10px] font-semibold border transition-all",
+                  isYesterday
+                    ? "bg-primary/10 border-primary text-primary"
+                    : "bg-surface-muted border-border text-slate-600 hover:bg-slate-100"
+                )}
+              >
+                Yesterday
+              </button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-2">
+            <div className="relative flex items-center">
+              <Calendar className="w-3.5 h-3.5 text-slate-400 absolute left-3 pointer-events-none" />
+              <input
+                type="date"
+                required
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                className="w-full h-10 pl-8 pr-2 rounded-input border border-border text-xs text-slate-800 bg-surface focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+            </div>
+            <div className="relative flex items-center">
+              <Clock className="w-3.5 h-3.5 text-slate-400 absolute left-3 pointer-events-none" />
+              <input
+                type="time"
+                required
+                value={time}
+                onChange={(e) => setTime(e.target.value)}
+                className="w-full h-10 pl-8 pr-2 rounded-input border border-border text-xs text-slate-800 bg-surface focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+            </div>
+          </div>
         </div>
 
         {/* Conditional View: TRANSFER vs CATEGORY */}
@@ -430,14 +493,14 @@ export function TransactionEditModal({
           />
         </div>
 
-        {/* Actions */}
-        <div className="flex gap-2 pt-2 border-t border-slate-100">
+        {/* Sticky Actions Footer */}
+        <div className="sticky bottom-0 -mx-4 -mb-3.5 sm:-mx-6 sm:-mb-4 px-4 sm:px-6 py-3 bg-surface/95 backdrop-blur-md border-t border-border mt-auto flex gap-2 z-20">
           <Button
             type="submit"
             variant="primary"
             size="lg"
             isLoading={isSubmitting}
-            className="flex-1 font-bold text-xs"
+            className="flex-1 font-bold text-xs shadow-sm"
           >
             Save Changes
           </Button>
@@ -447,7 +510,7 @@ export function TransactionEditModal({
             size="lg"
             disabled={isSubmitting}
             onClick={onClose}
-            className="text-xs"
+            className="text-xs px-4"
           >
             Cancel
           </Button>

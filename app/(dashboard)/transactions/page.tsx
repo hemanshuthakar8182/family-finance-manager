@@ -140,7 +140,7 @@ export default function TransactionsPage() {
   return (
     <div className="space-y-5">
       {/* ── Title & Add CTA ── */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
             Family Transactions
@@ -150,11 +150,11 @@ export default function TransactionsPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 self-start sm:self-auto flex-wrap">
           <Link
             href="/import"
             title="Import bank statement (CSV/Excel)"
-            className="h-10 px-3 rounded-btn border border-border bg-white text-slate-700 hover:bg-slate-50 text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-colors"
+            className="h-9 sm:h-10 px-2.5 sm:px-3 rounded-btn border border-border bg-surface text-slate-700 hover:bg-surface-muted text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-colors shrink-0"
           >
             <UploadCloud className="w-4 h-4 text-primary" />
             <span className="hidden sm:inline">Import Statement</span>
@@ -163,7 +163,7 @@ export default function TransactionsPage() {
           <button
             onClick={handleExportCSV}
             title="Export filtered transactions to CSV"
-            className="h-10 px-3 rounded-btn border border-border bg-white text-slate-700 hover:bg-slate-50 text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-colors"
+            className="h-9 sm:h-10 px-2.5 sm:px-3 rounded-btn border border-border bg-surface text-slate-700 hover:bg-surface-muted text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-colors shrink-0"
           >
             <Download className="w-4 h-4 text-primary" />
             <span className="hidden sm:inline">Export CSV</span>
@@ -172,9 +172,9 @@ export default function TransactionsPage() {
           <Button
             size="md"
             onClick={onOpenQuickAdd}
-            className="shadow-sm font-semibold text-xs sm:text-sm"
+            className="h-9 sm:h-10 px-3 sm:px-4 shadow-sm font-semibold text-xs sm:text-sm whitespace-nowrap shrink-0"
           >
-            <Plus className="w-4 h-4 mr-1.5" />
+            <Plus className="w-4 h-4 mr-1 sm:mr-1.5" />
             <span>Add Transaction</span>
           </Button>
         </div>

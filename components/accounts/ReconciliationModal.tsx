@@ -153,7 +153,7 @@ export function ReconciliationModal({
         </div>
 
         {/* Actions */}
-        <div className="flex gap-2 pt-2 border-t border-slate-100">
+        <div className="sticky bottom-0 -mx-4 -mb-3.5 sm:-mx-6 sm:-mb-4 px-4 sm:px-6 py-3 bg-surface/95 backdrop-blur-md border-t border-border mt-auto flex gap-2 z-20">
           <Button
             type="submit"
             variant="primary"

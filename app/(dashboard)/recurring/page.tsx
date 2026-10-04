@@ -222,21 +222,21 @@ export default function RecurringPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
             Recurring Bills & Subscriptions
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+          <p className="text-xs sm:text-sm text-muted mt-0.5">
             Automate monthly rent, utilities, SIPs, and OTT subscriptions
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
           <Button
             variant="outline"
             size="md"
             isLoading={isProcessing}
             onClick={handleRunDue}
-            className="text-xs font-semibold"
+            className="text-xs font-semibold justify-center"
           >
             <Play className="w-3.5 h-3.5 mr-1 text-primary" />
             Check & Run Due Now
@@ -245,7 +245,7 @@ export default function RecurringPage() {
           <Button
             size="md"
             onClick={() => setIsAddOpen(true)}
-            className="font-semibold shadow-sm text-xs sm:text-sm"
+            className="font-semibold shadow-sm text-xs sm:text-sm justify-center"
           >
             <Plus className="w-4 h-4 mr-1.5" />
             New Schedule
@@ -466,7 +466,7 @@ export default function RecurringPage() {
             </div>
           </div>
 
-          <div className="flex gap-2 pt-2 border-t border-slate-100">
+          <div className="sticky bottom-0 -mx-4 -mb-3.5 sm:-mx-6 sm:-mb-4 px-4 sm:px-6 py-3 bg-surface/95 backdrop-blur-md border-t border-border mt-auto flex gap-2 z-20">
             <Button
               type="submit"
               variant="primary"
@@ -625,7 +625,7 @@ export default function RecurringPage() {
             </div>
           </div>
 
-          <div className="flex gap-2 pt-2 border-t border-slate-100">
+          <div className="sticky bottom-0 -mx-4 -mb-3.5 sm:-mx-6 sm:-mb-4 px-4 sm:px-6 py-3 bg-surface/95 backdrop-blur-md border-t border-border mt-auto flex gap-2 z-20">
             <Button
               type="submit"
               variant="primary"

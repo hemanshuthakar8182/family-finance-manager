@@ -19,40 +19,39 @@ export function Header({ onOpenQuickAdd }: HeaderProps) {
   return (
     <header className="sticky top-0 z-30 h-16 border-b border-border bg-surface/95 backdrop-blur-md px-4 sm:px-6 flex items-center justify-between">
       {/* Mobile Only: Brand & Family Name (hidden on desktop since sidebar shows it) */}
-      <div className="lg:hidden flex items-center gap-3">
+      <div className="lg:hidden flex items-center gap-2 sm:gap-2.5 min-w-0 mr-2">
         <AppLogo
           size="sm"
           logoUrl={user?.familyLogoUrl}
           name={user?.familyName || "Family Finance"}
         />
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="font-bold text-slate-900 tracking-tight text-sm">
+        <div className="min-w-0">
+          <div className="flex items-center gap-1.5 min-w-0">
+            <span className="font-bold text-slate-900 tracking-tight text-xs sm:text-sm truncate">
               {user?.familyName || "Family Finance"}
             </span>
             {user?.role === "ADMIN" && (
-              <Badge variant="info" className="text-[10px] py-0 px-1.5 gap-0.5">
+              <Badge variant="info" className="text-[10px] py-0 px-1.5 gap-0.5 shrink-0">
                 <Shield className="w-2.5 h-2.5" /> Admin
               </Badge>
             )}
           </div>
-          <p className="text-[10px] text-slate-500">
+          <p className="text-[10px] text-slate-500 hidden sm:block truncate">
             Shared Family Financial Assistant
           </p>
         </div>
       </div>
 
       {/* Actions & Profile (pinned right) */}
-      <div className="flex items-center gap-2 sm:gap-3 ml-auto">
+      <div className="flex items-center gap-1.5 sm:gap-3 ml-auto shrink-0">
         {onOpenQuickAdd && (
           <Button
             size="sm"
             onClick={onOpenQuickAdd}
-            className="shadow-sm bg-primary hover:bg-primary-hover text-primary-foreground text-xs font-semibold px-2.5 sm:px-3 py-1.5 sm:py-2 flex items-center gap-1.5"
+            className="hidden sm:flex shadow-sm bg-primary hover:bg-primary-hover text-primary-foreground text-xs font-semibold px-2.5 sm:px-3 py-1.5 sm:py-2 items-center gap-1.5"
           >
             <Plus className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Add Transaction</span>
-            <span className="sm:hidden">Add</span>
+            <span>Add Transaction</span>
           </Button>
         )}
 
