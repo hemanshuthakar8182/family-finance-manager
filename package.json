@@ -11,7 +11,7 @@
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push",
     "prisma:studio": "prisma studio",
-    "prisma:seed": "node prisma/seed.js"
+    "prisma:seed": "node --env-file=.env prisma/seed.js"
   },
   "dependencies": {
     "@prisma/client": "^5.21.1",

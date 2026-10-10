@@ -99,6 +99,7 @@ export default function SettingsPage() {
         }
       })
       .catch((err) => console.error("Failed to load user profile:", err));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUser?.id]);
 
   const handleSaveProfile = async (e: React.FormEvent) => {
