@@ -5,9 +5,20 @@ import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
 import { CategoryIcon } from "@/components/ui/CategoryIcon";
 import { useToast } from "@/components/ui/Toast";
-import { formatCurrency } from "@/lib/utils/formatters";
-import { ArrowRight, ChevronDown, ChevronUp, Clock, ArrowRightLeft, Plus, Calendar } from "lucide-react";
+import { 
+  ArrowRight, 
+  ChevronDown, 
+  ChevronUp, 
+  Clock, 
+  ArrowRightLeft, 
+  Plus, 
+  Calendar,
+  Receipt,
+  Users,
+  FileText
+} from "lucide-react";
 import { cn } from "@/lib/utils/cn";
+import { formatCurrency } from "@/lib/utils/formatters";
 import { ReceiptUploader } from "@/components/transactions/ReceiptUploader";
 import { SplitExpenseForm } from "@/components/splits/SplitExpenseForm";
 
@@ -53,7 +64,9 @@ export function QuickAddModal({ isOpen, onClose, onSuccess }: QuickAddModalProps
     isSplit: boolean;
     shares: Array<{ memberId: string; amount: number }>;
   }>({ isSplit: false, shares: [] });
-  const [showMoreFields, setShowMoreFields] = useState<boolean>(false);
+  const [showReceiptSection, setShowReceiptSection] = useState<boolean>(false);
+  const [showSplitSection, setShowSplitSection] = useState<boolean>(false);
+  const [showNotesSection, setShowNotesSection] = useState<boolean>(false);
 
   const [categories, setCategories] = useState<CategoryItem[]>([]);
   const [accounts, setAccounts] = useState<AccountItem[]>([]);
@@ -125,6 +138,9 @@ export function QuickAddModal({ isOpen, onClose, onSuccess }: QuickAddModalProps
     setSplitData({ isSplit: false, shares: [] });
     setTime(getCurrentTimeStr());
     setError("");
+    setShowReceiptSection(false);
+    setShowSplitSection(false);
+    setShowNotesSection(false);
   };
 
   const handleOcrExtracted = (ocr: { amount?: number; date?: string; merchant?: string }) => {
@@ -137,7 +153,8 @@ export function QuickAddModal({ isOpen, onClose, onSuccess }: QuickAddModalProps
     if (ocr.merchant && !description) {
       setDescription(ocr.merchant);
     }
-    setShowMoreFields(true);
+    setShowReceiptSection(true);
+    setShowNotesSection(true);
   };
 
   const handleSubmit = async (addAnother = false) => {
@@ -544,7 +561,7 @@ export function QuickAddModal({ isOpen, onClose, onSuccess }: QuickAddModalProps
                   {filteredCategories.length} available
                 </span>
               </div>
-              <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 max-h-44 sm:max-h-52 overflow-y-auto p-1.5 border border-border/70 rounded-card bg-slate-50/60">
+              <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 max-h-48 sm:max-h-56 overflow-y-auto overscroll-contain touch-pan-y p-1.5 border border-border/70 rounded-card bg-slate-50/60">
                 {filteredCategories.map((cat) => {
                   const isSelected = selectedCategoryId === cat.id;
                   return (
@@ -605,80 +622,170 @@ export function QuickAddModal({ isOpen, onClose, onSuccess }: QuickAddModalProps
           </>
         )}
 
-        {/* Description & Notes */}
-        <div>
-          <button
-            type="button"
-            onClick={() => setShowMoreFields(!showMoreFields)}
-            className="flex items-center gap-1 text-xs font-semibold text-slate-500 hover:text-slate-800 transition-colors py-1"
-          >
-            {showMoreFields ? (
-              <>
-                <ChevronUp className="w-3.5 h-3.5" /> Less options
-              </>
-            ) : (
-              <>
-                <ChevronDown className="w-3.5 h-3.5" /> Add description or notes
-              </>
-            )}
-          </button>
-
-          {showMoreFields && (
-            <div className="mt-2 space-y-3 pt-2 border-t border-slate-100 animate-in fade-in duration-150">
-              <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1">
-                  Description / Reference
-                </label>
-                <input
-                  type="text"
-                  placeholder={
-                    type === "TRANSFER"
-                      ? "e.g. ATM withdrawal, Card settlement"
-                      : "e.g. Blinkit, Fuel refill"
-                  }
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  className="w-full h-10 px-3 rounded-input border border-border text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1">
-                  Notes (Optional)
-                </label>
-                <textarea
-                  rows={2}
-                  placeholder="Additional context for family..."
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  className="w-full p-2.5 rounded-input border border-border text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary resize-none"
-                />
-              </div>
-
-              {/* Receipt Uploader with OCR */}
-              <div className="pt-1">
-                <ReceiptUploader
-                  receiptUrl={receiptUrl}
-                  onReceiptChange={setReceiptUrl}
-                  onOcrExtracted={handleOcrExtracted}
-                />
-              </div>
-
-              {/* Split with Family for Expenses */}
-              {type === "EXPENSE" && Number(amount) > 0 && (
-                <div className="pt-1">
-                  <SplitExpenseForm
-                    totalAmount={Number(amount)}
-                    onSplitChange={setSplitData}
-                  />
-                </div>
+        {/* ── Quick Tools Bar (Instant Mobile Discovery) ── */}
+        <div className="pt-1">
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+              Quick Tools &amp; Options
+            </span>
+          </div>
+          <div className="grid grid-cols-3 gap-1.5 p-1 bg-slate-100/70 rounded-xl border border-border/60">
+            <button
+              type="button"
+              onClick={() => setShowReceiptSection(!showReceiptSection)}
+              className={cn(
+                "py-2 px-1 rounded-lg text-xs font-semibold flex flex-col items-center justify-center gap-1 transition-all active:scale-95",
+                showReceiptSection || receiptUrl
+                  ? "bg-primary text-primary-foreground shadow-xs"
+                  : "bg-surface text-slate-700 border border-border/70 hover:bg-surface-muted"
               )}
-            </div>
-          )}
+            >
+              <Receipt className="w-4 h-4" />
+              <span className="text-[10px] font-bold leading-none">
+                {receiptUrl ? "Receipt ✓" : "Scan Bill"}
+              </span>
+            </button>
+
+            {type === "EXPENSE" ? (
+              <button
+                type="button"
+                onClick={() => setShowSplitSection(!showSplitSection)}
+                className={cn(
+                  "py-2 px-1 rounded-lg text-xs font-semibold flex flex-col items-center justify-center gap-1 transition-all active:scale-95",
+                  showSplitSection || splitData.isSplit
+                    ? "bg-teal-600 text-white shadow-xs"
+                    : "bg-surface text-slate-700 border border-border/70 hover:bg-surface-muted"
+                )}
+              >
+                <Users className="w-4 h-4" />
+                <span className="text-[10px] font-bold leading-none">
+                  {splitData.isSplit ? "Split ✓" : "Split Bill"}
+                </span>
+              </button>
+            ) : (
+              <div className="py-2 px-1 rounded-lg text-[10px] text-slate-400 flex flex-col items-center justify-center gap-1 bg-slate-100/40 opacity-50 cursor-not-allowed">
+                <Users className="w-4 h-4" />
+                <span className="leading-none text-[10px]">Expense Only</span>
+              </div>
+            )}
+
+            <button
+              type="button"
+              onClick={() => setShowNotesSection(!showNotesSection)}
+              className={cn(
+                "py-2 px-1 rounded-lg text-xs font-semibold flex flex-col items-center justify-center gap-1 transition-all active:scale-95",
+                showNotesSection || description || notes
+                  ? "bg-slate-800 text-white shadow-xs"
+                  : "bg-surface text-slate-700 border border-border/70 hover:bg-surface-muted"
+              )}
+            >
+              <FileText className="w-4 h-4" />
+              <span className="text-[10px] font-bold leading-none">
+                {description || notes ? "Notes ✓" : "Notes"}
+              </span>
+            </button>
+          </div>
         </div>
 
-        {/* Footer Buttons */}
-        <div className="sticky bottom-0 -mx-4 -mb-3.5 sm:-mx-6 sm:-mb-4 px-4 sm:px-6 py-3 bg-surface/95 backdrop-blur-md border-t border-border mt-auto flex flex-col sm:flex-row gap-2 z-20">
+        {/* Section 1: Receipt Uploader (AI OCR) */}
+        {(showReceiptSection || receiptUrl) && (
+          <div className="p-3 bg-slate-50 border border-border rounded-card animate-in fade-in duration-150 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                <Receipt className="w-3.5 h-3.5 text-primary" />
+                <span>Attach Bill or Receipt (Camera / OCR)</span>
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowReceiptSection(false);
+                  if (!receiptUrl) setReceiptUrl(null);
+                }}
+                className="text-[10px] font-semibold text-slate-400 hover:text-slate-600"
+              >
+                Hide
+              </button>
+            </div>
+            <ReceiptUploader
+              receiptUrl={receiptUrl}
+              onReceiptChange={setReceiptUrl}
+              onOcrExtracted={handleOcrExtracted}
+            />
+          </div>
+        )}
+
+        {/* Section 2: Split with Family */}
+        {type === "EXPENSE" && (showSplitSection || splitData.isSplit) && (
+          <div className="p-3 bg-teal-50/60 border border-teal-200 rounded-card animate-in fade-in duration-150 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-teal-900 flex items-center gap-1.5">
+                <Users className="w-3.5 h-3.5 text-teal-700" />
+                <span>Split Expense Among Members</span>
+              </span>
+              <button
+                type="button"
+                onClick={() => setShowSplitSection(false)}
+                className="text-[10px] font-semibold text-teal-600 hover:text-teal-800"
+              >
+                Hide
+              </button>
+            </div>
+            <SplitExpenseForm
+              totalAmount={Number(amount) || 0}
+              onSplitChange={setSplitData}
+            />
+          </div>
+        )}
+
+        {/* Section 3: Description & Notes */}
+        {(showNotesSection || description || notes) && (
+          <div className="p-3 bg-slate-50 border border-border rounded-card animate-in fade-in duration-150 space-y-2.5">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                <FileText className="w-3.5 h-3.5 text-slate-600" />
+                <span>Description &amp; Notes</span>
+              </span>
+              <button
+                type="button"
+                onClick={() => setShowNotesSection(false)}
+                className="text-[10px] font-semibold text-slate-400 hover:text-slate-600"
+              >
+                Hide
+              </button>
+            </div>
+            <div>
+              <label className="block text-[11px] font-semibold text-slate-600 mb-1">
+                Merchant / Store / Reference
+              </label>
+              <input
+                type="text"
+                placeholder={
+                  type === "TRANSFER"
+                    ? "e.g. ATM withdrawal, Card settlement"
+                    : "e.g. Blinkit, Fuel, Hospital, Restaurant"
+                }
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="w-full h-9 px-3 rounded-input border border-border text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary bg-white"
+              />
+            </div>
+            <div>
+              <label className="block text-[11px] font-semibold text-slate-600 mb-1">
+                Additional Notes
+              </label>
+              <textarea
+                rows={2}
+                placeholder="Additional notes for family records..."
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                className="w-full p-2 rounded-input border border-border text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary bg-white resize-none"
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Footer Buttons: Compact, Side-by-side on mobile with safe-area */}
+        <div className="sticky bottom-0 -mx-4 -mb-3.5 sm:-mx-6 sm:-mb-4 px-4 sm:px-6 py-2.5 sm:py-3 bg-surface/95 backdrop-blur-md border-t border-border mt-auto flex flex-row items-center gap-2 z-20 pb-[max(0.75rem,env(safe-area-inset-bottom,12px))]">
           <Button
             type="button"
             variant={
@@ -691,7 +798,7 @@ export function QuickAddModal({ isOpen, onClose, onSuccess }: QuickAddModalProps
             size="lg"
             isLoading={isSubmitting}
             onClick={() => handleSubmit(false)}
-            className="w-full text-sm sm:text-base font-bold shadow-md"
+            className="flex-1 text-sm font-bold shadow-md h-11"
           >
             {type === "EXPENSE"
               ? "Save Expense"
@@ -707,9 +814,10 @@ export function QuickAddModal({ isOpen, onClose, onSuccess }: QuickAddModalProps
               size="lg"
               disabled={isSubmitting}
               onClick={() => handleSubmit(true)}
-              className="w-full sm:w-auto text-xs font-semibold whitespace-nowrap"
+              className="px-3 sm:px-4 text-xs font-semibold whitespace-nowrap h-11"
+              title="Save transaction and add another"
             >
-              Save & Add Another
+              + Another
             </Button>
           )}
         </div>

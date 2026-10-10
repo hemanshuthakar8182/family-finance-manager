@@ -10,6 +10,7 @@ import {
   RefreshCw,
   Sparkles,
   FileText,
+  Camera,
 } from "lucide-react";
 import { scanReceiptImage, OCRResult } from "@/lib/utils/receipt-ocr";
 import { formatCurrency } from "@/lib/utils/currency";
@@ -30,6 +31,7 @@ export function ReceiptUploader({
   onOcrExtracted,
 }: ReceiptUploaderProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [scanning, setScanning] = useState(false);
   const [scanProgress, setScanProgress] = useState(0);
@@ -113,6 +115,7 @@ export function ReceiptUploader({
 
   return (
     <div className="space-y-2">
+      {/* Standard file picker */}
       <input
         ref={fileInputRef}
         type="file"
@@ -120,14 +123,20 @@ export function ReceiptUploader({
         onChange={handleFileSelect}
         className="hidden"
       />
+      {/* Mobile camera direct capture */}
+      <input
+        ref={cameraInputRef}
+        type="file"
+        accept="image/*"
+        capture="environment"
+        onChange={handleFileSelect}
+        className="hidden"
+      />
 
       {!previewUrl ? (
-        <div
-          onClick={() => fileInputRef.current?.click()}
-          className="p-3 border-2 border-dashed border-border hover:border-primary/50 rounded-card transition-colors flex items-center justify-between cursor-pointer bg-slate-50/50 hover:bg-slate-50 group"
-        >
+        <div className="p-3 border-2 border-dashed border-border hover:border-primary/50 rounded-card transition-colors bg-slate-50/60 hover:bg-slate-50 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:scale-105 transition-transform">
+            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
               {uploading ? (
                 <RefreshCw className="w-4 h-4 animate-spin" />
               ) : (
@@ -144,9 +153,23 @@ export function ReceiptUploader({
             </div>
           </div>
 
-          <span className="text-[11px] font-semibold text-primary px-2.5 py-1 bg-white border border-border rounded-btn group-hover:border-primary/30 shadow-2xs">
-            Browse
-          </span>
+          <div className="flex items-center gap-1.5 self-end sm:self-auto shrink-0">
+            <button
+              type="button"
+              onClick={() => cameraInputRef.current?.click()}
+              className="text-[11px] font-semibold text-primary px-2.5 py-1.5 bg-primary/10 hover:bg-primary/20 rounded-btn transition-colors flex items-center gap-1"
+            >
+              <Camera className="w-3.5 h-3.5" />
+              <span>Camera</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="text-[11px] font-semibold text-slate-700 hover:text-slate-900 px-2.5 py-1.5 bg-white border border-border hover:bg-slate-50 rounded-btn shadow-2xs transition-colors"
+            >
+              Browse
+            </button>
+          </div>
         </div>
       ) : (
         <div className="p-3 bg-slate-50 rounded-card border border-border flex items-center justify-between gap-3">

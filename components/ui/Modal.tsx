@@ -32,6 +32,17 @@ export function Modal({
     };
   }, [isOpen]);
 
+  // Handle Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isOpen) {
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const maxWidths = {
@@ -42,7 +53,7 @@ export function Modal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
       <div
         className="fixed inset-0"
         onClick={onClose}
@@ -50,14 +61,18 @@ export function Modal({
       />
       <div
         className={cn(
-          "relative w-full rounded-t-[24px] sm:rounded-modal bg-surface shadow-2xl border border-border/80 z-10 max-h-[90dvh] sm:max-h-[88vh] flex flex-col overflow-hidden transform transition-all duration-200 animate-in slide-in-from-bottom-6 sm:slide-in-from-bottom-2",
+          "relative w-full rounded-t-[28px] sm:rounded-modal bg-surface shadow-2xl border border-border/80 z-10 h-auto max-h-[92dvh] sm:max-h-[85vh] flex flex-col overflow-hidden transform transition-all duration-200 animate-in slide-in-from-bottom-6 sm:slide-in-from-bottom-2",
           maxWidths[maxWidth]
         )}
       >
         {/* Pinned Top: Drag Handle + Header */}
-        <div className="shrink-0 px-4 pt-3 pb-3 sm:px-6 sm:pt-5 sm:pb-4 border-b border-border bg-surface">
-          {/* Mobile drag handle */}
-          <div className="w-12 h-1.5 bg-border rounded-full mx-auto mb-3 sm:hidden" />
+        <div className="shrink-0 px-4 pt-3 pb-3 sm:px-6 sm:pt-5 sm:pb-4 border-b border-border bg-surface select-none">
+          {/* Mobile drag handle button */}
+          <div 
+            onClick={onClose}
+            className="w-12 h-1.5 bg-slate-300 hover:bg-slate-400 rounded-full mx-auto mb-2.5 sm:hidden cursor-pointer transition-colors" 
+            title="Tap to dismiss"
+          />
 
           <div className="flex items-start justify-between gap-3">
             <div>

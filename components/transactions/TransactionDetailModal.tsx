@@ -86,13 +86,14 @@ export function TransactionDetailModal({
   };
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title="Transaction Details"
-      description="View financial record information"
-      maxWidth="md"
-    >
+    <>
+      <Modal
+        isOpen={isOpen && !isEditOpen}
+        onClose={onClose}
+        title="Transaction Details"
+        description="View financial record information"
+        maxWidth="md"
+      >
       <div className="space-y-4 pt-1">
         {/* Top Header Card */}
         <div className="p-4 rounded-card border border-border bg-slate-50/75 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -309,17 +310,19 @@ export function TransactionDetailModal({
           </div>
         )}
       </div>
-
-      {/* Edit Modal */}
-      <TransactionEditModal
-        transaction={transaction}
-        isOpen={isEditOpen}
-        onClose={() => setIsEditOpen(false)}
-        onSuccess={() => {
-          onUpdated();
-          onClose();
-        }}
-      />
     </Modal>
+
+    {/* Edit Modal rendered separately - no double backdrop/scroll lock bugs */}
+    <TransactionEditModal
+      transaction={transaction}
+      isOpen={isOpen && isEditOpen}
+      onClose={() => setIsEditOpen(false)}
+      onSuccess={() => {
+        setIsEditOpen(false);
+        onUpdated();
+        onClose();
+      }}
+    />
+  </>
   );
 }

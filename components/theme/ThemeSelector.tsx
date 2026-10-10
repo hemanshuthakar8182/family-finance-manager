@@ -75,8 +75,7 @@ export function ThemeSelector() {
       {/* Popover Dropdown */}
       {isOpen && (
         <div
-          className="absolute right-0 mt-2 w-80 sm:w-96 max-w-[calc(100vw-2rem)] rounded-2xl bg-surface border border-border shadow-2xl p-4 z-50 animate-in fade-in zoom-in-95 duration-150 backdrop-blur-md"
-          style={{ maxHeight: "85vh", overflowY: "auto" }}
+          className="fixed inset-x-3 bottom-4 sm:absolute sm:inset-x-auto sm:right-0 sm:bottom-auto sm:mt-2 w-auto sm:w-96 rounded-2xl bg-surface border border-border shadow-2xl p-4 z-[70] animate-in fade-in zoom-in-95 duration-150 backdrop-blur-md max-h-[80vh] overflow-y-auto"
         >
           {/* Header */}
           <div className="flex items-center justify-between pb-3 border-b border-border">
