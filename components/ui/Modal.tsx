@@ -45,7 +45,7 @@ export function Modal({
 
   if (!isOpen) return null;
 
-  const maxWidths = {
+  const maxWidthStyles = {
     sm: "max-w-sm",
     md: "max-w-md",
     lg: "max-w-lg",
@@ -53,50 +53,59 @@ export function Modal({
   };
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+    <div 
+      className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-end align-items-sm-center justify-content-center p-0 p-sm-3"
+      style={{ zIndex: 1060, backgroundColor: "rgba(15, 23, 42, 0.6)", backdropFilter: "blur(4px)" }}
+    >
       <div
-        className="fixed inset-0"
+        className="position-fixed top-0 start-0 w-100 h-100"
         onClick={onClose}
         aria-hidden="true"
       />
       <div
         className={cn(
-          "relative w-full rounded-t-[28px] sm:rounded-modal bg-surface shadow-2xl border border-border/80 z-10 h-auto max-h-[92dvh] sm:max-h-[85vh] flex flex-col overflow-hidden transform transition-all duration-200 animate-in slide-in-from-bottom-6 sm:slide-in-from-bottom-2",
-          maxWidths[maxWidth]
+          "modal-content position-relative w-100 rounded-top-4 rounded-sm-modal bg-surface shadow-lg border overflow-hidden d-flex flex-column z-10",
+          maxWidthStyles[maxWidth]
         )}
+        style={{ maxHeight: "92dvh" }}
       >
         {/* Pinned Top: Drag Handle + Header */}
-        <div className="shrink-0 px-4 pt-3 pb-3 sm:px-6 sm:pt-5 sm:pb-4 border-b border-border bg-surface select-none">
+        <div className="flex-shrink-0 px-3 px-sm-4 pt-3 pb-3 border-bottom bg-surface user-select-none">
           {/* Mobile drag handle button */}
           <div 
             onClick={onClose}
-            className="w-12 h-1.5 bg-slate-300 hover:bg-slate-400 rounded-full mx-auto mb-2.5 sm:hidden cursor-pointer transition-colors" 
+            className="d-sm-none mx-auto mb-2 rounded-pill bg-secondary bg-opacity-25"
+            style={{ width: "48px", height: "6px", cursor: "pointer" }}
             title="Tap to dismiss"
           />
 
-          <div className="flex items-start justify-between gap-3">
+          <div className="d-flex align-items-start justify-content-between gap-3">
             <div>
               {title && (
-                <h3 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight leading-snug">
+                <h3 className="h6 fw-bold text-dark mb-0">
                   {title}
                 </h3>
               )}
               {description && (
-                <p className="text-xs text-slate-500 mt-0.5 leading-snug">{description}</p>
+                <p className="small text-secondary mb-0 mt-1">{description}</p>
               )}
             </div>
             <button
               onClick={onClose}
-              className="text-slate-400 hover:text-slate-900 p-1.5 rounded-lg hover:bg-surface-muted transition-colors -mr-1 shrink-0"
+              type="button"
+              className="btn btn-sm btn-light rounded-circle p-1 text-secondary"
               aria-label="Close dialog"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4" style={{ width: "18px", height: "18px" }} />
             </button>
           </div>
         </div>
 
         {/* Scrollable Body Container */}
-        <div className="flex-1 overflow-y-auto px-4 py-3.5 sm:px-6 sm:py-4 overscroll-contain min-h-0 pb-[max(1rem,env(safe-area-inset-bottom,16px))]">
+        <div 
+          className="flex-grow-1 overflow-y-auto px-3 px-sm-4 py-3"
+          style={{ paddingBottom: "max(1.25rem, env(safe-area-inset-bottom, 20px))" }}
+        >
           {children}
         </div>
       </div>

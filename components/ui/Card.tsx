@@ -9,8 +9,8 @@ export function Card({ className, hoverEffect = false, children, ...props }: Car
   return (
     <div
       className={cn(
-        "rounded-card border border-border bg-surface p-4 md:p-5 shadow-soft transition-all duration-150",
-        hoverEffect && "hover:shadow-card hover:border-slate-300",
+        "card rounded-card border shadow-sm bg-surface p-3 p-md-4 transition",
+        hoverEffect && "shadow",
         className
       )}
       {...props}
@@ -22,7 +22,7 @@ export function Card({ className, hoverEffect = false, children, ...props }: Car
 
 export function CardHeader({ className, children, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={cn("flex items-center justify-between pb-3 mb-3 border-b border-border", className)} {...props}>
+    <div className={cn("d-flex align-items-center justify-content-between pb-3 mb-3 border-bottom bg-transparent", className)} {...props}>
       {children}
     </div>
   );
@@ -30,7 +30,7 @@ export function CardHeader({ className, children, ...props }: React.HTMLAttribut
 
 export function CardTitle({ className, children, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
   return (
-    <h3 className={cn("text-base font-semibold text-slate-900 tracking-tight", className)} {...props}>
+    <h3 className={cn("h6 fw-semibold text-dark mb-0", className)} {...props}>
       {children}
     </h3>
   );

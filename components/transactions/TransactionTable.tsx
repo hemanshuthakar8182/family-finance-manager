@@ -18,20 +18,20 @@ export function TransactionTable({ transactions, onSelectTransaction }: Transact
   }
 
   return (
-    <div className="overflow-x-auto rounded-card border border-border bg-surface shadow-soft">
-      <table className="w-full text-left border-collapse text-sm">
-        <thead>
-          <tr className="border-b border-border bg-slate-50/75 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-            <th className="py-3 px-4">Date & Time</th>
-            <th className="py-3 px-4">Category / Direction</th>
-            <th className="py-3 px-4">Description</th>
-            <th className="py-3 px-4">Member</th>
-            <th className="py-3 px-4">Account</th>
-            <th className="py-3 px-4">Type</th>
-            <th className="py-3 px-4 text-right">Amount</th>
+    <div className="table-responsive rounded-card border bg-surface shadow-sm">
+      <table className="table table-hover align-middle mb-0 small">
+        <thead className="table-light border-bottom">
+          <tr className="text-secondary text-uppercase" style={{ fontSize: "11px", letterSpacing: "0.05em" }}>
+            <th className="py-3 px-3">Date & Time</th>
+            <th className="py-3 px-3">Category / Direction</th>
+            <th className="py-3 px-3">Description</th>
+            <th className="py-3 px-3">Member</th>
+            <th className="py-3 px-3">Account</th>
+            <th className="py-3 px-3">Type</th>
+            <th className="py-3 px-3 text-end">Amount</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-border">
+        <tbody>
           {transactions.map((t) => {
             const isIncome = t.type === "INCOME";
             const isTransfer = t.type === "TRANSFER";
@@ -40,53 +40,58 @@ export function TransactionTable({ transactions, onSelectTransaction }: Transact
               <tr
                 key={t.id}
                 onClick={() => onSelectTransaction(t)}
-                className="hover:bg-slate-50/70 transition-colors cursor-pointer group"
+                style={{ cursor: "pointer" }}
               >
-                <td className="py-3.5 px-4 text-xs text-slate-600 whitespace-nowrap">
+                <td className="py-3 px-3 text-secondary text-nowrap" style={{ fontSize: "11px" }}>
                   {formatTransactionDate(t.date)}
                 </td>
-                <td className="py-3.5 px-4 whitespace-nowrap">
-                  <div className="flex items-center gap-2">
+                <td className="py-3 px-3 text-nowrap">
+                  <div className="d-flex align-items-center gap-2">
                     <div
-                      className="w-7 h-7 rounded-full flex items-center justify-center text-white shrink-0 shadow-xs"
+                      className="rounded-circle d-flex align-items-center justify-content-center text-white flex-shrink-0 shadow-sm"
                       style={{
+                        width: "28px",
+                        height: "28px",
                         backgroundColor: isTransfer
                           ? "#0284C7"
                           : t.category?.color || "#0F766E",
                       }}
                     >
                       {isTransfer ? (
-                        <ArrowRightLeft className="w-3.5 h-3.5" />
+                        <ArrowRightLeft style={{ width: "14px", height: "14px" }} />
                       ) : (
                         <CategoryIcon name={t.category?.icon || "tag"} size={14} />
                       )}
                     </div>
-                    <span className="font-semibold text-slate-900">
+                    <span className="fw-semibold text-dark">
                       {isTransfer
                         ? `${t.account?.name || "Account"} → ${t.toAccount?.name || "Account"}`
                         : t.category?.name || "Uncategorized"}
                     </span>
                   </div>
                 </td>
-                <td className="py-3.5 px-4 text-slate-700 max-w-xs truncate">
-                  {t.description || <span className="text-slate-400 italic">None</span>}
+                <td className="py-3 px-3 text-dark text-truncate" style={{ maxWidth: "220px" }}>
+                  {t.description || <span className="text-secondary fst-italic">None</span>}
                 </td>
-                <td className="py-3.5 px-4 text-slate-700 whitespace-nowrap">
-                  <span className="inline-flex items-center gap-1.5 font-medium">
-                    <span className="w-2 h-2 rounded-full bg-primary" />
+                <td className="py-3 px-3 text-dark text-nowrap">
+                  <span className="d-inline-flex align-items-center gap-1.5 fw-medium">
+                    <span 
+                      className="rounded-circle bg-primary d-inline-block"
+                      style={{ width: "8px", height: "8px" }}
+                    />
                     {t.member.user.name}
                   </span>
                 </td>
-                <td className="py-3.5 px-4 text-slate-600 whitespace-nowrap text-xs">
+                <td className="py-3 px-3 text-secondary text-nowrap" style={{ fontSize: "11px" }}>
                   {isTransfer ? (
-                    <span className="font-medium text-slate-700">
+                    <span className="fw-medium text-dark">
                       {t.account?.name} → {t.toAccount?.name}
                     </span>
                   ) : (
-                    t.account?.name || <span className="text-slate-400">—</span>
+                    t.account?.name || <span className="text-secondary">—</span>
                   )}
                 </td>
-                <td className="py-3.5 px-4 whitespace-nowrap">
+                <td className="py-3 px-3 text-nowrap">
                   <Badge
                     variant={
                       isIncome ? "income" : isTransfer ? "info" : "expense"
@@ -95,15 +100,15 @@ export function TransactionTable({ transactions, onSelectTransaction }: Transact
                     {isIncome ? "Income" : isTransfer ? "Transfer" : "Expense"}
                   </Badge>
                 </td>
-                <td className="py-3.5 px-4 text-right whitespace-nowrap">
+                <td className="py-3 px-3 text-end text-nowrap">
                   <span
                     className={cn(
-                      "font-bold font-amount text-base",
+                      "fw-bold font-amount fs-6",
                       isIncome
                         ? "text-income"
                         : isTransfer
-                        ? "text-blue-600"
-                        : "text-slate-900"
+                        ? "text-primary"
+                        : "text-dark"
                     )}
                   >
                     {isIncome ? "+" : isTransfer ? "⇄ " : "- "}

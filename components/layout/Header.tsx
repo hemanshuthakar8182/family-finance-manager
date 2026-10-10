@@ -17,40 +17,43 @@ export function Header({ onOpenQuickAdd }: HeaderProps) {
   const user = session?.user as any;
 
   return (
-    <header className="sticky top-0 z-30 h-16 border-b border-border bg-surface/95 backdrop-blur-md px-4 sm:px-6 flex items-center justify-between">
+    <header 
+      className="navbar sticky-top bg-surface border-bottom px-3 px-sm-4 py-2 d-flex align-items-center justify-content-between"
+      style={{ zIndex: 1030, minHeight: "64px", backdropFilter: "blur(10px)" }}
+    >
       {/* Mobile Only: Brand & Family Name (hidden on desktop since sidebar shows it) */}
-      <div className="lg:hidden flex items-center gap-2 sm:gap-2.5 min-w-0 mr-2">
+      <div className="d-lg-none d-flex align-items-center gap-2 me-2 overflow-hidden">
         <AppLogo
           size="sm"
           logoUrl={user?.familyLogoUrl}
           name={user?.familyName || "Family Finance"}
         />
-        <div className="min-w-0">
-          <div className="flex items-center gap-1.5 min-w-0">
-            <span className="font-bold text-slate-900 tracking-tight text-xs sm:text-sm truncate">
+        <div className="overflow-hidden">
+          <div className="d-flex align-items-center gap-1">
+            <span className="fw-bold text-dark small text-truncate">
               {user?.familyName || "Family Finance"}
             </span>
             {user?.role === "ADMIN" && (
-              <Badge variant="info" className="text-[10px] py-0 px-1.5 gap-0.5 shrink-0">
-                <Shield className="w-2.5 h-2.5" /> Admin
+              <Badge variant="info" className="py-0 px-1 gap-1 flex-shrink-0" style={{ fontSize: "10px" }}>
+                <Shield style={{ width: "10px", height: "10px" }} /> Admin
               </Badge>
             )}
           </div>
-          <p className="text-[10px] text-slate-500 hidden sm:block truncate">
+          <p className="small text-secondary d-none d-sm-block text-truncate mb-0" style={{ fontSize: "10px" }}>
             Shared Family Financial Assistant
           </p>
         </div>
       </div>
 
       {/* Actions & Profile (pinned right) */}
-      <div className="flex items-center gap-1.5 sm:gap-3 ml-auto shrink-0">
+      <div className="d-flex align-items-center gap-2 gap-sm-3 ms-auto flex-shrink-0">
         {onOpenQuickAdd && (
           <Button
             size="sm"
             onClick={onOpenQuickAdd}
-            className="hidden sm:flex shadow-sm bg-primary hover:bg-primary-hover text-primary-foreground text-xs font-semibold px-2.5 sm:px-3 py-1.5 sm:py-2 items-center gap-1.5"
+            className="d-none d-sm-inline-flex shadow-sm btn-primary small fw-semibold px-3 py-1 gap-2"
           >
-            <Plus className="w-3.5 h-3.5" />
+            <Plus style={{ width: "16px", height: "16px" }} />
             <span>Add Transaction</span>
           </Button>
         )}
@@ -58,16 +61,19 @@ export function Header({ onOpenQuickAdd }: HeaderProps) {
         {/* Dynamic Multi-Color Theme Selector */}
         <ThemeSelector />
 
-        <div className="flex items-center gap-2 pl-2 border-l border-border">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-primary/15 text-primary font-bold flex items-center justify-center text-xs border border-primary/25">
+        <div className="d-flex align-items-center gap-2 ps-2 border-start">
+          <div className="d-flex align-items-center gap-2">
+            <div 
+              className="rounded-circle bg-primary bg-opacity-10 text-primary fw-bold d-flex align-items-center justify-content-center border border-primary border-opacity-25"
+              style={{ width: "34px", height: "34px", fontSize: "13px" }}
+            >
               {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
             </div>
-            <div className="hidden md:block text-left">
-              <p className="text-xs font-semibold text-slate-900 leading-tight">
+            <div className="d-none d-md-block text-start">
+              <p className="small fw-semibold text-dark mb-0 lh-1">
                 {user?.name || "Member"}
               </p>
-              <p className="text-[10px] text-slate-500 leading-tight">
+              <p className="text-secondary mb-0 lh-1 mt-1" style={{ fontSize: "10px" }}>
                 {user?.role === "ADMIN" ? "Family Admin" : "Member"}
               </p>
             </div>
@@ -76,9 +82,11 @@ export function Header({ onOpenQuickAdd }: HeaderProps) {
           <button
             onClick={() => signOut({ callbackUrl: "/login" })}
             title="Log Out"
-            className="text-slate-400 hover:text-slate-700 p-1.5 rounded-lg hover:bg-surface-muted transition-colors"
+            type="button"
+            className="btn btn-sm btn-light rounded-circle p-2 text-secondary"
+            aria-label="Log Out"
           >
-            <LogOut className="w-4 h-4" />
+            <LogOut style={{ width: "16px", height: "16px" }} />
           </button>
         </div>
       </div>

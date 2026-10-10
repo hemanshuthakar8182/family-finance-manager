@@ -5,7 +5,6 @@ import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
 import { CategoryIcon } from "@/components/ui/CategoryIcon";
 import { useToast } from "@/components/ui/Toast";
-import { formatCurrency } from "@/lib/utils/formatters";
 import { ArrowRight, Calendar, Clock } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { ReceiptUploader } from "@/components/transactions/ReceiptUploader";
@@ -139,7 +138,6 @@ export function TransactionEditModal({
     setError("");
 
     try {
-      // Accurately combine Date and Time in local time
       const [yearNum, monthNum, dayNum] = (date || new Date().toISOString().split("T")[0]).split("-").map(Number);
       const [hoursNum, minsNum] = (time || "12:00").split(":").map(Number);
       const combinedDate = new Date(yearNum, monthNum - 1, dayNum, hoursNum || 0, minsNum || 0);
@@ -198,60 +196,66 @@ export function TransactionEditModal({
       description="Update record details and account adjustments"
       maxWidth="md"
     >
-      <form onSubmit={handleSubmit} className="flex flex-col min-h-full space-y-4">
+      <form onSubmit={handleSubmit} className="d-flex flex-column gap-3 min-vh-0">
         {/* Type Toggle */}
-        <div className="grid grid-cols-3 gap-1.5 p-1 bg-slate-100 rounded-btn">
-          <button
-            type="button"
-            onClick={() => handleTypeChange("EXPENSE")}
-            className={cn(
-              "py-2 rounded-btn font-semibold text-xs transition-all",
-              type === "EXPENSE"
-                ? "bg-expense text-white shadow-sm"
-                : "text-slate-600 hover:text-slate-900"
-            )}
-          >
-            Expense
-          </button>
-          <button
-            type="button"
-            onClick={() => handleTypeChange("INCOME")}
-            className={cn(
-              "py-2 rounded-btn font-semibold text-xs transition-all",
-              type === "INCOME"
-                ? "bg-income text-white shadow-sm"
-                : "text-slate-600 hover:text-slate-900"
-            )}
-          >
-            Income
-          </button>
-          <button
-            type="button"
-            onClick={() => handleTypeChange("TRANSFER")}
-            className={cn(
-              "py-2 rounded-btn font-semibold text-xs transition-all",
-              type === "TRANSFER"
-                ? "bg-primary text-primary-foreground shadow-sm"
-                : "text-slate-600 hover:text-slate-900"
-            )}
-          >
-            Transfer
-          </button>
+        <div className="row g-1 p-1 bg-light rounded-btn border">
+          <div className="col-4">
+            <button
+              type="button"
+              onClick={() => handleTypeChange("EXPENSE")}
+              className={cn(
+                "btn btn-sm w-100 py-1.5 rounded-btn fw-bold small transition",
+                type === "EXPENSE"
+                  ? "btn-danger text-white shadow-sm"
+                  : "btn-link text-secondary text-decoration-none"
+              )}
+            >
+              Expense
+            </button>
+          </div>
+          <div className="col-4">
+            <button
+              type="button"
+              onClick={() => handleTypeChange("INCOME")}
+              className={cn(
+                "btn btn-sm w-100 py-1.5 rounded-btn fw-bold small transition",
+                type === "INCOME"
+                  ? "btn-success text-white shadow-sm"
+                  : "btn-link text-secondary text-decoration-none"
+              )}
+            >
+              Income
+            </button>
+          </div>
+          <div className="col-4">
+            <button
+              type="button"
+              onClick={() => handleTypeChange("TRANSFER")}
+              className={cn(
+                "btn btn-sm w-100 py-1.5 rounded-btn fw-bold small transition",
+                type === "TRANSFER"
+                  ? "btn-primary text-white shadow-sm"
+                  : "btn-link text-secondary text-decoration-none"
+              )}
+            >
+              Transfer
+            </button>
+          </div>
         </div>
 
         {/* Amount */}
         <div>
-          <label className="block text-xs font-semibold text-slate-500 mb-1">
+          <label className="form-label small fw-semibold text-secondary mb-1">
             Amount (INR) *
           </label>
-          <div className="relative flex items-center">
+          <div className="position-relative d-flex align-items-center">
             <span
               className={cn(
-                "absolute left-4 font-bold text-2xl select-none",
+                "position-absolute start-0 ps-3 fs-4 fw-bold select-none",
                 type === "EXPENSE"
-                  ? "text-expense"
+                  ? "text-danger"
                   : type === "INCOME"
-                  ? "text-income"
+                  ? "text-success"
                   : "text-primary"
               )}
             >
@@ -264,28 +268,29 @@ export function TransactionEditModal({
               required
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
-              className="w-full h-12 pl-10 pr-4 rounded-input border-2 bg-white text-xl font-bold font-amount text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary"
+              className="form-control form-control-lg rounded-input ps-5 fs-4 fw-bold font-amount text-dark bg-surface border-2"
             />
           </div>
-          {error && <p className="text-xs text-expense font-semibold mt-1">{error}</p>}
+          {error && <div className="text-danger small fw-semibold mt-1">{error}</div>}
         </div>
 
         {/* Date & Time Picker */}
-        <div className="space-y-1.5">
-          <div className="flex items-center justify-between">
-            <label className="block text-xs font-semibold text-slate-700">
+        <div className="d-flex flex-column gap-1">
+          <div className="d-flex align-items-center justify-content-between">
+            <label className="form-label small fw-semibold text-dark mb-0">
               Transaction Date &amp; Time *
             </label>
-            <div className="flex items-center gap-1">
+            <div className="d-flex align-items-center gap-1">
               <button
                 type="button"
                 onClick={() => setDate(todayStr)}
                 className={cn(
-                  "px-2 py-0.5 rounded-full text-[10px] font-semibold border transition-all",
+                  "badge rounded-pill border py-1 px-2 text-decoration-none fw-semibold",
                   isToday
-                    ? "bg-primary/10 border-primary text-primary"
-                    : "bg-surface-muted border-border text-slate-600 hover:bg-slate-100"
+                    ? "bg-primary-subtle text-primary border-primary-subtle"
+                    : "bg-light text-secondary border"
                 )}
+                style={{ fontSize: "10px" }}
               >
                 Today
               </button>
@@ -293,49 +298,54 @@ export function TransactionEditModal({
                 type="button"
                 onClick={() => setDate(yesterdayStr)}
                 className={cn(
-                  "px-2 py-0.5 rounded-full text-[10px] font-semibold border transition-all",
+                  "badge rounded-pill border py-1 px-2 text-decoration-none fw-semibold",
                   isYesterday
-                    ? "bg-primary/10 border-primary text-primary"
-                    : "bg-surface-muted border-border text-slate-600 hover:bg-slate-100"
+                    ? "bg-primary-subtle text-primary border-primary-subtle"
+                    : "bg-light text-secondary border"
                 )}
+                style={{ fontSize: "10px" }}
               >
                 Yesterday
               </button>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-2">
-            <div className="relative flex items-center">
-              <Calendar className="w-3.5 h-3.5 text-slate-400 absolute left-3 pointer-events-none" />
-              <input
-                type="date"
-                required
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                className="w-full h-10 pl-8 pr-2 rounded-input border border-border text-xs text-slate-800 bg-surface focus:outline-none focus:ring-2 focus:ring-primary"
-              />
+          <div className="row g-2">
+            <div className="col-6">
+              <div className="position-relative d-flex align-items-center">
+                <Calendar style={{ width: "14px", height: "14px" }} className="position-absolute start-0 ms-2 text-secondary pointer-events-none" />
+                <input
+                  type="date"
+                  required
+                  value={date}
+                  onChange={(e) => setDate(e.target.value)}
+                  className="form-control form-control-sm rounded-input ps-4 small text-dark bg-surface border"
+                />
+              </div>
             </div>
-            <div className="relative flex items-center">
-              <Clock className="w-3.5 h-3.5 text-slate-400 absolute left-3 pointer-events-none" />
-              <input
-                type="time"
-                required
-                value={time}
-                onChange={(e) => setTime(e.target.value)}
-                className="w-full h-10 pl-8 pr-2 rounded-input border border-border text-xs text-slate-800 bg-surface focus:outline-none focus:ring-2 focus:ring-primary"
-              />
+            <div className="col-6">
+              <div className="position-relative d-flex align-items-center">
+                <Clock style={{ width: "14px", height: "14px" }} className="position-absolute start-0 ms-2 text-secondary pointer-events-none" />
+                <input
+                  type="time"
+                  required
+                  value={time}
+                  onChange={(e) => setTime(e.target.value)}
+                  className="form-control form-control-sm rounded-input ps-4 small text-dark bg-surface border"
+                />
+              </div>
             </div>
           </div>
         </div>
 
         {/* Conditional View: TRANSFER vs CATEGORY */}
         {type === "TRANSFER" ? (
-          <div className="space-y-3 p-3 bg-slate-50 rounded-card border border-border">
+          <div className="p-3 bg-light rounded-card border d-flex flex-column gap-2">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="form-label small fw-semibold text-dark mb-1">
                 Transfer From (Source Account) *
               </label>
-              <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+              <div className="d-flex gap-1 overflow-x-auto pb-1">
                 {accounts.map((acc) => {
                   const isSelected = selectedAccountId === acc.id;
                   return (
@@ -344,10 +354,10 @@ export function TransactionEditModal({
                       type="button"
                       onClick={() => setSelectedAccountId(acc.id)}
                       className={cn(
-                        "px-3 py-1.5 rounded-full border text-xs font-semibold whitespace-nowrap transition-all",
+                        "btn btn-sm rounded-pill px-3 py-1 text-nowrap fw-semibold small",
                         isSelected
-                          ? "bg-expense text-white border-expense shadow-xs"
-                          : "bg-white text-slate-700 border-border hover:bg-slate-50"
+                          ? "btn-danger text-white shadow-sm"
+                          : "btn-light border text-dark"
                       )}
                     >
                       {acc.name}
@@ -357,15 +367,15 @@ export function TransactionEditModal({
               </div>
             </div>
 
-            <div className="flex justify-center text-slate-400 py-0.5">
-              <ArrowRight className="w-4 h-4" />
+            <div className="d-flex justify-content-center text-secondary py-1">
+              <ArrowRight style={{ width: "16px", height: "16px" }} />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="form-label small fw-semibold text-dark mb-1">
                 Transfer To (Destination Account) *
               </label>
-              <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+              <div className="d-flex gap-1 overflow-x-auto pb-1">
                 {accounts
                   .filter((acc) => acc.id !== selectedAccountId)
                   .map((acc) => {
@@ -376,10 +386,10 @@ export function TransactionEditModal({
                         type="button"
                         onClick={() => setSelectedToAccountId(acc.id)}
                         className={cn(
-                          "px-3 py-1.5 rounded-full border text-xs font-semibold whitespace-nowrap transition-all",
+                          "btn btn-sm rounded-pill px-3 py-1 text-nowrap fw-semibold small",
                           isSelected
-                            ? "bg-income text-white border-income shadow-xs"
-                            : "bg-white text-slate-700 border-border hover:bg-slate-50"
+                            ? "btn-success text-white shadow-sm"
+                            : "btn-light border text-dark"
                         )}
                       >
                         {acc.name}
@@ -392,34 +402,35 @@ export function TransactionEditModal({
         ) : (
           <>
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+              <label className="form-label small fw-semibold text-dark mb-1">
                 Category *
               </label>
-              <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 max-h-40 overflow-y-auto p-1.5 border border-border/70 rounded-card bg-slate-50/60">
+              <div className="row g-2 p-2 border rounded-card bg-light overflow-y-auto" style={{ maxHeight: "170px" }}>
                 {filteredCategories.map((cat) => {
                   const isSelected = selectedCategoryId === cat.id;
                   return (
-                    <button
-                      key={cat.id}
-                      type="button"
-                      onClick={() => setSelectedCategoryId(cat.id)}
-                      className={cn(
-                        "flex flex-col items-center justify-center p-2 rounded-btn border text-center transition-all",
-                        isSelected
-                          ? "bg-white border-primary ring-2 ring-primary/20 shadow-sm"
-                          : "bg-surface border-border/70 hover:border-slate-300 text-slate-700"
-                      )}
-                    >
-                      <div
-                        className="w-7 h-7 rounded-full flex items-center justify-center mb-1 text-white shrink-0"
-                        style={{ backgroundColor: cat.color }}
+                    <div key={cat.id} className="col-4 col-sm-3">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedCategoryId(cat.id)}
+                        className={cn(
+                          "btn btn-sm w-100 d-flex flex-column align-items-center justify-content-center p-2 rounded-btn border text-center transition h-100",
+                          isSelected
+                            ? "btn-light border-primary bg-primary-subtle shadow-sm"
+                            : "btn-light border text-dark"
+                        )}
                       >
-                        <CategoryIcon name={cat.icon} size={14} />
-                      </div>
-                      <span className="text-[11px] font-medium leading-tight line-clamp-1">
-                        {cat.name}
-                      </span>
-                    </button>
+                        <div
+                          className="rounded-circle d-flex align-items-center justify-content-center mb-1 text-white flex-shrink-0"
+                          style={{ width: "28px", height: "28px", backgroundColor: cat.color }}
+                        >
+                          <CategoryIcon name={cat.icon} size={14} />
+                        </div>
+                        <span className="small fw-medium text-truncate w-100" style={{ fontSize: "11px" }}>
+                          {cat.name}
+                        </span>
+                      </button>
+                    </div>
                   );
                 })}
               </div>
@@ -427,10 +438,10 @@ export function TransactionEditModal({
 
             {accounts.length > 0 && (
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                <label className="form-label small fw-semibold text-dark mb-1">
                   Account / Wallet
                 </label>
-                <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+                <div className="d-flex gap-1 overflow-x-auto pb-1">
                   {accounts.map((acc) => {
                     const isSelected = selectedAccountId === acc.id;
                     return (
@@ -439,10 +450,10 @@ export function TransactionEditModal({
                         type="button"
                         onClick={() => setSelectedAccountId(acc.id)}
                         className={cn(
-                          "px-3 py-1.5 rounded-full border text-xs font-semibold whitespace-nowrap transition-all",
+                          "btn btn-sm rounded-pill px-3 py-1 text-nowrap fw-semibold small",
                           isSelected
-                            ? "bg-primary text-primary-foreground border-primary shadow-sm"
-                            : "bg-surface text-slate-700 border-border hover:bg-surface-muted"
+                            ? "btn-primary text-white shadow-sm"
+                            : "btn-light border text-dark"
                         )}
                       >
                         {acc.name}
@@ -457,7 +468,7 @@ export function TransactionEditModal({
 
         {/* Description & Notes */}
         <div>
-          <label className="block text-xs font-semibold text-slate-600 mb-1">
+          <label className="form-label small fw-semibold text-secondary mb-1">
             Description / Reference
           </label>
           <input
@@ -465,12 +476,12 @@ export function TransactionEditModal({
             placeholder="e.g. Reference notes"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full h-9 px-3 rounded-input border border-border text-xs focus:outline-none focus:ring-2 focus:ring-primary"
+            className="form-control form-control-sm rounded-input py-1.5 px-3 small border"
           />
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-slate-600 mb-1">
+          <label className="form-label small fw-semibold text-secondary mb-1">
             Notes
           </label>
           <textarea
@@ -478,13 +489,14 @@ export function TransactionEditModal({
             placeholder="Additional context..."
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            className="w-full p-2.5 rounded-input border border-border text-xs focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+            className="form-control form-control-sm rounded-input p-2 small border"
+            style={{ resize: "none" }}
           />
         </div>
 
         {/* Attached Receipt / Bill */}
         <div>
-          <label className="block text-xs font-semibold text-slate-600 mb-1">
+          <label className="form-label small fw-semibold text-secondary mb-1">
             Bill / Receipt
           </label>
           <ReceiptUploader
@@ -494,13 +506,16 @@ export function TransactionEditModal({
         </div>
 
         {/* Sticky Actions Footer */}
-        <div className="sticky bottom-0 -mx-4 -mb-3.5 sm:-mx-6 sm:-mb-4 px-4 sm:px-6 py-2.5 sm:py-3 bg-surface/95 backdrop-blur-md border-t border-border mt-auto flex gap-2 z-20 pb-[max(0.75rem,env(safe-area-inset-bottom,12px))]">
+        <div 
+          className="position-sticky bottom-0 bg-surface border-top pt-2.5 pb-2 mt-auto d-flex gap-2"
+          style={{ zIndex: 20, paddingBottom: "max(0.75rem, env(safe-area-inset-bottom, 12px))" }}
+        >
           <Button
             type="submit"
             variant="primary"
             size="lg"
             isLoading={isSubmitting}
-            className="flex-1 font-bold text-xs shadow-sm"
+            className="flex-fill fw-bold small shadow-sm"
           >
             Save Changes
           </Button>
@@ -510,7 +525,7 @@ export function TransactionEditModal({
             size="lg"
             disabled={isSubmitting}
             onClick={onClose}
-            className="text-xs px-4"
+            className="small px-4"
           >
             Cancel
           </Button>

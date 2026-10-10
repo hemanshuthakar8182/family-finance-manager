@@ -43,48 +43,51 @@ export function TransactionCard({ transaction, onClick }: TransactionCardProps) 
       onClick={onClick}
       role="button"
       tabIndex={0}
-      className="flex items-center justify-between p-3.5 sm:p-4 rounded-card border border-border bg-surface hover:bg-slate-50/80 transition-all active:scale-[0.99] cursor-pointer shadow-soft text-left"
+      className="d-flex align-items-center justify-content-between p-3 rounded-card border bg-surface hover-bg-light transition shadow-sm text-start"
+      style={{ cursor: "pointer" }}
     >
-      <div className="flex items-center gap-3 min-w-0">
+      <div className="d-flex align-items-center gap-3 overflow-hidden">
         {/* Category or Transfer Icon */}
         <div
-          className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 text-white shadow-sm"
+          className="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 text-white shadow-sm"
           style={{
+            width: "38px",
+            height: "38px",
             backgroundColor: isTransfer
               ? "#0284C7"
               : transaction.category?.color || "#0F766E",
           }}
         >
           {isTransfer ? (
-            <ArrowRightLeft className="w-4 h-4" />
+            <ArrowRightLeft style={{ width: "16px", height: "16px" }} />
           ) : (
             <CategoryIcon name={transaction.category?.icon || "tag"} size={18} />
           )}
         </div>
 
         {/* Details */}
-        <div className="min-w-0">
-          <div className="flex items-center gap-2">
-            <h4 className="text-sm font-semibold text-slate-900 truncate">
+        <div className="overflow-hidden">
+          <div className="d-flex align-items-center gap-2">
+            <h4 className="small fw-bold text-dark text-truncate mb-0">
               {isTransfer
                 ? `${transaction.account?.name || "Account"} → ${transaction.toAccount?.name || "Account"}`
                 : transaction.category?.name || "Uncategorized"}
             </h4>
             {transaction.description && (
-              <span className="text-xs text-slate-500 truncate hidden sm:inline">
+              <span className="small text-secondary text-truncate d-none d-sm-inline" style={{ fontSize: "11px" }}>
                 • {transaction.description}
               </span>
             )}
           </div>
 
-          <div className="flex items-center gap-1.5 text-xs text-slate-500 mt-0.5 flex-wrap">
-            <span className="font-medium text-slate-700">
+          <div className="d-flex align-items-center gap-1.5 text-secondary small mt-0.5 flex-wrap" style={{ fontSize: "11px" }}>
+            <span className="fw-medium text-dark">
               {transaction.member.user.name}
             </span>
             {!isTransfer && transaction.account && (
               <>
                 <span>•</span>
-                <span className="text-slate-600 truncate">{transaction.account.name}</span>
+                <span className="text-secondary text-truncate">{transaction.account.name}</span>
               </>
             )}
             <span>•</span>
@@ -92,7 +95,7 @@ export function TransactionCard({ transaction, onClick }: TransactionCardProps) 
           </div>
 
           {transaction.description && (
-            <p className="text-xs text-slate-600 truncate sm:hidden mt-0.5">
+            <p className="small text-secondary text-truncate d-sm-none mb-0 mt-0.5" style={{ fontSize: "11px" }}>
               {transaction.description}
             </p>
           )}
@@ -100,15 +103,15 @@ export function TransactionCard({ transaction, onClick }: TransactionCardProps) 
       </div>
 
       {/* Amount with sign and color */}
-      <div className="text-right shrink-0 pl-3">
+      <div className="text-end flex-shrink-0 ps-3">
         <div
           className={cn(
-            "text-base sm:text-lg font-bold font-amount tracking-tight",
+            "fs-6 fw-bold font-amount",
             isIncome
               ? "text-income"
               : isTransfer
-              ? "text-blue-600"
-              : "text-slate-900"
+              ? "text-primary"
+              : "text-dark"
           )}
         >
           {isIncome ? "+" : isTransfer ? "⇄ " : "- "}
@@ -116,13 +119,14 @@ export function TransactionCard({ transaction, onClick }: TransactionCardProps) 
         </div>
         <span
           className={cn(
-            "text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded",
+            "badge rounded-pill fw-bold",
             isIncome
-              ? "bg-green-50 text-income"
+              ? "bg-success-subtle text-success"
               : isTransfer
-              ? "bg-blue-50 text-blue-700"
-              : "bg-red-50 text-expense"
+              ? "bg-primary-subtle text-primary"
+              : "bg-danger-subtle text-danger"
           )}
+          style={{ fontSize: "9px" }}
         >
           {isIncome ? "Income" : isTransfer ? "Transfer" : "Expense"}
         </span>

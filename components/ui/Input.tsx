@@ -12,15 +12,15 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const inputId = id || (label ? label.toLowerCase().replace(/\s+/g, "-") : undefined);
 
     return (
-      <div className="w-full">
+      <div className="w-100">
         {label && (
-          <label htmlFor={inputId} className="block text-xs font-semibold text-slate-700 mb-1.5">
+          <label htmlFor={inputId} className="form-label small fw-semibold text-dark mb-1">
             {label}
           </label>
         )}
-        <div className="relative flex items-center">
+        <div className="position-relative d-flex align-items-center">
           {prefixText && (
-            <span className="absolute left-3.5 text-slate-500 font-semibold select-none text-sm">
+            <span className="position-absolute start-0 ps-3 text-secondary fw-semibold select-none small">
               {prefixText}
             </span>
           )}
@@ -29,15 +29,15 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             ref={ref}
             type={type}
             className={cn(
-              "w-full h-11 rounded-input border border-border bg-surface px-3.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all",
-              prefixText && "pl-8",
-              error && "border-expense focus:ring-expense",
+              "form-control rounded-input py-2 px-3 small text-dark bg-surface border",
+              prefixText && "ps-5",
+              error && "is-invalid border-danger",
               className
             )}
             {...props}
           />
         </div>
-        {error && <p className="mt-1 text-xs text-expense font-medium">{error}</p>}
+        {error && <div className="text-danger small mt-1 fw-medium">{error}</div>}
       </div>
     );
   }

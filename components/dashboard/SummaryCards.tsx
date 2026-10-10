@@ -2,7 +2,7 @@
 
 import React from "react";
 import { formatCurrency } from "@/lib/utils/formatters";
-import { TrendingUp, TrendingDown, Wallet, CalendarDays, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { TrendingUp, TrendingDown, Wallet, CalendarDays } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 
 interface SummaryCardsProps {
@@ -26,64 +26,70 @@ export function SummaryCards({ metrics }: SummaryCardsProps) {
   return (
     <>
       {/* ── MOBILE: Unified Financial Health Hero (< lg) ── */}
-      <div className="lg:hidden rounded-card overflow-hidden shadow-card border border-border bg-gradient-to-br from-primary via-primary-hover to-accent text-primary-foreground">
-        <div className="px-5 pt-5 pb-4">
+      <div 
+        className="d-lg-none rounded-card overflow-hidden shadow-sm border text-white"
+        style={{
+          background: "linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 60%, var(--accent) 100%)"
+        }}
+      >
+        <div className="p-4">
           {/* Balance primary */}
-          <p className="text-xs font-semibold opacity-80 mb-0.5 tracking-wide uppercase">
+          <p className="small fw-semibold opacity-75 mb-1 text-uppercase" style={{ fontSize: "11px", letterSpacing: "0.05em" }}>
             Total Family Balance
           </p>
-          <div className="text-3xl font-bold font-amount tracking-tight">
+          <div className="display-6 fw-bold font-amount">
             {formatCurrency(metrics.currentBalance)}
           </div>
-          <p className="text-[11px] opacity-75 mt-0.5">Across all accounts</p>
+          <p className="small opacity-75 mb-0 mt-1" style={{ fontSize: "11px" }}>Across all accounts</p>
         </div>
 
         {/* Three sub-metrics row */}
-        <div className="grid grid-cols-3 border-t border-primary-foreground/15">
-          <div className="px-4 py-3 border-r border-primary-foreground/15">
-            <p className="text-[10px] font-semibold opacity-75 uppercase tracking-wide mb-0.5">
+        <div className="row g-0 border-top border-white border-opacity-25 text-center">
+          <div className="col-4 p-3 border-end border-white border-opacity-25">
+            <p className="small fw-semibold opacity-75 text-uppercase mb-1" style={{ fontSize: "10px" }}>
               Today
             </p>
-            <div className="text-base font-bold font-amount">
+            <div className="fs-6 fw-bold font-amount">
               {formatCurrency(metrics.todayExpense)}
             </div>
-            <p className="text-[10px] opacity-70">spent</p>
+            <p className="small opacity-75 mb-0" style={{ fontSize: "10px" }}>spent</p>
           </div>
 
-          <div className="px-4 py-3 border-r border-primary-foreground/15">
-            <p className="text-[10px] font-semibold opacity-75 uppercase tracking-wide mb-0.5">
+          <div className="col-4 p-3 border-end border-white border-opacity-25">
+            <p className="small fw-semibold opacity-75 text-uppercase mb-1" style={{ fontSize: "10px" }}>
               Income
             </p>
-            <div className="text-base font-bold font-amount">
+            <div className="fs-6 fw-bold font-amount">
               {formatCurrency(metrics.totalIncome)}
             </div>
-            <p className="text-[10px] opacity-70">this month</p>
+            <p className="small opacity-75 mb-0" style={{ fontSize: "10px" }}>this month</p>
           </div>
 
-          <div className="px-4 py-3">
-            <p className="text-[10px] font-semibold opacity-75 uppercase tracking-wide mb-0.5">
+          <div className="col-4 p-3">
+            <p className="small fw-semibold opacity-75 text-uppercase mb-1" style={{ fontSize: "10px" }}>
               Spent
             </p>
-            <div className="text-base font-bold font-amount">
+            <div className="fs-6 fw-bold font-amount">
               {formatCurrency(metrics.totalExpense)}
             </div>
-            <p className="text-[10px] opacity-70">this month</p>
+            <p className="small opacity-75 mb-0" style={{ fontSize: "10px" }}>this month</p>
           </div>
         </div>
 
         {/* Savings rate strip */}
         <div
           className={cn(
-            "flex items-center justify-between px-5 py-2.5 border-t border-primary-foreground/15",
-            savingsHealthy ? "bg-black/10" : "bg-black/20"
+            "d-flex align-items-center justify-content-between px-4 py-2 border-top border-white border-opacity-25",
+            savingsHealthy ? "bg-black bg-opacity-10" : "bg-black bg-opacity-25"
           )}
         >
-          <span className="text-[11px] font-semibold">Monthly Savings Rate</span>
+          <span className="small fw-semibold" style={{ fontSize: "11px" }}>Monthly Savings Rate</span>
           <span
             className={cn(
-              "text-xs font-bold px-2.5 py-0.5 rounded-full backdrop-blur-xs",
-              savingsHealthy ? "bg-white/20 text-current" : "bg-amber-500/30 text-amber-200"
+              "badge rounded-pill fw-bold px-2.5 py-1",
+              savingsHealthy ? "bg-white bg-opacity-25 text-white" : "bg-warning text-dark"
             )}
+            style={{ fontSize: "11px" }}
           >
             {savingsRate}%{savingsHealthy ? " 👍" : " ⚠️"}
           </span>
@@ -91,86 +97,107 @@ export function SummaryCards({ metrics }: SummaryCardsProps) {
       </div>
 
       {/* ── DESKTOP: 4-card grid (≥ lg) ── */}
-      <div className="hidden lg:grid grid-cols-4 gap-4">
+      <div className="d-none d-lg-flex row g-3">
         {/* Balance */}
-        <div className="p-4 rounded-card border border-border bg-surface shadow-soft flex flex-col justify-between transition-all hover:shadow-card group">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-semibold text-slate-500">Current Balance</span>
-            <div className="w-8 h-8 rounded-btn flex items-center justify-center bg-primary/10 text-primary shrink-0">
-              <Wallet className="w-4 h-4" />
+        <div className="col-3">
+          <div className="p-3 rounded-card border bg-surface shadow-sm d-flex flex-column justify-content-between h-100">
+            <div className="d-flex align-items-center justify-content-between mb-2">
+              <span className="small fw-semibold text-secondary">Current Balance</span>
+              <div 
+                className="rounded-btn d-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary flex-shrink-0"
+                style={{ width: "32px", height: "32px" }}
+              >
+                <Wallet style={{ width: "16px", height: "16px" }} />
+              </div>
             </div>
-          </div>
-          <div>
-            <div
-              className={cn(
-                "text-2xl font-bold font-amount tracking-tight",
-                balanceHealthy ? "text-slate-900" : "text-expense"
-              )}
-            >
-              {formatCurrency(metrics.currentBalance)}
+            <div>
+              <div
+                className={cn(
+                  "fs-4 fw-bold font-amount",
+                  balanceHealthy ? "text-dark" : "text-danger"
+                )}
+              >
+                {formatCurrency(metrics.currentBalance)}
+              </div>
+              <p className="text-secondary small mb-0 mt-1" style={{ fontSize: "11px" }}>Across all accounts</p>
             </div>
-            <p className="text-[11px] text-slate-400 mt-1">Across all accounts</p>
           </div>
         </div>
 
         {/* Today */}
-        <div className="p-4 rounded-card border border-border bg-surface shadow-soft flex flex-col justify-between transition-all hover:shadow-card">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-semibold text-slate-500">Today&apos;s Spending</span>
-            <div className="w-8 h-8 rounded-btn flex items-center justify-center bg-amber-500/10 text-amber-500 shrink-0">
-              <CalendarDays className="w-4 h-4" />
+        <div className="col-3">
+          <div className="p-3 rounded-card border bg-surface shadow-sm d-flex flex-column justify-content-between h-100">
+            <div className="d-flex align-items-center justify-content-between mb-2">
+              <span className="small fw-semibold text-secondary">Today&apos;s Spending</span>
+              <div 
+                className="rounded-btn d-flex align-items-center justify-content-center bg-warning bg-opacity-15 text-warning flex-shrink-0"
+                style={{ width: "32px", height: "32px" }}
+              >
+                <CalendarDays style={{ width: "16px", height: "16px" }} />
+              </div>
             </div>
-          </div>
-          <div>
-            <div className="text-2xl font-bold font-amount text-slate-900 tracking-tight">
-              {formatCurrency(metrics.todayExpense)}
+            <div>
+              <div className="fs-4 fw-bold font-amount text-dark">
+                {formatCurrency(metrics.todayExpense)}
+              </div>
+              <p className="text-secondary small mb-0 mt-1" style={{ fontSize: "11px" }}>Family expenses today</p>
             </div>
-            <p className="text-[11px] text-slate-400 mt-1">Family expenses today</p>
           </div>
         </div>
 
         {/* Month Income */}
-        <div className="p-4 rounded-card border border-border bg-surface shadow-soft flex flex-col justify-between transition-all hover:shadow-card">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-semibold text-slate-500">Month Income</span>
-            <div className="w-8 h-8 rounded-btn flex items-center justify-center bg-income/10 text-income shrink-0">
-              <TrendingUp className="w-4 h-4" />
+        <div className="col-3">
+          <div className="p-3 rounded-card border bg-surface shadow-sm d-flex flex-column justify-content-between h-100">
+            <div className="d-flex align-items-center justify-content-between mb-2">
+              <span className="small fw-semibold text-secondary">Month Income</span>
+              <div 
+                className="rounded-btn d-flex align-items-center justify-content-center bg-success bg-opacity-10 text-success flex-shrink-0"
+                style={{ width: "32px", height: "32px" }}
+              >
+                <TrendingUp style={{ width: "16px", height: "16px" }} />
+              </div>
             </div>
-          </div>
-          <div>
-            <div className="text-2xl font-bold font-amount text-income tracking-tight">
-              {formatCurrency(metrics.totalIncome)}
+            <div>
+              <div className="fs-4 fw-bold font-amount text-income">
+                {formatCurrency(metrics.totalIncome)}
+              </div>
+              <p className="text-secondary small mb-0 mt-1" style={{ fontSize: "11px" }}>Current month earnings</p>
             </div>
-            <p className="text-[11px] text-slate-400 mt-1">Current month earnings</p>
           </div>
         </div>
 
         {/* Month Expense + savings rate */}
-        <div className="p-4 rounded-card border border-border bg-surface shadow-soft flex flex-col justify-between transition-all hover:shadow-card">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-semibold text-slate-500">Month Expense</span>
-            <div className="w-8 h-8 rounded-btn flex items-center justify-center bg-expense/10 text-expense shrink-0">
-              <TrendingDown className="w-4 h-4" />
+        <div className="col-3">
+          <div className="p-3 rounded-card border bg-surface shadow-sm d-flex flex-column justify-content-between h-100">
+            <div className="d-flex align-items-center justify-content-between mb-2">
+              <span className="small fw-semibold text-secondary">Month Expense</span>
+              <div 
+                className="rounded-btn d-flex align-items-center justify-content-center bg-danger bg-opacity-10 text-danger flex-shrink-0"
+                style={{ width: "32px", height: "32px" }}
+              >
+                <TrendingDown style={{ width: "16px", height: "16px" }} />
+              </div>
             </div>
-          </div>
-          <div>
-            <div className="text-2xl font-bold font-amount text-slate-900 tracking-tight">
-              {formatCurrency(metrics.totalExpense)}
-            </div>
-            <div className="flex items-center gap-1.5 mt-1">
-              <p className="text-[11px] text-slate-400">Current month outflows</p>
-              {metrics.totalIncome > 0 && (
-                <span
-                  className={cn(
-                    "text-[10px] font-bold px-1.5 py-0.5 rounded-full ml-auto",
-                    savingsHealthy
-                      ? "bg-income/10 text-income"
-                      : "bg-warning/10 text-warning"
-                  )}
-                >
-                  {savingsRate}% saved
-                </span>
-              )}
+            <div>
+              <div className="fs-4 fw-bold font-amount text-dark">
+                {formatCurrency(metrics.totalExpense)}
+              </div>
+              <div className="d-flex align-items-center justify-content-between gap-1 mt-1">
+                <p className="text-secondary small mb-0" style={{ fontSize: "11px" }}>Month outflows</p>
+                {metrics.totalIncome > 0 && (
+                  <span
+                    className={cn(
+                      "badge rounded-pill fw-bold",
+                      savingsHealthy
+                        ? "bg-success-subtle text-success"
+                        : "bg-warning-subtle text-warning-emphasis"
+                    )}
+                    style={{ fontSize: "10px" }}
+                  >
+                    {savingsRate}% saved
+                  </span>
+                )}
+              </div>
             </div>
           </div>
         </div>

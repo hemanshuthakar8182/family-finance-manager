@@ -50,11 +50,15 @@ export function Sidebar({ onOpenQuickAdd }: SidebarProps) {
   ];
 
   return (
-    <aside className="hidden lg:flex w-64 flex-col border-r border-border bg-surface shrink-0 h-screen sticky top-0 overflow-y-auto">
+    <aside 
+      className="d-none d-lg-flex flex-column border-end bg-surface flex-shrink-0 vh-100 sticky-top overflow-y-auto"
+      style={{ width: "260px" }}
+    >
       {/* Brand logo & Family Identity */}
       <Link
         href="/dashboard"
-        className="h-16 px-5 flex items-center gap-3 border-b border-border hover:bg-slate-50/80 transition-colors"
+        className="d-flex align-items-center gap-3 px-3 py-3 border-bottom text-decoration-none"
+        style={{ minHeight: "64px" }}
         title="Go to Dashboard"
       >
         <AppLogo
@@ -62,30 +66,30 @@ export function Sidebar({ onOpenQuickAdd }: SidebarProps) {
           logoUrl={user?.familyLogoUrl}
           name={user?.familyName || "Family Finance"}
         />
-        <div className="flex flex-col min-w-0 justify-center">
-          <div className="flex items-center gap-1.5 min-w-0">
-            <span className="font-bold text-slate-900 tracking-tight text-sm truncate">
+        <div className="d-flex flex-column overflow-hidden justify-content-center">
+          <div className="d-flex align-items-center gap-1 overflow-hidden">
+            <span className="fw-bold text-dark small text-truncate">
               {user?.familyName || "Family Finance"}
             </span>
             {user?.role === "ADMIN" && (
-              <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 shrink-0 leading-none">
+              <span className="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill py-0 px-1" style={{ fontSize: "9px" }}>
                 Admin
               </span>
             )}
           </div>
-          <span className="text-xs text-slate-400 font-medium truncate mt-0.5">
+          <span className="text-secondary small text-truncate" style={{ fontSize: "11px" }}>
             Family Finance
           </span>
         </div>
       </Link>
 
       {/* Main Nav Items */}
-      <div className="flex-1 px-3 py-4 space-y-5 overflow-y-auto">
+      <div className="flex-grow-1 px-3 py-3 overflow-y-auto d-flex flex-column gap-4">
         <div>
-          <p className="px-3 text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
+          <p className="px-2 small fw-bold text-secondary text-uppercase mb-1" style={{ fontSize: "11px", letterSpacing: "0.05em" }}>
             Main
           </p>
-          <div className="space-y-1">
+          <div className="d-flex flex-column gap-1">
             {mainNav.map((item) => {
               const active = pathname === item.href || (item.href === "/dashboard" && pathname === "/");
               const Icon = item.icon;
@@ -94,14 +98,14 @@ export function Sidebar({ onOpenQuickAdd }: SidebarProps) {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "flex items-center gap-3 px-3 py-2 rounded-btn text-sm font-medium transition-colors",
+                    "d-flex align-items-center gap-3 px-3 py-2 rounded-btn small text-decoration-none transition",
                     active
-                      ? "bg-primary/10 text-primary font-semibold"
-                      : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                      ? "bg-primary bg-opacity-10 text-primary fw-bold"
+                      : "text-secondary hover-bg-light"
                   )}
                 >
-                  <Icon className={cn("w-4 h-4", active ? "text-primary" : "text-slate-400")} />
-                  {item.label}
+                  <Icon style={{ width: "16px", height: "16px" }} className={active ? "text-primary" : "text-secondary"} />
+                  <span>{item.label}</span>
                 </Link>
               );
             })}
@@ -109,10 +113,10 @@ export function Sidebar({ onOpenQuickAdd }: SidebarProps) {
         </div>
 
         <div>
-          <p className="px-3 text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
+          <p className="px-2 small fw-bold text-secondary text-uppercase mb-1" style={{ fontSize: "11px", letterSpacing: "0.05em" }}>
             Manage
           </p>
-          <div className="space-y-1">
+          <div className="d-flex flex-column gap-1">
             {managementNav.map((item) => {
               const active = pathname === item.href;
               const Icon = item.icon;
@@ -121,14 +125,14 @@ export function Sidebar({ onOpenQuickAdd }: SidebarProps) {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "flex items-center gap-3 px-3 py-2 rounded-btn text-sm font-medium transition-colors",
+                    "d-flex align-items-center gap-3 px-3 py-2 rounded-btn small text-decoration-none transition",
                     active
-                      ? "bg-primary/10 text-primary font-semibold"
-                      : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                      ? "bg-primary bg-opacity-10 text-primary fw-bold"
+                      : "text-secondary hover-bg-light"
                   )}
                 >
-                  <Icon className={cn("w-4 h-4", active ? "text-primary" : "text-slate-400")} />
-                  {item.label}
+                  <Icon style={{ width: "16px", height: "16px" }} className={active ? "text-primary" : "text-secondary"} />
+                  <span>{item.label}</span>
                 </Link>
               );
             })}
@@ -136,10 +140,10 @@ export function Sidebar({ onOpenQuickAdd }: SidebarProps) {
         </div>
 
         <div>
-          <p className="px-3 text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
+          <p className="px-2 small fw-bold text-secondary text-uppercase mb-1" style={{ fontSize: "11px", letterSpacing: "0.05em" }}>
             System
           </p>
-          <div className="space-y-1">
+          <div className="d-flex flex-column gap-1">
             {bottomNav.map((item) => {
               const active = pathname === item.href;
               const Icon = item.icon;
@@ -148,14 +152,14 @@ export function Sidebar({ onOpenQuickAdd }: SidebarProps) {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "flex items-center gap-3 px-3 py-2 rounded-btn text-sm font-medium transition-colors",
+                    "d-flex align-items-center gap-3 px-3 py-2 rounded-btn small text-decoration-none transition",
                     active
-                      ? "bg-primary/10 text-primary font-semibold"
-                      : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                      ? "bg-primary bg-opacity-10 text-primary fw-bold"
+                      : "text-secondary hover-bg-light"
                   )}
                 >
-                  <Icon className={cn("w-4 h-4", active ? "text-primary" : "text-slate-400")} />
-                  {item.label}
+                  <Icon style={{ width: "16px", height: "16px" }} className={active ? "text-primary" : "text-secondary"} />
+                  <span>{item.label}</span>
                 </Link>
               );
             })}
@@ -164,9 +168,9 @@ export function Sidebar({ onOpenQuickAdd }: SidebarProps) {
       </div>
 
       {/* Footer info */}
-      <div className="p-4 border-t border-border text-center">
-        <p className="text-[11px] text-slate-400">Family Personal Finance</p>
-        <p className="text-[10px] text-slate-400 mt-0.5">v1.0.0 Production Ready</p>
+      <div className="p-3 border-top text-center mt-auto">
+        <p className="text-secondary small mb-0" style={{ fontSize: "11px" }}>Family Personal Finance</p>
+        <p className="text-secondary small mb-0 mt-1" style={{ fontSize: "10px" }}>v1.0.0 Production Ready</p>
       </div>
     </aside>
   );

@@ -2,11 +2,8 @@
 
 import React, { useState, useRef } from "react";
 import {
-  Upload,
   Receipt,
-  Scan,
   X,
-  Check,
   RefreshCw,
   Sparkles,
   FileText,
@@ -114,14 +111,14 @@ export function ReceiptUploader({
   const isPdf = previewUrl?.toLowerCase().endsWith(".pdf");
 
   return (
-    <div className="space-y-2">
+    <div className="d-flex flex-column gap-2">
       {/* Standard file picker */}
       <input
         ref={fileInputRef}
         type="file"
         accept="image/jpeg,image/png,image/webp,application/pdf"
         onChange={handleFileSelect}
-        className="hidden"
+        className="d-none"
       />
       {/* Mobile camera direct capture */}
       <input
@@ -130,91 +127,100 @@ export function ReceiptUploader({
         accept="image/*"
         capture="environment"
         onChange={handleFileSelect}
-        className="hidden"
+        className="d-none"
       />
 
       {!previewUrl ? (
-        <div className="p-3 border-2 border-dashed border-border hover:border-primary/50 rounded-card transition-colors bg-slate-50/60 hover:bg-slate-50 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
+        <div className="p-3 border border-2 border-dashed rounded-card bg-light d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-2">
+          <div className="d-flex align-items-center gap-2">
+            <div 
+              className="rounded-btn bg-primary bg-opacity-10 d-flex align-items-center justify-content-center text-primary flex-shrink-0"
+              style={{ width: "34px", height: "34px" }}
+            >
               {uploading ? (
-                <RefreshCw className="w-4 h-4 animate-spin" />
+                <RefreshCw style={{ width: "16px", height: "16px" }} className="spinner-border spinner-border-sm" />
               ) : (
-                <Receipt className="w-4 h-4" />
+                <Receipt style={{ width: "16px", height: "16px" }} />
               )}
             </div>
             <div>
-              <p className="text-xs font-semibold text-slate-800">
+              <p className="small fw-semibold text-dark mb-0">
                 {uploading ? "Uploading receipt..." : "Attach Receipt / Bill"}
               </p>
-              <p className="text-[10px] text-slate-500">
+              <p className="text-secondary mb-0" style={{ fontSize: "10px" }}>
                 Auto-reads amount, date & merchant with AI OCR
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-1.5 self-end sm:self-auto shrink-0">
+          <div className="d-flex align-items-center gap-1 ms-auto ms-sm-0 flex-shrink-0">
             <button
               type="button"
               onClick={() => cameraInputRef.current?.click()}
-              className="text-[11px] font-semibold text-primary px-2.5 py-1.5 bg-primary/10 hover:bg-primary/20 rounded-btn transition-colors flex items-center gap-1"
+              className="btn btn-sm btn-light border text-primary fw-semibold d-inline-flex align-items-center gap-1 py-1 px-2.5 small"
+              style={{ fontSize: "11px" }}
             >
-              <Camera className="w-3.5 h-3.5" />
+              <Camera style={{ width: "14px", height: "14px" }} />
               <span>Camera</span>
             </button>
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="text-[11px] font-semibold text-slate-700 hover:text-slate-900 px-2.5 py-1.5 bg-white border border-border hover:bg-slate-50 rounded-btn shadow-2xs transition-colors"
+              className="btn btn-sm btn-light border text-dark fw-semibold py-1 px-2.5 small"
+              style={{ fontSize: "11px" }}
             >
               Browse
             </button>
           </div>
         </div>
       ) : (
-        <div className="p-3 bg-slate-50 rounded-card border border-border flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3 overflow-hidden">
+        <div className="p-3 bg-light rounded-card border d-flex align-items-center justify-content-between gap-3">
+          <div className="d-flex align-items-center gap-3 overflow-hidden">
             {isPdf ? (
-              <div className="w-10 h-10 rounded-lg bg-red-100 text-red-600 flex items-center justify-center shrink-0">
-                <FileText className="w-5 h-5" />
+              <div 
+                className="bg-danger-subtle text-danger d-flex align-items-center justify-content-center rounded flex-shrink-0"
+                style={{ width: "40px", height: "40px" }}
+              >
+                <FileText style={{ width: "20px", height: "20px" }} />
               </div>
             ) : (
               /* eslint-disable-next-line @next/next/no-img-element */
               <img
                 src={previewUrl}
                 alt="Receipt preview"
-                className="w-10 h-10 rounded-lg object-cover border border-slate-200 shrink-0"
+                className="rounded object-fit-cover border flex-shrink-0"
+                style={{ width: "40px", height: "40px" }}
               />
             )}
 
-            <div className="min-w-0">
-              <div className="flex items-center gap-1.5">
-                <span className="text-xs font-bold text-slate-800 truncate">
+            <div className="overflow-hidden">
+              <div className="d-flex align-items-center gap-1.5">
+                <span className="small fw-bold text-dark text-truncate">
                   Receipt Attached
                 </span>
-                <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-100 text-emerald-800">
+                <span className="badge bg-success-subtle text-success rounded-pill py-0 px-1" style={{ fontSize: "9px" }}>
                   Ready
                 </span>
               </div>
-              <p className="text-[10px] text-slate-500 truncate">
+              <p className="text-secondary text-truncate mb-0" style={{ fontSize: "10px" }}>
                 {previewUrl.split("/").pop()}
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-1 shrink-0">
+          <div className="d-flex align-items-center gap-1 flex-shrink-0">
             {scanning && (
-              <span className="text-[10px] font-bold text-primary flex items-center gap-1 mr-2">
-                <RefreshCw className="w-3 h-3 animate-spin" /> {scanProgress}%
+              <span className="text-primary fw-bold d-flex align-items-center gap-1 me-2" style={{ fontSize: "10px" }}>
+                <RefreshCw style={{ width: "12px", height: "12px" }} className="spinner-border spinner-border-sm" /> {scanProgress}%
               </span>
             )}
             <button
               type="button"
               onClick={handleRemove}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-white transition-colors"
+              className="btn btn-sm btn-link text-secondary p-1"
               title="Remove receipt"
             >
-              <X className="w-4 h-4" />
+              <X style={{ width: "16px", height: "16px" }} />
             </button>
           </div>
         </div>
@@ -222,16 +228,16 @@ export function ReceiptUploader({
 
       {/* OCR Detected Banner */}
       {ocrData && (ocrData.amount || ocrData.merchant) && (
-        <div className="p-2.5 bg-emerald-50/80 border border-emerald-200 rounded-lg flex items-center justify-between text-xs animate-in fade-in">
-          <div className="flex items-center gap-1.5 text-emerald-950 font-medium">
-            <Sparkles className="w-3.5 h-3.5 text-primary" />
-            <span>
+        <div className="p-2 bg-success-subtle border border-success-subtle rounded-btn d-flex align-items-center justify-content-between small">
+          <div className="d-flex align-items-center gap-1.5 text-success-emphasis fw-medium">
+            <Sparkles style={{ width: "14px", height: "14px" }} className="text-primary" />
+            <span style={{ fontSize: "11px" }}>
               Auto-filled:{" "}
               {ocrData.amount && <strong>{formatCurrency(ocrData.amount)}</strong>}
               {ocrData.merchant && ` • ${ocrData.merchant}`}
             </span>
           </div>
-          <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-100 px-1.5 py-0.5 rounded">
+          <span className="badge bg-success text-white rounded-pill py-0 px-1" style={{ fontSize: "9px" }}>
             OCR Matched
           </span>
         </div>

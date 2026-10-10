@@ -12,8 +12,6 @@ import {
   Settings,
   LogOut,
   ChevronRight,
-  Shield,
-  HelpCircle,
   Repeat,
   FileSpreadsheet,
   HandCoins,
@@ -89,16 +87,19 @@ export function MobileMoreDrawer({ isOpen, onClose }: MobileMoreDrawerProps) {
       description="Family management and application settings"
       maxWidth="md"
     >
-      <div className="space-y-2 py-1">
+      <div className="d-flex flex-column gap-2 py-1">
         {/* Quick Theme Selector Row */}
-        <div className="flex items-center justify-between p-3 rounded-card border border-border bg-surface">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-btn flex items-center justify-center bg-primary/10 text-primary">
-              <Palette className="w-5 h-5" />
+        <div className="d-flex align-items-center justify-content-between p-3 rounded-card border bg-surface">
+          <div className="d-flex align-items-center gap-3">
+            <div 
+              className="rounded-btn d-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary"
+              style={{ width: "38px", height: "38px" }}
+            >
+              <Palette style={{ width: "20px", height: "20px" }} />
             </div>
-            <div className="text-left">
-              <p className="text-sm font-semibold">Appearance Theme</p>
-              <p className="text-xs text-slate-500">Pick system accent & dark mode</p>
+            <div className="text-start">
+              <p className="small fw-bold text-dark mb-0">Appearance Theme</p>
+              <p className="small text-secondary mb-0" style={{ fontSize: "11px" }}>Pick system accent & dark mode</p>
             </div>
           </div>
           <ThemeSelector />
@@ -112,36 +113,38 @@ export function MobileMoreDrawer({ isOpen, onClose }: MobileMoreDrawerProps) {
               key={item.href}
               href={item.href}
               onClick={onClose}
-              className={`flex items-center justify-between p-3 rounded-card border transition-all ${
+              className={`d-flex align-items-center justify-content-between p-3 rounded-card border text-decoration-none transition ${
                 active
-                  ? "bg-primary/10 border-primary/20 text-primary"
-                  : "bg-surface border-border hover:bg-surface-muted text-slate-800"
+                  ? "bg-primary-subtle border-primary-subtle text-primary"
+                  : "bg-surface hover-bg-light text-dark"
               }`}
             >
-              <div className="flex items-center gap-3">
+              <div className="d-flex align-items-center gap-3">
                 <div
-                  className={`w-9 h-9 rounded-btn flex items-center justify-center ${
-                    active ? "bg-primary text-primary-foreground" : "bg-surface-muted text-slate-600"
+                  className={`rounded-btn d-flex align-items-center justify-content-center ${
+                    active ? "bg-primary text-white" : "bg-light text-secondary"
                   }`}
+                  style={{ width: "38px", height: "38px" }}
                 >
-                  <Icon className="w-5 h-5" />
+                  <Icon style={{ width: "20px", height: "20px" }} />
                 </div>
-                <div className="text-left">
-                  <p className="text-sm font-semibold">{item.label}</p>
-                  <p className="text-xs text-slate-500">{item.desc}</p>
+                <div className="text-start">
+                  <p className="small fw-bold mb-0">{item.label}</p>
+                  <p className="small text-secondary mb-0" style={{ fontSize: "11px" }}>{item.desc}</p>
                 </div>
               </div>
-              <ChevronRight className="w-4 h-4 text-slate-400" />
+              <ChevronRight style={{ width: "16px", height: "16px" }} className="text-secondary" />
             </Link>
           );
         })}
 
-        <div className="pt-3 border-t border-slate-100 mt-4">
+        <div className="pt-3 border-top mt-3">
           <button
             onClick={() => signOut({ callbackUrl: "/login" })}
-            className="w-full flex items-center justify-center gap-2 p-3 text-sm font-semibold text-expense bg-red-50 hover:bg-red-100 rounded-btn transition-colors"
+            type="button"
+            className="btn btn-outline-danger w-100 d-flex align-items-center justify-content-center gap-2 p-3 rounded-btn fw-bold small"
           >
-            <LogOut className="w-4 h-4" />
+            <LogOut style={{ width: "16px", height: "16px" }} />
             <span>Sign Out from Family</span>
           </button>
         </div>

@@ -7,14 +7,26 @@ import { Badge } from "@/components/ui/Badge";
 import { CategoryIcon } from "@/components/ui/CategoryIcon";
 import { useToast } from "@/components/ui/Toast";
 import { formatCurrency, formatTransactionDate } from "@/lib/utils/formatters";
-import { Trash2, Edit3, Calendar, Clock, User, CreditCard, ArrowRightLeft, Receipt, ExternalLink, FileText } from "lucide-react";
+import {
+  Calendar,
+  CreditCard,
+  User,
+  ArrowRightLeft,
+  Edit3,
+  Trash2,
+  FileText,
+  AlertTriangle,
+  Receipt,
+  ExternalLink,
+} from "lucide-react";
 import { useSession } from "next-auth/react";
-import { TransactionEditModal } from "./TransactionEditModal";
+import { TransactionEditModal } from "@/components/transactions/TransactionEditModal";
 
 interface TransactionDetailModalProps {
   transaction: any | null;
   isOpen: boolean;
   onClose: () => void;
+  onDeleted: () => void;
   onUpdated: () => void;
 }
 
@@ -22,10 +34,10 @@ export function TransactionDetailModal({
   transaction,
   isOpen,
   onClose,
+  onDeleted,
   onUpdated,
 }: TransactionDetailModalProps) {
   const { data: session } = useSession();
-  const currentUser = session?.user as any;
   const { showToast } = useToast();
 
   const [isDeleting, setIsDeleting] = useState(false);
@@ -36,8 +48,12 @@ export function TransactionDetailModal({
 
   const isIncome = transaction.type === "INCOME";
   const isTransfer = transaction.type === "TRANSFER";
+  const isExpense = transaction.type === "EXPENSE";
+
+  const user = session?.user as any;
   const canModify =
-    currentUser?.role === "ADMIN" || transaction.memberId === currentUser?.memberId;
+    user?.role === "ADMIN" ||
+    transaction.member?.userId === user?.id;
 
   const handleDelete = async () => {
     setIsDeleting(true);
@@ -45,39 +61,25 @@ export function TransactionDetailModal({
       const res = await fetch(`/api/transactions/${transaction.id}`, {
         method: "DELETE",
       });
+
       if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.error || "Failed to delete transaction");
+        const error = await res.json();
+        throw new Error(error.error || "Failed to delete transaction");
       }
 
-      const deletedId = transaction.id;
       showToast({
-        type: "success",
+        type: "info",
         title: "Transaction Deleted",
-        message: "The balance has been adjusted automatically.",
-        actionText: "Undo",
-        onAction: async () => {
-          try {
-            const restoreRes = await fetch(`/api/transactions/${deletedId}/restore`, {
-              method: "POST",
-            });
-            if (restoreRes.ok) {
-              showToast({ type: "success", title: "Transaction Restored" });
-              onUpdated();
-            }
-          } catch (e) {
-            console.error(e);
-          }
-        },
+        message: "The transaction has been removed and account balance restored.",
       });
 
-      onUpdated();
+      onDeleted();
       onClose();
     } catch (err: any) {
       showToast({
         type: "error",
-        title: "Error",
-        message: err.message,
+        title: "Delete Failed",
+        message: err.message || "Could not delete transaction",
       });
     } finally {
       setIsDeleting(false);
@@ -94,235 +96,252 @@ export function TransactionDetailModal({
         description="View financial record information"
         maxWidth="md"
       >
-      <div className="space-y-4 pt-1">
-        {/* Top Header Card */}
-        <div className="p-4 rounded-card border border-border bg-slate-50/75 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-3 min-w-0">
-            <div
-              className="w-12 h-12 rounded-full flex items-center justify-center text-white shadow-sm shrink-0"
-              style={{
-                backgroundColor: isTransfer
-                  ? "#0284C7"
-                  : transaction.category?.color || "#0F766E",
-              }}
-            >
-              {isTransfer ? (
-                <ArrowRightLeft className="w-5 h-5" />
-              ) : (
-                <CategoryIcon name={transaction.category?.icon || "Tag"} size={22} />
-              )}
+        <div className="d-flex flex-column gap-3 pt-1">
+          {/* Top Header Card */}
+          <div className="p-3 rounded-card border bg-light d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3">
+            <div className="d-flex align-items-center gap-3 overflow-hidden">
+              <div
+                className="rounded-circle d-flex align-items-center justify-content-center text-white shadow-sm flex-shrink-0"
+                style={{
+                  width: "44px",
+                  height: "44px",
+                  backgroundColor: isTransfer
+                    ? "#0284C7"
+                    : transaction.category?.color || "#0F766E",
+                }}
+              >
+                {isTransfer ? (
+                  <ArrowRightLeft style={{ width: "20px", height: "20px" }} />
+                ) : (
+                  <CategoryIcon name={transaction.category?.icon || "Tag"} size={20} />
+                )}
+              </div>
+              <div className="overflow-hidden">
+                <h3 className="h6 fw-bold text-dark text-truncate mb-0">
+                  {isTransfer
+                    ? `${transaction.account?.name || "Account"} → ${transaction.toAccount?.name || "Account"}`
+                    : transaction.category?.name || "Transaction"}
+                </h3>
+                <p className="small text-secondary text-truncate mb-0 mt-1" style={{ fontSize: "11px" }}>
+                  {transaction.description || (isTransfer ? "Account transfer" : "No description provided")}
+                </p>
+              </div>
             </div>
-            <div className="min-w-0 flex-1">
-              <h3 className="text-base font-bold text-foreground truncate">
-                {isTransfer
-                  ? `${transaction.account?.name || "Account"} → ${transaction.toAccount?.name || "Account"}`
-                  : transaction.category?.name || "Transaction"}
-              </h3>
-              <p className="text-xs text-muted truncate">
-                {transaction.description || (isTransfer ? "Account transfer" : "No description provided")}
-              </p>
+
+            <div className="d-flex align-items-center flex-sm-column align-items-sm-end justify-content-between gap-1 flex-shrink-0">
+              <div
+                className={`fs-5 fw-bold font-amount ${
+                  isIncome ? "text-income" : isTransfer ? "text-primary" : "text-dark"
+                }`}
+              >
+                {isIncome ? "+" : isTransfer ? "⇄ " : "-"} {formatCurrency(transaction.amount)}
+              </div>
+              <Badge variant={isIncome ? "income" : isTransfer ? "info" : "expense"}>
+                {isIncome ? "Income" : isTransfer ? "Transfer" : "Expense"}
+              </Badge>
             </div>
           </div>
 
-          <div className="text-left sm:text-right shrink-0 flex items-center sm:flex-col justify-between sm:justify-start gap-1">
-            <div
-              className={`text-xl sm:text-2xl font-bold font-amount tracking-tight ${
-                isIncome ? "text-income" : isTransfer ? "text-blue-600" : "text-foreground"
-              }`}
-            >
-              {isIncome ? "+" : isTransfer ? "⇄ " : "-"} {formatCurrency(transaction.amount)}
-            </div>
-            <Badge variant={isIncome ? "income" : isTransfer ? "info" : "expense"}>
-              {isIncome ? "Income" : isTransfer ? "Transfer" : "Expense"}
-            </Badge>
-          </div>
-        </div>
-
-        {/* Detailed Fields Grid */}
-        <div className="grid grid-cols-2 gap-3 text-xs">
-          <div className="p-3 rounded-card border border-border bg-surface">
-            <span className="text-slate-400 font-semibold flex items-center gap-1 mb-1">
-              <Calendar className="w-3.5 h-3.5" /> Date & Time
-            </span>
-            <span className="font-semibold text-slate-800">
-              {formatTransactionDate(transaction.date)}
-            </span>
-          </div>
-
-          <div className="p-3 rounded-card border border-border bg-surface">
-            <span className="text-slate-400 font-semibold flex items-center gap-1 mb-1">
-              <User className="w-3.5 h-3.5" /> Added By
-            </span>
-            <span className="font-semibold text-slate-800 truncate block">
-              {transaction.member?.user?.name || "Family Member"}
-            </span>
-          </div>
-
-          {isTransfer ? (
-            <>
-              <div className="p-3 rounded-card border border-border bg-surface">
-                <span className="text-slate-400 font-semibold flex items-center gap-1 mb-1">
-                  <CreditCard className="w-3.5 h-3.5" /> From (Source)
+          {/* Detailed Fields Grid */}
+          <div className="row g-2 small">
+            <div className="col-6">
+              <div className="p-2.5 p-sm-3 rounded-card border bg-surface h-100">
+                <span className="text-secondary fw-semibold d-flex align-items-center gap-1 mb-1" style={{ fontSize: "11px" }}>
+                  <Calendar style={{ width: "13px", height: "13px" }} /> Date & Time
                 </span>
-                <span className="font-semibold text-slate-800">
-                  {transaction.account?.name || "None"}
+                <span className="fw-semibold text-dark">
+                  {formatTransactionDate(transaction.date)}
                 </span>
               </div>
-              <div className="p-3 rounded-card border border-border bg-surface">
-                <span className="text-slate-400 font-semibold flex items-center gap-1 mb-1">
-                  <CreditCard className="w-3.5 h-3.5" /> To (Destination)
+            </div>
+
+            <div className="col-6">
+              <div className="p-2.5 p-sm-3 rounded-card border bg-surface h-100">
+                <span className="text-secondary fw-semibold d-flex align-items-center gap-1 mb-1" style={{ fontSize: "11px" }}>
+                  <User style={{ width: "13px", height: "13px" }} /> Added By
                 </span>
-                <span className="font-semibold text-slate-800">
-                  {transaction.toAccount?.name || "None"}
+                <span className="fw-semibold text-dark text-truncate d-block">
+                  {transaction.member?.user?.name || "Family Member"}
                 </span>
               </div>
-            </>
-          ) : (
-            <div className="p-3 rounded-card border border-border bg-surface col-span-2">
-              <span className="text-slate-400 font-semibold flex items-center gap-1 mb-1">
-                <CreditCard className="w-3.5 h-3.5" /> Account / Wallet
-              </span>
-              <span className="font-semibold text-slate-800">
-                {transaction.account?.name || "None (Unassigned)"}
-              </span>
             </div>
-          )}
 
-          {transaction.notes && (
-            <div className="p-3 rounded-card border border-border bg-surface col-span-2">
-              <span className="text-slate-400 font-semibold block mb-1">
-                Notes
-              </span>
-              <p className="text-slate-700 whitespace-pre-wrap">
-                {transaction.notes}
-              </p>
-            </div>
-          )}
-
-          {transaction.receiptUrl && (
-            <div className="p-3 rounded-card border border-border bg-surface col-span-2 space-y-2">
-              <span className="text-slate-400 font-semibold flex items-center gap-1.5">
-                <Receipt className="w-3.5 h-3.5 text-primary" /> Attached Bill / Receipt
-              </span>
-              <div className="flex items-center gap-3">
-                <a
-                  href={transaction.receiptUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="group relative block overflow-hidden rounded-lg border border-slate-200"
-                >
-                  {transaction.receiptUrl.toLowerCase().endsWith(".pdf") ? (
-                    <div className="w-16 h-16 bg-red-100 text-red-600 flex items-center justify-center rounded-lg">
-                      <FileText className="w-8 h-8" />
-                    </div>
-                  ) : (
-                    /* eslint-disable-next-line @next/next/no-img-element */
-                    <img
-                      src={transaction.receiptUrl}
-                      alt="Receipt thumbnail"
-                      className="w-16 h-16 object-cover group-hover:scale-105 transition-transform rounded-lg"
-                    />
-                  )}
-                  <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-[10px] font-bold transition-opacity">
-                    View
+            {isTransfer ? (
+              <>
+                <div className="col-6">
+                  <div className="p-2.5 p-sm-3 rounded-card border bg-surface h-100">
+                    <span className="text-secondary fw-semibold d-flex align-items-center gap-1 mb-1" style={{ fontSize: "11px" }}>
+                      <CreditCard style={{ width: "13px", height: "13px" }} /> From (Source)
+                    </span>
+                    <span className="fw-semibold text-dark">
+                      {transaction.account?.name || "None"}
+                    </span>
                   </div>
-                </a>
-                <div className="text-xs">
-                  <p className="font-semibold text-slate-800">Verified Receipt Document</p>
-                  <a
-                    href={transaction.receiptUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-primary hover:underline font-semibold text-xs inline-flex items-center gap-1 mt-1"
-                  >
-                    Open Document <ExternalLink className="w-3 h-3" />
-                  </a>
+                </div>
+                <div className="col-6">
+                  <div className="p-2.5 p-sm-3 rounded-card border bg-surface h-100">
+                    <span className="text-secondary fw-semibold d-flex align-items-center gap-1 mb-1" style={{ fontSize: "11px" }}>
+                      <CreditCard style={{ width: "13px", height: "13px" }} /> To (Destination)
+                    </span>
+                    <span className="fw-semibold text-dark">
+                      {transaction.toAccount?.name || "None"}
+                    </span>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className="col-12">
+                <div className="p-2.5 p-sm-3 rounded-card border bg-surface">
+                  <span className="text-secondary fw-semibold d-flex align-items-center gap-1 mb-1" style={{ fontSize: "11px" }}>
+                    <CreditCard style={{ width: "13px", height: "13px" }} /> Account / Wallet
+                  </span>
+                  <span className="fw-semibold text-dark">
+                    {transaction.account?.name || "None (Unassigned)"}
+                  </span>
                 </div>
               </div>
-            </div>
-          )}
-        </div>
+            )}
 
-        {/* Actions (Delete confirmation / Buttons) */}
-        {canModify && (
-          <div className="sticky bottom-0 -mx-4 -mb-3.5 sm:-mx-6 sm:-mb-4 px-4 sm:px-6 py-3 bg-surface/95 backdrop-blur-md border-t border-border mt-auto z-20">
-            {confirmDelete ? (
-              <div className="p-3 rounded-card bg-red-50 border border-red-200 space-y-2">
-                <p className="text-xs font-semibold text-red-900">
-                  Are you sure you want to delete this transaction? This will revert account balances.
-                </p>
-                <div className="flex gap-2">
+            {transaction.notes && (
+              <div className="col-12">
+                <div className="p-2.5 p-sm-3 rounded-card border bg-surface">
+                  <span className="text-secondary fw-semibold d-block mb-1" style={{ fontSize: "11px" }}>
+                    Notes
+                  </span>
+                  <p className="text-dark mb-0" style={{ whiteSpace: "pre-wrap" }}>
+                    {transaction.notes}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {transaction.receiptUrl && (
+              <div className="col-12">
+                <div className="p-2.5 p-sm-3 rounded-card border bg-surface d-flex flex-column gap-2">
+                  <span className="text-secondary fw-semibold d-flex align-items-center gap-1" style={{ fontSize: "11px" }}>
+                    <Receipt style={{ width: "13px", height: "13px" }} className="text-primary" /> Attached Bill / Receipt
+                  </span>
+                  <div className="d-flex align-items-center gap-3">
+                    <a
+                      href={transaction.receiptUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="rounded border overflow-hidden d-block position-relative"
+                    >
+                      {transaction.receiptUrl.toLowerCase().endsWith(".pdf") ? (
+                        <div className="bg-danger-subtle text-danger d-flex align-items-center justify-content-center rounded" style={{ width: "54px", height: "54px" }}>
+                          <FileText style={{ width: "24px", height: "24px" }} />
+                        </div>
+                      ) : (
+                        /* eslint-disable-next-line @next/next/no-img-element */
+                        <img
+                          src={transaction.receiptUrl}
+                          alt="Receipt thumbnail"
+                          className="rounded object-fit-cover"
+                          style={{ width: "54px", height: "54px" }}
+                        />
+                      )}
+                    </a>
+                    <div>
+                      <p className="fw-semibold text-dark small mb-0">Verified Receipt Document</p>
+                      <a
+                        href={transaction.receiptUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-primary fw-semibold small text-decoration-none d-inline-flex align-items-center gap-1 mt-1"
+                      >
+                        Open Document <ExternalLink style={{ width: "12px", height: "12px" }} />
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Actions Footer */}
+          {canModify && (
+            <div className="position-sticky bottom-0 bg-surface border-top pt-3 pb-2 mt-auto" style={{ zIndex: 10 }}>
+              {confirmDelete ? (
+                <div className="p-3 rounded-card bg-danger-subtle border border-danger-subtle d-flex flex-column gap-2">
+                  <div className="d-flex align-items-center gap-2 text-danger">
+                    <AlertTriangle style={{ width: "18px", height: "18px" }} />
+                    <span className="small fw-bold">Are you sure you want to delete?</span>
+                  </div>
+                  <p className="text-secondary small mb-1" style={{ fontSize: "11px" }}>
+                    This action will reverse the account balance adjustment.
+                  </p>
+                  <div className="d-flex gap-2">
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="sm"
+                      isLoading={isDeleting}
+                      onClick={handleDelete}
+                      className="flex-fill"
+                    >
+                      Yes, Delete Record
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      size="sm"
+                      onClick={() => setConfirmDelete(false)}
+                      className="small"
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="d-flex gap-2">
                   <Button
                     type="button"
-                    variant="destructive"
-                    size="sm"
-                    isLoading={isDeleting}
-                    onClick={handleDelete}
-                    className="flex-1 font-bold text-xs"
+                    variant="outline"
+                    size="md"
+                    onClick={() => setIsEditOpen(true)}
+                    className="flex-fill small fw-semibold gap-1"
                   >
-                    Yes, Delete
+                    <Edit3 style={{ width: "14px", height: "14px" }} className="text-primary" />
+                    <span>Edit</span>
                   </Button>
                   <Button
                     type="button"
                     variant="outline"
-                    size="sm"
-                    disabled={isDeleting}
-                    onClick={() => setConfirmDelete(false)}
-                    className="text-xs"
+                    size="md"
+                    onClick={() => setConfirmDelete(true)}
+                    className="flex-fill text-danger border-danger-subtle small fw-semibold gap-1"
                   >
-                    Cancel
+                    <Trash2 style={{ width: "14px", height: "14px" }} />
+                    <span>Delete</span>
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="md"
+                    onClick={onClose}
+                    className="small fw-semibold px-4"
+                  >
+                    Close
                   </Button>
                 </div>
-              </div>
-            ) : (
-              <div className="flex gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="md"
-                  onClick={() => setIsEditOpen(true)}
-                  className="flex-1 font-semibold text-xs flex items-center justify-center gap-1.5 hover:bg-surface-muted"
-                >
-                  <Edit3 className="w-3.5 h-3.5 text-primary" />
-                  <span>Edit</span>
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="md"
-                  onClick={() => setConfirmDelete(true)}
-                  className="flex-1 text-expense border-red-200 hover:bg-red-50 font-semibold text-xs flex items-center justify-center gap-1.5"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                  <span>Delete</span>
-                </Button>
-                <Button
-                  type="button"
-                  variant="secondary"
-                  size="md"
-                  onClick={onClose}
-                  className="text-xs font-semibold px-4"
-                >
-                  Close
-                </Button>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-    </Modal>
+              )}
+            </div>
+          )}
+        </div>
+      </Modal>
 
-    {/* Edit Modal rendered separately - no double backdrop/scroll lock bugs */}
-    <TransactionEditModal
-      transaction={transaction}
-      isOpen={isOpen && isEditOpen}
-      onClose={() => setIsEditOpen(false)}
-      onSuccess={() => {
-        setIsEditOpen(false);
-        onUpdated();
-        onClose();
-      }}
-    />
-  </>
+      {/* Edit Modal rendered separately - zero double backdrop / scroll locks */}
+      <TransactionEditModal
+        transaction={transaction}
+        isOpen={isOpen && isEditOpen}
+        onClose={() => setIsEditOpen(false)}
+        onSuccess={() => {
+          setIsEditOpen(false);
+          onUpdated();
+          onClose();
+        }}
+      />
+    </>
   );
 }

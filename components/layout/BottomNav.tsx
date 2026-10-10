@@ -28,66 +28,72 @@ export function BottomNav({ onOpenQuickAdd }: BottomNavProps) {
 
   return (
     <>
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface/95 backdrop-blur-md border-t border-border px-3 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom,8px))] shadow-lg">
-        <div className="max-w-md mx-auto flex items-center justify-around relative">
+      <nav 
+        className="d-lg-none position-fixed bottom-0 start-0 end-0 bg-surface border-top px-3 pt-2 shadow-lg"
+        style={{ zIndex: 1040, paddingBottom: "max(0.5rem, env(safe-area-inset-bottom, 8px))", backdropFilter: "blur(10px)" }}
+      >
+        <div className="d-flex align-items-center justify-content-around position-relative mx-auto" style={{ maxWidth: "450px" }}>
           {/* Home */}
           <Link
             href="/dashboard"
             className={cn(
-              "flex flex-col items-center justify-center py-1 px-3 rounded-lg transition-colors",
-              isHome ? "text-primary font-semibold" : "text-muted hover:text-foreground"
+              "d-flex flex-column align-items-center justify-content-center py-1 px-2 text-decoration-none transition",
+              isHome ? "text-primary fw-bold" : "text-secondary"
             )}
           >
-            <LayoutDashboard className="w-5 h-5 mb-0.5" />
-            <span className="text-[11px]">Home</span>
+            <LayoutDashboard className="mb-1" style={{ width: "20px", height: "20px" }} />
+            <span style={{ fontSize: "11px" }}>Home</span>
           </Link>
 
           {/* Transactions */}
           <Link
             href="/transactions"
             className={cn(
-              "flex flex-col items-center justify-center py-1 px-3 rounded-lg transition-colors",
-              isTransactions ? "text-primary font-semibold" : "text-muted hover:text-foreground"
+              "d-flex flex-column align-items-center justify-content-center py-1 px-2 text-decoration-none transition",
+              isTransactions ? "text-primary fw-bold" : "text-secondary"
             )}
           >
-            <Receipt className="w-5 h-5 mb-0.5" />
-            <span className="text-[11px]">Transactions</span>
+            <Receipt className="mb-1" style={{ width: "20px", height: "20px" }} />
+            <span style={{ fontSize: "11px" }}>Transactions</span>
           </Link>
 
           {/* Floating Quick Add Button */}
-          <div className="flex flex-col items-center -mt-6">
+          <div className="d-flex flex-column align-items-center" style={{ marginTop: "-24px" }}>
             <button
               onClick={onOpenQuickAdd}
+              type="button"
               aria-label="Add Transaction"
-              className="w-13 h-13 p-3.5 rounded-full bg-primary hover:bg-primary-hover text-primary-foreground shadow-floating flex items-center justify-center transform active:scale-90 transition-all duration-150 ring-4 ring-background"
+              className="btn btn-primary rounded-circle shadow-lg d-flex align-items-center justify-content-center p-0 border border-4 border-white"
+              style={{ width: "52px", height: "52px" }}
             >
-              <Plus className="w-6 h-6 stroke-[2.5]" />
+              <Plus style={{ width: "26px", height: "26px", strokeWidth: "2.5" }} />
             </button>
-            <span className="text-[10px] font-semibold text-primary mt-1">Add</span>
+            <span className="fw-semibold text-primary mt-1" style={{ fontSize: "10px" }}>Add</span>
           </div>
 
           {/* Reports */}
           <Link
             href="/reports"
             className={cn(
-              "flex flex-col items-center justify-center py-1 px-3 rounded-lg transition-colors",
-              isReports ? "text-primary font-semibold" : "text-muted hover:text-foreground"
+              "d-flex flex-column align-items-center justify-content-center py-1 px-2 text-decoration-none transition",
+              isReports ? "text-primary fw-bold" : "text-secondary"
             )}
           >
-            <BarChart3 className="w-5 h-5 mb-0.5" />
-            <span className="text-[11px]">Reports</span>
+            <BarChart3 className="mb-1" style={{ width: "20px", height: "20px" }} />
+            <span style={{ fontSize: "11px" }}>Reports</span>
           </Link>
 
           {/* More */}
           <button
             onClick={() => setIsMoreOpen(true)}
+            type="button"
             className={cn(
-              "flex flex-col items-center justify-center py-1 px-3 rounded-lg transition-colors",
-              isOther ? "text-primary font-semibold" : "text-muted hover:text-foreground"
+              "btn btn-link p-0 d-flex flex-column align-items-center justify-content-center py-1 px-2 text-decoration-none transition",
+              isOther ? "text-primary fw-bold" : "text-secondary"
             )}
           >
-            <Menu className="w-5 h-5 mb-0.5" />
-            <span className="text-[11px]">More</span>
+            <Menu className="mb-1" style={{ width: "20px", height: "20px" }} />
+            <span style={{ fontSize: "11px" }}>More</span>
           </button>
         </div>
       </nav>

@@ -10,23 +10,23 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = "primary", size = "md", isLoading = false, children, disabled, ...props }, ref) => {
     const baseStyles =
-      "inline-flex items-center justify-center font-medium transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none active:scale-[0.98] select-none";
+      "btn d-inline-flex align-items-center justify-content-center fw-medium shadow-none select-none text-decoration-none";
 
     const variants = {
-      primary: "bg-primary text-primary-foreground hover:bg-primary-hover shadow-sm",
-      secondary: "bg-surface-muted text-slate-800 hover:bg-slate-200 border border-border",
-      outline: "border border-border bg-surface text-slate-700 hover:bg-surface-muted",
-      ghost: "text-slate-600 hover:bg-surface-muted hover:text-slate-900",
-      destructive: "bg-expense text-white hover:bg-red-700 shadow-sm",
-      income: "bg-income text-white hover:bg-green-700 shadow-sm",
-      expense: "bg-expense text-white hover:bg-red-700 shadow-sm",
+      primary: "btn-primary shadow-sm text-white",
+      secondary: "btn-light border bg-surface-muted text-dark",
+      outline: "btn-outline-secondary bg-surface text-dark",
+      ghost: "btn-link text-secondary text-decoration-none hover-bg-light",
+      destructive: "btn-danger shadow-sm text-white",
+      income: "btn-success shadow-sm text-white",
+      expense: "btn-danger shadow-sm text-white",
     };
 
     const sizes = {
-      sm: "h-9 px-3 text-xs rounded-btn gap-1.5",
-      md: "h-11 px-4 text-sm rounded-btn gap-2",
-      lg: "h-12 px-6 text-base rounded-btn gap-2.5",
-      icon: "h-10 w-10 rounded-btn",
+      sm: "btn-sm rounded-btn py-1 px-3",
+      md: "rounded-btn py-2 px-3",
+      lg: "btn-lg rounded-btn py-2.5 px-4",
+      icon: "rounded-btn p-2 d-inline-flex align-items-center justify-content-center",
     };
 
     return (
@@ -37,20 +37,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         {isLoading ? (
-          <span className="flex items-center gap-2">
-            <svg
-              className="animate-spin h-4 w-4 text-current"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              ></path>
-            </svg>
+          <span className="d-inline-flex align-items-center gap-2">
+            <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true" />
             <span>Please wait...</span>
           </span>
         ) : (

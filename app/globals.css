@@ -1,6 +1,48 @@
+@import "bootstrap/dist/css/bootstrap.min.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --bs-primary: var(--primary);
+  --bs-primary-rgb: var(--primary-rgb);
+  --bs-body-bg: var(--bg);
+  --bs-body-color: var(--text-primary);
+  --bs-border-color: var(--border);
+  --bs-secondary-color: var(--text-secondary);
+}
+
+.bg-surface {
+  background-color: var(--surface) !important;
+}
+.bg-surface-muted {
+  background-color: var(--surface-muted) !important;
+}
+.text-income {
+  color: var(--income) !important;
+}
+.bg-income {
+  background-color: var(--income) !important;
+}
+.text-expense {
+  color: var(--expense) !important;
+}
+.bg-expense {
+  background-color: var(--expense) !important;
+}
+.rounded-btn {
+  border-radius: 12px;
+}
+.rounded-card {
+  border-radius: 16px;
+}
+.rounded-modal {
+  border-radius: 24px;
+}
+.rounded-input {
+  border-radius: 10px;
+}
 
 /* ========================================================
    DYNAMIC THEME DEFINITIONS

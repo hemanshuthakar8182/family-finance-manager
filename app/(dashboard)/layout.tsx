@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Header } from "@/components/layout/Header";
@@ -26,10 +26,12 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
 
   if (status === "loading") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-10 h-10 rounded-full border-4 border-primary border-t-transparent animate-spin" />
-          <p className="text-xs font-semibold text-slate-500">Loading Family Finance...</p>
+      <div className="min-vh-100 d-flex align-items-center justify-content-center bg-body">
+        <div className="d-flex flex-column align-items-center gap-3">
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+          <p className="small fw-semibold text-secondary">Loading Family Finance...</p>
         </div>
       </div>
     );
@@ -41,15 +43,18 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="min-h-screen flex bg-background">
+    <div className="min-vh-100 d-flex bg-body">
       {/* Desktop Sidebar */}
       <Sidebar onOpenQuickAdd={openQuickAdd} />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-grow-1 d-flex flex-column overflow-hidden">
         <Header onOpenQuickAdd={openQuickAdd} />
 
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto pb-24 lg:pb-8">
+        <main 
+          className="container-xl flex-grow-1 p-3 p-sm-4"
+          style={{ paddingBottom: "calc(5.5rem + env(safe-area-inset-bottom, 16px))" }}
+        >
           {children}
         </main>
 
@@ -69,6 +74,7 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
         transaction={selectedTransaction}
         isOpen={!!selectedTransaction}
         onClose={closeTransaction}
+        onDeleted={triggerRefresh}
         onUpdated={triggerRefresh}
       />
     </div>

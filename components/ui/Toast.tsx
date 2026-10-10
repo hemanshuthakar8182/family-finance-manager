@@ -39,34 +39,38 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   return (
     <ToastContext.Provider value={{ showToast }}>
       {children}
-      <div className="fixed top-4 right-4 left-4 sm:left-auto sm:w-96 z-50 flex flex-col gap-2 pointer-events-none">
+      <div 
+        className="position-fixed top-0 end-0 p-3 d-flex flex-column gap-2"
+        style={{ zIndex: 1080, maxWidth: "420px", width: "100%", pointerEvents: "none" }}
+      >
         {toasts.map((toast) => (
           <div
             key={toast.id}
             className={cn(
-              "pointer-events-auto flex items-start gap-3 p-4 rounded-card border shadow-card bg-surface transition-all duration-300 animate-in slide-in-from-top-3",
+              "toast show w-100 d-flex align-items-start gap-3 p-3 rounded-card border shadow-sm bg-surface",
               toast.type === "error"
-                ? "border-red-200 bg-red-50/90 text-red-900"
+                ? "border-danger bg-danger-subtle text-danger-emphasis"
                 : toast.type === "warning"
-                ? "border-amber-200 bg-amber-50/95 text-amber-950"
+                ? "border-warning bg-warning-subtle text-warning-emphasis"
                 : toast.type === "info"
-                ? "border-blue-200 bg-blue-50/90 text-blue-900"
-                : "border-emerald-200 bg-emerald-50/95 text-emerald-950"
+                ? "border-primary bg-primary-subtle text-primary-emphasis"
+                : "border-success bg-success-subtle text-success-emphasis"
             )}
+            style={{ pointerEvents: "auto" }}
           >
             {toast.type === "error" ? (
-              <AlertCircle className="w-5 h-5 text-expense flex-shrink-0 mt-0.5" />
+              <AlertCircle className="w-5 h-5 text-danger flex-shrink-0 mt-1" style={{ width: "20px", height: "20px" }} />
             ) : toast.type === "warning" ? (
-              <AlertTriangle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
+              <AlertTriangle className="w-5 h-5 text-warning flex-shrink-0 mt-1" style={{ width: "20px", height: "20px" }} />
             ) : toast.type === "info" ? (
-              <Info className="w-5 h-5 text-info flex-shrink-0 mt-0.5" />
+              <Info className="w-5 h-5 text-primary flex-shrink-0 mt-1" style={{ width: "20px", height: "20px" }} />
             ) : (
-              <CheckCircle2 className="w-5 h-5 text-income flex-shrink-0 mt-0.5" />
+              <CheckCircle2 className="w-5 h-5 text-success flex-shrink-0 mt-1" style={{ width: "20px", height: "20px" }} />
             )}
-            <div className="flex-1">
-              <h4 className="text-sm font-semibold">{toast.title}</h4>
+            <div className="flex-grow-1">
+              <h4 className="small fw-bold mb-0">{toast.title}</h4>
               {toast.message && (
-                <p className="text-xs text-slate-600 mt-0.5">{toast.message}</p>
+                <p className="small text-secondary mb-0 mt-1">{toast.message}</p>
               )}
               {toast.actionText && toast.onAction && (
                 <button
@@ -74,7 +78,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
                     toast.onAction?.();
                     removeToast(toast.id);
                   }}
-                  className="mt-2 text-xs font-bold text-primary hover:underline underline-offset-2"
+                  className="btn btn-link btn-sm p-0 mt-1 small fw-bold text-primary text-decoration-none"
                 >
                   {toast.actionText} →
                 </button>
@@ -82,9 +86,10 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
             </div>
             <button
               onClick={() => removeToast(toast.id)}
-              className="text-slate-400 hover:text-slate-600 p-0.5"
+              className="btn btn-sm btn-link text-secondary p-0"
+              aria-label="Close"
             >
-              <X className="w-4 h-4" />
+              <X className="w-4 h-4" style={{ width: "16px", height: "16px" }} />
             </button>
           </div>
         ))}
