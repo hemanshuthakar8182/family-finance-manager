@@ -43,16 +43,16 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="min-vh-100 d-flex bg-body">
+    <div className="vh-100 vw-100 d-flex bg-body overflow-hidden">
       {/* Desktop Sidebar */}
       <Sidebar onOpenQuickAdd={openQuickAdd} />
 
       {/* Main Content Area */}
-      <div className="flex-grow-1 d-flex flex-column overflow-hidden">
+      <div className="flex-grow-1 d-flex flex-column h-100 overflow-hidden position-relative">
         <Header onOpenQuickAdd={openQuickAdd} />
 
         <main 
-          className="container-xl flex-grow-1 p-3 p-sm-4"
+          className="container-xl flex-grow-1 p-3 p-sm-4 overflow-y-auto"
           style={{ paddingBottom: "calc(5.5rem + env(safe-area-inset-bottom, 16px))" }}
         >
           {children}

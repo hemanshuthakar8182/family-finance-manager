@@ -18,7 +18,7 @@ export function Header({ onOpenQuickAdd }: HeaderProps) {
 
   return (
     <header 
-      className="navbar sticky-top bg-surface border-bottom px-3 px-sm-4 py-2 d-flex align-items-center justify-content-between"
+      className="navbar bg-surface border-bottom px-3 px-sm-4 py-2 d-flex align-items-center justify-content-between flex-shrink-0"
       style={{ zIndex: 1030, minHeight: "64px", backdropFilter: "blur(10px)" }}
     >
       {/* Mobile Only: Brand & Family Name (hidden on desktop since sidebar shows it) */}
