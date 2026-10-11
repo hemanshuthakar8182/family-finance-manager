@@ -8,9 +8,10 @@ import { IncomeExpenseChart } from "@/components/dashboard/IncomeExpenseChart";
 import { CategoryExpenseChart } from "@/components/dashboard/CategoryExpenseChart";
 import { MemberSpendingList } from "@/components/dashboard/MemberSpendingList";
 import { RecentTransactionsWidget } from "@/components/dashboard/RecentTransactionsWidget";
+import { CurrencyDisplay } from "@/components/ui/CurrencyDisplay";
 import { Card, CardHeader, CardTitle } from "@/components/ui/Card";
 import { formatMonthYear, formatCurrency } from "@/lib/utils/formatters";
-import { Calendar, Plus, RefreshCw, CreditCard, Banknote, Smartphone, Wallet } from "lucide-react";
+import { Calendar, Plus, RefreshCw, CreditCard, Banknote, Smartphone, Wallet, ArrowUpRight } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 
 const ACCOUNT_ICON: Record<string, any> = {
@@ -22,11 +23,11 @@ const ACCOUNT_ICON: Record<string, any> = {
 };
 
 const ACCOUNT_COLOR: Record<string, string> = {
-  CASH: "text-warning bg-warning-subtle",
-  BANK: "text-primary bg-primary-subtle",
-  UPI: "text-info bg-info-subtle",
-  CREDIT_CARD: "text-danger bg-danger-subtle",
-  WALLET: "text-success bg-success-subtle",
+  CASH: "text-warning bg-warning bg-opacity-15",
+  BANK: "text-primary bg-primary bg-opacity-10",
+  UPI: "text-info bg-info bg-opacity-15",
+  CREDIT_CARD: "text-danger bg-danger bg-opacity-10",
+  WALLET: "text-success bg-success bg-opacity-10",
 };
 
 export default function DashboardPage() {
@@ -61,14 +62,54 @@ export default function DashboardPage() {
   if (isLoading && !metrics) {
     return (
       <div className="d-flex flex-column gap-4">
-        <div className="bg-light rounded-btn p-3 placeholder-glow" style={{ width: "250px", height: "40px" }} />
-        <div className="bg-light rounded-card p-4 placeholder-glow" style={{ height: "140px" }} />
+        {/* Header Skeleton */}
+        <div className="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3">
+          <div>
+            <div className="skeleton-shimmer mb-2" style={{ width: "220px", height: "28px" }} />
+            <div className="skeleton-shimmer" style={{ width: "160px", height: "16px" }} />
+          </div>
+          <div className="d-flex gap-2">
+            <div className="skeleton-shimmer" style={{ width: "100px", height: "36px" }} />
+            <div className="skeleton-shimmer" style={{ width: "130px", height: "36px" }} />
+          </div>
+        </div>
+
+        {/* 4 Cards Skeleton */}
         <div className="row g-3">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="col-12 col-md-6 col-lg-3">
-              <div className="bg-light rounded-card p-3 placeholder-glow" style={{ height: "100px" }} />
+            <div key={i} className="col-12 col-sm-6 col-lg-3">
+              <div className="card border bg-surface p-3.5 shadow-sm rounded-card" style={{ height: "128px" }}>
+                <div className="d-flex justify-content-between mb-3">
+                  <div className="skeleton-shimmer" style={{ width: "90px", height: "14px" }} />
+                  <div className="skeleton-shimmer rounded-circle" style={{ width: "32px", height: "32px" }} />
+                </div>
+                <div className="skeleton-shimmer mt-auto" style={{ width: "130px", height: "24px" }} />
+              </div>
             </div>
           ))}
+        </div>
+
+        {/* Account Strip Skeleton */}
+        <div className="d-flex gap-2">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="skeleton-shimmer" style={{ width: "160px", height: "54px" }} />
+          ))}
+        </div>
+
+        {/* Charts Grid Skeleton */}
+        <div className="row g-4">
+          <div className="col-12 col-lg-8">
+            <div className="card border bg-surface p-4 rounded-card shadow-sm" style={{ height: "340px" }}>
+              <div className="skeleton-shimmer mb-4" style={{ width: "180px", height: "20px" }} />
+              <div className="skeleton-shimmer w-100 h-75" />
+            </div>
+          </div>
+          <div className="col-12 col-lg-4">
+            <div className="card border bg-surface p-4 rounded-card shadow-sm" style={{ height: "340px" }}>
+              <div className="skeleton-shimmer mb-4" style={{ width: "160px", height: "20px" }} />
+              <div className="skeleton-shimmer w-100 h-75" />
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -79,10 +120,10 @@ export default function DashboardPage() {
       {/* ── Header & Greeting ── */}
       <div className="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3">
         <div>
-          <h1 className="h4 fw-bold text-dark mb-1">
+          <h1 className="h4 fw-bold text-foreground mb-1">
             Hello, {user?.name?.split(" ")[0] || "Family"} 👋
           </h1>
-          <p className="small text-secondary mb-0 d-flex align-items-center gap-1.5">
+          <p className="small text-muted mb-0 d-flex align-items-center gap-1.5">
             <Calendar style={{ width: "14px", height: "14px" }} />
             <span>Overview for {currentMonthStr}</span>
           </p>
@@ -93,7 +134,7 @@ export default function DashboardPage() {
             onClick={fetchAll}
             title="Refresh Dashboard"
             type="button"
-            className="btn btn-sm btn-light border text-secondary d-flex align-items-center gap-1.5 py-1.5 px-3 rounded-btn"
+            className="btn btn-sm btn-light border text-secondary d-flex align-items-center gap-1.5 py-1.5 px-3 rounded-btn shadow-sm"
           >
             <RefreshCw style={{ width: "14px", height: "14px" }} />
             <span className="d-none d-sm-inline">Refresh</span>
@@ -109,7 +150,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* ── KPI Summary ── */}
+      {/* ── KPI Summary Elevated Cards ── */}
       <SummaryCards
         metrics={{
           totalIncome: metrics?.totalIncome || 0,
@@ -121,37 +162,49 @@ export default function DashboardPage() {
 
       {/* ── Quick Account Balances Strip ── */}
       {accounts.length > 0 && (
-        <div className="d-flex gap-2 overflow-x-auto pb-1">
-          {accounts.map((acc) => {
-            const Icon = ACCOUNT_ICON[acc.type] || CreditCard;
-            const colCls = ACCOUNT_COLOR[acc.type] || "text-secondary bg-light";
-            const isCreditCard = acc.type === "CREDIT_CARD";
-            return (
-              <div
-                key={acc.id}
-                className="d-flex align-items-center gap-2 px-3 py-2 rounded-btn bg-surface border shadow-sm flex-shrink-0"
-                style={{ minWidth: "140px" }}
-              >
-                <div 
-                  className={cn("rounded-circle d-flex align-items-center justify-content-center flex-shrink-0", colCls)}
-                  style={{ width: "30px", height: "30px" }}
+        <div className="d-flex flex-column gap-2">
+          <div className="d-flex align-items-center justify-content-between px-1">
+            <span className="small fw-bold text-secondary text-uppercase" style={{ fontSize: "11px", letterSpacing: "0.05em" }}>
+              Wallets &amp; Bank Accounts
+            </span>
+            <span className="small text-secondary" style={{ fontSize: "11px" }}>
+              {accounts.length} active
+            </span>
+          </div>
+
+          <div className="d-flex gap-2.5 overflow-x-auto pb-1 no-scrollbar">
+            {accounts.map((acc) => {
+              const Icon = ACCOUNT_ICON[acc.type] || CreditCard;
+              const colCls = ACCOUNT_COLOR[acc.type] || "text-secondary bg-light";
+              const isCreditCard = acc.type === "CREDIT_CARD";
+              return (
+                <div
+                  key={acc.id}
+                  className="card-elevated d-flex align-items-center gap-2.5 px-3 py-2.5 rounded-btn flex-shrink-0 hover-lift"
+                  style={{ minWidth: "160px" }}
                 >
-                  <Icon style={{ width: "15px", height: "15px" }} />
-                </div>
-                <div className="overflow-hidden">
-                  <p className="small fw-semibold text-dark text-truncate mb-0" style={{ fontSize: "11px" }}>{acc.name}</p>
-                  <p
-                    className={cn(
-                      "small fw-bold font-amount mb-0",
-                      isCreditCard ? "text-danger" : "text-dark"
-                    )}
+                  <div 
+                    className={cn("rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 shadow-xs", colCls)}
+                    style={{ width: "32px", height: "32px" }}
                   >
-                    {isCreditCard ? "−" : ""}{formatCurrency(acc.currentBalance)}
-                  </p>
+                    <Icon style={{ width: "16px", height: "16px" }} />
+                  </div>
+                  <div className="overflow-hidden">
+                    <p className="small fw-semibold text-foreground text-truncate mb-0" style={{ fontSize: "11px" }}>
+                      {acc.name}
+                    </p>
+                    <div className="mt-0.5">
+                      <CurrencyDisplay
+                        amount={acc.currentBalance}
+                        size="xs"
+                        type={isCreditCard ? "EXPENSE" : "DEFAULT"}
+                      />
+                    </div>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       )}
 
@@ -168,7 +221,7 @@ export default function DashboardPage() {
       <div className="row g-4">
         {/* Income vs Expense Monthly Trend */}
         <div className="col-12 col-lg-8">
-          <Card className="h-100">
+          <Card className="h-100 card-elevated">
             <CardHeader>
               <CardTitle>Income vs Expense Trend</CardTitle>
               <span className="small text-secondary" style={{ fontSize: "11px" }}>Past 6 Months</span>
@@ -179,7 +232,7 @@ export default function DashboardPage() {
 
         {/* Expense by Category Donut */}
         <div className="col-12 col-lg-4">
-          <Card className="h-100">
+          <Card className="h-100 card-elevated">
             <CardHeader>
               <CardTitle>Expenses by Category</CardTitle>
               <span className="small text-secondary" style={{ fontSize: "11px" }}>{currentMonthStr}</span>
@@ -202,7 +255,7 @@ export default function DashboardPage() {
 
         {/* Family Member Spending */}
         <div className="col-12 col-lg-4">
-          <Card className="h-100">
+          <Card className="h-100 card-elevated">
             <CardHeader>
               <CardTitle>Family Member Spending</CardTitle>
               <span className="small text-secondary" style={{ fontSize: "11px" }}>{currentMonthStr}</span>

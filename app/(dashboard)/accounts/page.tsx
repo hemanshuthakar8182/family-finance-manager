@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
 import { useToast } from "@/components/ui/Toast";
 import { formatCurrency } from "@/lib/utils/formatters";
+import { CurrencyDisplay } from "@/components/ui/CurrencyDisplay";
 import {
   Plus,
   CreditCard,
@@ -163,12 +164,14 @@ export default function AccountsPage() {
 
       {/* Total Balance Banner */}
       <div
-        className="card rounded-card p-4 text-white shadow-sm border-0"
-        style={{ background: "linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%)" }}
+        className="card rounded-card p-4 text-white shadow-card border-0 position-relative overflow-hidden"
+        style={{ background: "linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 60%, var(--accent) 100%)" }}
       >
-        <p className="small fw-semibold opacity-75 mb-1">Total Family Balance</p>
-        <div className="h2 fw-bold mb-1">
-          {formatCurrency(totalBalance)}
+        <p className="small fw-semibold opacity-85 mb-1 text-uppercase" style={{ fontSize: "11px", letterSpacing: "0.05em" }}>
+          Total Family Balance
+        </p>
+        <div className="my-1">
+          <CurrencyDisplay amount={totalBalance} size="2xl" className="text-white" />
         </div>
         <p className="small opacity-75 mb-0" style={{ fontSize: "11px" }}>
           Across {accounts.length} active account{accounts.length !== 1 ? "s" : ""}
@@ -180,9 +183,9 @@ export default function AccountsPage() {
         <div className="row g-3">
           {[1, 2, 3].map((i) => (
             <div key={i} className="col-12 col-sm-6 col-lg-4">
-              <div className="card rounded-card border p-4 bg-light placeholder-glow" style={{ height: "120px" }}>
-                <span className="placeholder col-6"></span>
-                <span className="placeholder col-8 mt-2"></span>
+              <div className="card rounded-card border p-4 bg-surface shadow-xs" style={{ height: "130px" }}>
+                <div className="skeleton-shimmer mb-2" style={{ width: "120px", height: "16px" }} />
+                <div className="skeleton-shimmer" style={{ width: "160px", height: "24px" }} />
               </div>
             </div>
           ))}
@@ -202,11 +205,11 @@ export default function AccountsPage() {
             const Icon = config.icon;
             return (
               <div key={acc.id} className="col-12 col-sm-6 col-lg-4">
-                <div className="card rounded-card border bg-surface p-3 shadow-sm h-100">
+                <div className="card-elevated p-3.5 h-100 hover-lift">
                   <div className="d-flex align-items-center justify-content-between mb-3">
                     <div
-                      className="rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center flex-shrink-0"
-                      style={{ width: "36px", height: "36px" }}
+                      className="rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center flex-shrink-0 shadow-xs"
+                      style={{ width: "38px", height: "38px" }}
                     >
                       <Icon style={{ width: "18px", height: "18px" }} />
                     </div>
@@ -220,7 +223,7 @@ export default function AccountsPage() {
                         title="Edit Account Details"
                         className="btn btn-sm btn-link text-secondary p-1 text-decoration-none"
                       >
-                        <Pencil style={{ width: "16px", height: "16px" }} />
+                        <Pencil style={{ width: "15px", height: "15px" }} />
                       </button>
                       <button
                         type="button"
@@ -228,7 +231,7 @@ export default function AccountsPage() {
                         title="Reconcile balance with statement"
                         className="btn btn-sm btn-link text-secondary p-1 text-decoration-none"
                       >
-                        <Sliders style={{ width: "16px", height: "16px" }} />
+                        <Sliders style={{ width: "15px", height: "15px" }} />
                       </button>
                       <button
                         type="button"
@@ -236,17 +239,17 @@ export default function AccountsPage() {
                         title="Archive Account"
                         className="btn btn-sm btn-link text-secondary p-1 text-decoration-none"
                       >
-                        <Archive style={{ width: "16px", height: "16px" }} />
+                        <Archive style={{ width: "15px", height: "15px" }} />
                       </button>
                     </div>
                   </div>
 
-                  <h3 className="h6 fw-bold text-dark text-truncate mb-0">{acc.name}</h3>
+                  <h3 className="h6 fw-bold text-foreground text-truncate mb-0">{acc.name}</h3>
                   <p className="small text-secondary mb-0" style={{ fontSize: "11px" }}>{config.label}</p>
 
                   <div className="mt-3 pt-2 border-top">
-                    <div className="h5 fw-bold text-dark mb-0">
-                      {formatCurrency(acc.currentBalance)}
+                    <div>
+                      <CurrencyDisplay amount={acc.currentBalance} size="lg" />
                     </div>
                     <p className="small text-secondary mb-0 mt-1" style={{ fontSize: "11px" }}>
                       {acc._count?.transactions || 0} transactions •{" "}

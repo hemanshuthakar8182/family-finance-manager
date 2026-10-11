@@ -2,7 +2,8 @@
 
 import React from "react";
 import { formatCurrency } from "@/lib/utils/formatters";
-import { TrendingUp, TrendingDown, Wallet, CalendarDays } from "lucide-react";
+import { CurrencyDisplay } from "@/components/ui/CurrencyDisplay";
+import { TrendingUp, TrendingDown, Wallet, CalendarDays, ArrowUpRight, ArrowDownRight, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 
 interface SummaryCardsProps {
@@ -27,40 +28,62 @@ export function SummaryCards({ metrics }: SummaryCardsProps) {
     <>
       {/* ── MOBILE: Unified Financial Health Hero (< lg) ── */}
       <div 
-        className="d-lg-none rounded-card overflow-hidden shadow-sm border text-white"
+        className="d-lg-none rounded-card overflow-hidden shadow-card border border-white border-opacity-10 text-white"
         style={{
-          background: "linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 60%, var(--accent) 100%)"
+          background: "linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 65%, var(--accent) 100%)"
         }}
       >
-        <div className="p-4">
+        <div className="p-4 position-relative">
+          {/* Subtle Ambient Glow */}
+          <div
+            className="position-absolute end-0 top-0 rounded-circle"
+            style={{
+              width: "160px",
+              height: "160px",
+              background: "radial-gradient(circle, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0) 70%)",
+              pointerEvents: "none",
+            }}
+          />
+
           {/* Balance primary */}
-          <p className="small fw-semibold opacity-75 mb-1 text-uppercase" style={{ fontSize: "11px", letterSpacing: "0.05em" }}>
-            Total Family Balance
-          </p>
-          <div className="display-6 fw-bold font-amount">
-            {formatCurrency(metrics.currentBalance)}
+          <div className="d-flex align-items-center justify-content-between mb-1">
+            <span className="small fw-semibold opacity-85 text-uppercase" style={{ fontSize: "11px", letterSpacing: "0.06em" }}>
+              Total Family Balance
+            </span>
+            <span className="badge rounded-pill bg-white bg-opacity-20 text-white py-0.5 px-2" style={{ fontSize: "10px" }}>
+              Live Ledger
+            </span>
           </div>
-          <p className="small opacity-75 mb-0 mt-1" style={{ fontSize: "11px" }}>Across all accounts</p>
+
+          <div className="my-1">
+            <CurrencyDisplay
+              amount={metrics.currentBalance}
+              size="2xl"
+              className="text-white"
+              showDecimals={false}
+            />
+          </div>
+          <p className="small opacity-75 mb-0" style={{ fontSize: "11px" }}>Across all bank accounts &amp; cash wallets</p>
         </div>
 
         {/* Three sub-metrics row */}
-        <div className="row g-0 border-top border-white border-opacity-25 text-center">
-          <div className="col-4 p-3 border-end border-white border-opacity-25">
+        <div className="row g-0 border-top border-white border-opacity-20 text-center">
+          <div className="col-4 p-3 border-end border-white border-opacity-20">
             <p className="small fw-semibold opacity-75 text-uppercase mb-1" style={{ fontSize: "10px" }}>
               Today
             </p>
-            <div className="fs-6 fw-bold font-amount">
-              {formatCurrency(metrics.todayExpense)}
+            <div>
+              <CurrencyDisplay amount={metrics.todayExpense} size="sm" className="text-white" />
             </div>
             <p className="small opacity-75 mb-0" style={{ fontSize: "10px" }}>spent</p>
           </div>
 
-          <div className="col-4 p-3 border-end border-white border-opacity-25">
+          <div className="col-4 p-3 border-end border-white border-opacity-20">
             <p className="small fw-semibold opacity-75 text-uppercase mb-1" style={{ fontSize: "10px" }}>
               Income
             </p>
-            <div className="fs-6 fw-bold font-amount">
-              {formatCurrency(metrics.totalIncome)}
+            <div>
+              <CurrencyDisplay amount={metrics.totalIncome} size="sm" className="text-white" />
             </div>
             <p className="small opacity-75 mb-0" style={{ fontSize: "10px" }}>this month</p>
           </div>
@@ -69,8 +92,8 @@ export function SummaryCards({ metrics }: SummaryCardsProps) {
             <p className="small fw-semibold opacity-75 text-uppercase mb-1" style={{ fontSize: "10px" }}>
               Spent
             </p>
-            <div className="fs-6 fw-bold font-amount">
-              {formatCurrency(metrics.totalExpense)}
+            <div>
+              <CurrencyDisplay amount={metrics.totalExpense} size="sm" className="text-white" />
             </div>
             <p className="small opacity-75 mb-0" style={{ fontSize: "10px" }}>this month</p>
           </div>
@@ -79,8 +102,8 @@ export function SummaryCards({ metrics }: SummaryCardsProps) {
         {/* Savings rate strip */}
         <div
           className={cn(
-            "d-flex align-items-center justify-content-between px-4 py-2 border-top border-white border-opacity-25",
-            savingsHealthy ? "bg-black bg-opacity-10" : "bg-black bg-opacity-25"
+            "d-flex align-items-center justify-content-between px-4 py-2 border-top border-white border-opacity-20",
+            savingsHealthy ? "bg-black bg-opacity-15" : "bg-black bg-opacity-30"
           )}
         >
           <span className="small fw-semibold" style={{ fontSize: "11px" }}>Monthly Savings Rate</span>
@@ -91,99 +114,134 @@ export function SummaryCards({ metrics }: SummaryCardsProps) {
             )}
             style={{ fontSize: "11px" }}
           >
-            {savingsRate}%{savingsHealthy ? " 👍" : " ⚠️"}
+            {savingsRate}%{savingsHealthy ? " 🎯 On Track" : " ⚠️ Under Target"}
           </span>
         </div>
       </div>
 
-      {/* ── DESKTOP: 4-card grid (≥ lg) ── */}
+      {/* ── DESKTOP: 4-card elevated fintech grid (≥ lg) ── */}
       <div className="d-none d-lg-flex row g-3">
-        {/* Balance */}
+        {/* Balance Card */}
         <div className="col-3">
-          <div className="p-3 rounded-card border bg-surface shadow-sm d-flex flex-column justify-content-between h-100">
-            <div className="d-flex align-items-center justify-content-between mb-2">
-              <span className="small fw-semibold text-secondary">Current Balance</span>
+          <div className="p-3.5 card-elevated card-accent-primary d-flex flex-column justify-content-between h-100">
+            <div className="d-flex align-items-center justify-content-between mb-3">
+              <span className="small fw-bold text-secondary text-uppercase" style={{ fontSize: "11px", letterSpacing: "0.04em" }}>
+                Total Balance
+              </span>
               <div 
-                className="rounded-btn d-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary flex-shrink-0"
-                style={{ width: "32px", height: "32px" }}
+                className="rounded-circle d-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary flex-shrink-0"
+                style={{ width: "36px", height: "36px" }}
               >
-                <Wallet style={{ width: "16px", height: "16px" }} />
+                <Wallet style={{ width: "18px", height: "18px" }} />
               </div>
             </div>
             <div>
-              <div
-                className={cn(
-                  "fs-4 fw-bold font-amount",
-                  balanceHealthy ? "text-dark" : "text-danger"
-                )}
-              >
-                {formatCurrency(metrics.currentBalance)}
+              <div>
+                <CurrencyDisplay
+                  amount={metrics.currentBalance}
+                  size="xl"
+                  type={balanceHealthy ? "DEFAULT" : "EXPENSE"}
+                />
               </div>
-              <p className="text-secondary small mb-0 mt-1" style={{ fontSize: "11px" }}>Across all accounts</p>
+              <div className="d-flex align-items-center gap-1.5 mt-2">
+                <span className="badge rounded-pill bg-light border text-secondary fw-medium" style={{ fontSize: "10px" }}>
+                  All Accounts
+                </span>
+                <span className="small text-secondary" style={{ fontSize: "11px" }}>
+                  Family net liquid cash
+                </span>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Today */}
+        {/* Today Card */}
         <div className="col-3">
-          <div className="p-3 rounded-card border bg-surface shadow-sm d-flex flex-column justify-content-between h-100">
-            <div className="d-flex align-items-center justify-content-between mb-2">
-              <span className="small fw-semibold text-secondary">Today&apos;s Spending</span>
+          <div className="p-3.5 card-elevated card-accent-warning d-flex flex-column justify-content-between h-100">
+            <div className="d-flex align-items-center justify-content-between mb-3">
+              <span className="small fw-bold text-secondary text-uppercase" style={{ fontSize: "11px", letterSpacing: "0.04em" }}>
+                Today&apos;s Spend
+              </span>
               <div 
-                className="rounded-btn d-flex align-items-center justify-content-center bg-warning bg-opacity-15 text-warning flex-shrink-0"
-                style={{ width: "32px", height: "32px" }}
+                className="rounded-circle d-flex align-items-center justify-content-center bg-warning bg-opacity-15 text-warning flex-shrink-0"
+                style={{ width: "36px", height: "36px" }}
               >
-                <CalendarDays style={{ width: "16px", height: "16px" }} />
+                <CalendarDays style={{ width: "18px", height: "18px" }} />
               </div>
             </div>
             <div>
-              <div className="fs-4 fw-bold font-amount text-dark">
-                {formatCurrency(metrics.todayExpense)}
+              <div>
+                <CurrencyDisplay
+                  amount={metrics.todayExpense}
+                  size="xl"
+                />
               </div>
-              <p className="text-secondary small mb-0 mt-1" style={{ fontSize: "11px" }}>Family expenses today</p>
+              <div className="d-flex align-items-center gap-1 mt-2">
+                <span className="small text-secondary" style={{ fontSize: "11px" }}>
+                  Daily household outflow
+                </span>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Month Income */}
+        {/* Month Income Card */}
         <div className="col-3">
-          <div className="p-3 rounded-card border bg-surface shadow-sm d-flex flex-column justify-content-between h-100">
-            <div className="d-flex align-items-center justify-content-between mb-2">
-              <span className="small fw-semibold text-secondary">Month Income</span>
+          <div className="p-3.5 card-elevated card-accent-success d-flex flex-column justify-content-between h-100">
+            <div className="d-flex align-items-center justify-content-between mb-3">
+              <span className="small fw-bold text-secondary text-uppercase" style={{ fontSize: "11px", letterSpacing: "0.04em" }}>
+                Month Income
+              </span>
               <div 
-                className="rounded-btn d-flex align-items-center justify-content-center bg-success bg-opacity-10 text-success flex-shrink-0"
-                style={{ width: "32px", height: "32px" }}
+                className="rounded-circle d-flex align-items-center justify-content-center bg-success bg-opacity-10 text-success flex-shrink-0"
+                style={{ width: "36px", height: "36px" }}
               >
-                <TrendingUp style={{ width: "16px", height: "16px" }} />
+                <TrendingUp style={{ width: "18px", height: "18px" }} />
               </div>
             </div>
             <div>
-              <div className="fs-4 fw-bold font-amount text-income">
-                {formatCurrency(metrics.totalIncome)}
+              <div>
+                <CurrencyDisplay
+                  amount={metrics.totalIncome}
+                  size="xl"
+                  type="INCOME"
+                />
               </div>
-              <p className="text-secondary small mb-0 mt-1" style={{ fontSize: "11px" }}>Current month earnings</p>
+              <div className="d-flex align-items-center gap-1.5 mt-2">
+                <span className="badge rounded-pill bg-success-subtle text-success fw-semibold" style={{ fontSize: "10px" }}>
+                  <ArrowUpRight style={{ width: "12px", height: "12px" }} /> Inflows
+                </span>
+                <span className="small text-secondary" style={{ fontSize: "11px" }}>
+                  Earned this month
+                </span>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Month Expense + savings rate */}
+        {/* Month Expense Card */}
         <div className="col-3">
-          <div className="p-3 rounded-card border bg-surface shadow-sm d-flex flex-column justify-content-between h-100">
-            <div className="d-flex align-items-center justify-content-between mb-2">
-              <span className="small fw-semibold text-secondary">Month Expense</span>
+          <div className="p-3.5 card-elevated card-accent-danger d-flex flex-column justify-content-between h-100">
+            <div className="d-flex align-items-center justify-content-between mb-3">
+              <span className="small fw-bold text-secondary text-uppercase" style={{ fontSize: "11px", letterSpacing: "0.04em" }}>
+                Month Expense
+              </span>
               <div 
-                className="rounded-btn d-flex align-items-center justify-content-center bg-danger bg-opacity-10 text-danger flex-shrink-0"
-                style={{ width: "32px", height: "32px" }}
+                className="rounded-circle d-flex align-items-center justify-content-center bg-danger bg-opacity-10 text-danger flex-shrink-0"
+                style={{ width: "36px", height: "36px" }}
               >
-                <TrendingDown style={{ width: "16px", height: "16px" }} />
+                <TrendingDown style={{ width: "18px", height: "18px" }} />
               </div>
             </div>
             <div>
-              <div className="fs-4 fw-bold font-amount text-dark">
-                {formatCurrency(metrics.totalExpense)}
+              <div>
+                <CurrencyDisplay
+                  amount={metrics.totalExpense}
+                  size="xl"
+                />
               </div>
-              <div className="d-flex align-items-center justify-content-between gap-1 mt-1">
-                <p className="text-secondary small mb-0" style={{ fontSize: "11px" }}>Month outflows</p>
+              <div className="d-flex align-items-center justify-content-between gap-1 mt-2">
+                <span className="small text-secondary" style={{ fontSize: "11px" }}>Total spent</span>
                 {metrics.totalIncome > 0 && (
                   <span
                     className={cn(

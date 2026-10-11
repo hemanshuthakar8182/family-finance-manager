@@ -2,7 +2,8 @@
 
 import React from "react";
 import { CategoryIcon } from "@/components/ui/CategoryIcon";
-import { formatCurrency, formatTransactionDate } from "@/lib/utils/formatters";
+import { formatTransactionDate } from "@/lib/utils/formatters";
+import { CurrencyDisplay } from "@/components/ui/CurrencyDisplay";
 import { ArrowRightLeft } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 
@@ -43,7 +44,7 @@ export function TransactionCard({ transaction, onClick }: TransactionCardProps) 
       onClick={onClick}
       role="button"
       tabIndex={0}
-      className="d-flex align-items-center justify-content-between p-3 rounded-card border bg-surface hover-bg-light transition shadow-sm text-start"
+      className="card-elevated d-flex align-items-center justify-content-between p-3 rounded-card border bg-surface hover-lift text-start"
       style={{ cursor: "pointer" }}
     >
       <div className="d-flex align-items-center gap-3 overflow-hidden">
@@ -102,24 +103,19 @@ export function TransactionCard({ transaction, onClick }: TransactionCardProps) 
         </div>
       </div>
 
-      {/* Amount with sign and color */}
+      {/* Amount with tabular formatting and badge */}
       <div className="text-end flex-shrink-0 ps-3">
-        <div
-          className={cn(
-            "fs-6 fw-bold font-amount",
-            isIncome
-              ? "text-income"
-              : isTransfer
-              ? "text-primary"
-              : "text-dark"
-          )}
-        >
-          {isIncome ? "+" : isTransfer ? "⇄ " : "- "}
-          {formatCurrency(transaction.amount)}
+        <div>
+          <CurrencyDisplay
+            amount={transaction.amount}
+            showSign={true}
+            type={transaction.type}
+            size="sm"
+          />
         </div>
         <span
           className={cn(
-            "badge rounded-pill fw-bold",
+            "badge rounded-pill fw-bold mt-0.5",
             isIncome
               ? "bg-success-subtle text-success"
               : isTransfer

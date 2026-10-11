@@ -194,9 +194,21 @@ export default function TransactionsPage() {
 
       {/* ── Transaction List ── */}
       {isLoading ? (
-        <div className="d-flex flex-column gap-3">
-          {[1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="bg-light rounded-card p-4 placeholder-glow" style={{ height: "64px" }} />
+        <div className="d-flex flex-column gap-2">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div key={i} className="card rounded-card border bg-surface p-3 d-flex flex-row align-items-center justify-content-between shadow-xs">
+              <div className="d-flex align-items-center gap-3">
+                <div className="skeleton-shimmer rounded-circle" style={{ width: "38px", height: "38px" }} />
+                <div className="d-flex flex-column gap-1.5">
+                  <div className="skeleton-shimmer" style={{ width: "130px", height: "14px" }} />
+                  <div className="skeleton-shimmer" style={{ width: "90px", height: "11px" }} />
+                </div>
+              </div>
+              <div className="d-flex flex-column align-items-end gap-1.5">
+                <div className="skeleton-shimmer" style={{ width: "70px", height: "16px" }} />
+                <div className="skeleton-shimmer rounded-pill" style={{ width: "45px", height: "12px" }} />
+              </div>
+            </div>
           ))}
         </div>
       ) : transactions.length === 0 ? (

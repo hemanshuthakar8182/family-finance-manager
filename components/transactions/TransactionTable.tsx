@@ -3,7 +3,8 @@
 import React from "react";
 import { CategoryIcon } from "@/components/ui/CategoryIcon";
 import { Badge } from "@/components/ui/Badge";
-import { formatCurrency, formatTransactionDate } from "@/lib/utils/formatters";
+import { formatTransactionDate } from "@/lib/utils/formatters";
+import { CurrencyDisplay } from "@/components/ui/CurrencyDisplay";
 import { ArrowRightLeft } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 
@@ -22,7 +23,7 @@ export function TransactionTable({ transactions, onSelectTransaction }: Transact
       <table className="table table-hover align-middle mb-0 small">
         <thead className="table-light border-bottom">
           <tr className="text-secondary text-uppercase" style={{ fontSize: "11px", letterSpacing: "0.05em" }}>
-            <th className="py-3 px-3">Date & Time</th>
+            <th className="py-3 px-3">Date &amp; Time</th>
             <th className="py-3 px-3">Category / Direction</th>
             <th className="py-3 px-3">Description</th>
             <th className="py-3 px-3">Member</th>
@@ -101,19 +102,12 @@ export function TransactionTable({ transactions, onSelectTransaction }: Transact
                   </Badge>
                 </td>
                 <td className="py-3 px-3 text-end text-nowrap">
-                  <span
-                    className={cn(
-                      "fw-bold font-amount fs-6",
-                      isIncome
-                        ? "text-income"
-                        : isTransfer
-                        ? "text-primary"
-                        : "text-dark"
-                    )}
-                  >
-                    {isIncome ? "+" : isTransfer ? "⇄ " : "- "}
-                    {formatCurrency(t.amount)}
-                  </span>
+                  <CurrencyDisplay
+                    amount={t.amount}
+                    showSign={true}
+                    type={t.type}
+                    size="sm"
+                  />
                 </td>
               </tr>
             );
