@@ -49,25 +49,25 @@ export function ForecastingWidget({
     totalIncome > 0 && projectedMonthTotalExpense <= totalIncome * 0.8;
 
   return (
-    <div className="card-elevated p-3.5 p-sm-4 bg-surface position-relative overflow-hidden">
+    <div className="card-elevated p-3.5 p-sm-4 bg-surface position-relative overflow-hidden border">
       {/* Top Banner Header */}
-      <div className="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-2 mb-3">
-        <div className="d-flex align-items-center gap-2">
+      <div className="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-2 mb-3.5">
+        <div className="d-flex align-items-center gap-2.5">
           <div
-            className="rounded-circle d-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary flex-shrink-0"
-            style={{ width: "32px", height: "32px" }}
+            className="rounded-circle d-flex align-items-center justify-content-center bg-primary-soft flex-shrink-0 shadow-xs"
+            style={{ width: "36px", height: "36px" }}
           >
-            <Sparkles style={{ width: "16px", height: "16px" }} />
+            <Sparkles style={{ width: "18px", height: "18px" }} />
           </div>
           <div>
             <h3 className="h6 fw-bold text-foreground mb-0 d-flex align-items-center gap-2">
               <span>Smart Cashflow Forecast</span>
-              <span className="badge rounded-pill bg-light border text-secondary fw-semibold" style={{ fontSize: "10px" }}>
+              <span className="badge rounded-pill bg-primary-soft fw-semibold px-2 py-0.5" style={{ fontSize: "10px" }}>
                 AI Model
               </span>
             </h3>
             <p className="small text-secondary mb-0" style={{ fontSize: "11px" }}>
-              Day {dayOfMonth} of {daysInMonth} ({daysRemaining} days left in {now.toLocaleString("en-US", { month: "short" })})
+              Day {dayOfMonth} of {daysInMonth} &bull; {daysRemaining} days remaining in {now.toLocaleString("en-US", { month: "long" })}
             </p>
           </div>
         </div>
@@ -76,12 +76,12 @@ export function ForecastingWidget({
         <div>
           <span
             className={cn(
-              "badge rounded-pill d-inline-flex align-items-center gap-1.5 py-1.5 px-3 fw-bold",
+              "badge rounded-pill d-inline-flex align-items-center gap-1.5 py-1.5 px-3 fw-bold shadow-xs",
               isThrivingPace
-                ? "bg-success-subtle text-success border border-success-subtle"
+                ? "bg-success-soft"
                 : isHealthyPace
-                ? "bg-primary-subtle text-primary border border-primary-subtle"
-                : "bg-warning-subtle text-warning-emphasis border border-warning-subtle"
+                ? "bg-primary-soft"
+                : "bg-warning-soft"
             )}
             style={{ fontSize: "11px" }}
           >
@@ -106,81 +106,106 @@ export function ForecastingWidget({
       </div>
 
       {/* 3 Smart Predictive KPI Columns */}
-      <div className="row g-2.5">
+      <div className="row g-3">
         {/* Metric 1: Current Daily Burn Rate */}
         <div className="col-12 col-md-4">
-          <div className="p-3 rounded-card bg-light border d-flex flex-column justify-content-between h-100">
-            <div className="d-flex align-items-center justify-content-between mb-1">
-              <span className="small fw-semibold text-secondary" style={{ fontSize: "11px" }}>
+          <div className="p-3 rounded-card bg-surface border shadow-xs hover-lift d-flex flex-column justify-content-between h-100">
+            <div className="d-flex align-items-center justify-content-between mb-2">
+              <span className="small fw-semibold text-secondary" style={{ fontSize: "11px", letterSpacing: "0.02em" }}>
                 Current Daily Burn
               </span>
-              <Flame style={{ width: "15px", height: "15px" }} className="text-warning" />
+              <div 
+                className="rounded-circle d-flex align-items-center justify-content-center bg-warning-soft flex-shrink-0"
+                style={{ width: "28px", height: "28px" }}
+              >
+                <Flame style={{ width: "14px", height: "14px" }} />
+              </div>
             </div>
             <div>
-              <CurrencyDisplay amount={dailyBurnRate} size="md" />
-              <span className="small text-secondary ms-1" style={{ fontSize: "11px" }}>
-                / day
-              </span>
+              <div className="d-flex align-items-baseline gap-1">
+                <CurrencyDisplay amount={dailyBurnRate} size="lg" />
+                <span className="small text-secondary fw-medium" style={{ fontSize: "11px" }}>
+                  / day
+                </span>
+              </div>
+              <p className="small text-secondary mb-0 mt-1" style={{ fontSize: "10px" }}>
+                Averaged over first {dayOfMonth} days
+              </p>
             </div>
-            <p className="small text-secondary mb-0 mt-1" style={{ fontSize: "10px" }}>
-              Averaged over {dayOfMonth} days
-            </p>
           </div>
         </div>
 
-        {/* Metric 2: Projected Month-End Balance */}
+        {/* Metric 2: Projected Month Outflow */}
         <div className="col-12 col-md-4">
-          <div className="p-3 rounded-card bg-light border d-flex flex-column justify-content-between h-100">
-            <div className="d-flex align-items-center justify-content-between mb-1">
-              <span className="small fw-semibold text-secondary" style={{ fontSize: "11px" }}>
-                Projected Month-End Balance
+          <div className="p-3 rounded-card bg-surface border shadow-xs hover-lift d-flex flex-column justify-content-between h-100">
+            <div className="d-flex align-items-center justify-content-between mb-2">
+              <span className="small fw-semibold text-secondary" style={{ fontSize: "11px", letterSpacing: "0.02em" }}>
+                Projected Month Outflow
               </span>
-              <PiggyBank style={{ width: "15px", height: "15px" }} className="text-primary" />
+              <div 
+                className="rounded-circle d-flex align-items-center justify-content-center bg-danger-soft flex-shrink-0"
+                style={{ width: "28px", height: "28px" }}
+              >
+                <TrendingUp style={{ width: "14px", height: "14px" }} />
+              </div>
             </div>
             <div>
-              <CurrencyDisplay
-                amount={projectedClosingBalance}
-                size="md"
-                type={projectedClosingBalance >= 0 ? "DEFAULT" : "EXPENSE"}
-              />
+              <div className="d-flex align-items-baseline gap-1">
+                <CurrencyDisplay
+                  amount={projectedMonthTotalExpense}
+                  size="lg"
+                  type="EXPENSE"
+                />
+              </div>
+              <p className="small text-secondary mb-0 mt-1" style={{ fontSize: "10px" }}>
+                Total spend expected at current pace
+              </p>
             </div>
-            <p className="small text-secondary mb-0 mt-1" style={{ fontSize: "10px" }}>
-              Estimated balance on day {daysInMonth}
-            </p>
           </div>
         </div>
 
-        {/* Metric 3: Safe Daily Budget */}
+        {/* Metric 3: Safe Daily Budget Allowance */}
         <div className="col-12 col-md-4">
-          <div className="p-3 rounded-card bg-light border d-flex flex-column justify-content-between h-100">
-            <div className="d-flex align-items-center justify-content-between mb-1">
-              <span className="small fw-semibold text-secondary" style={{ fontSize: "11px" }}>
-                Safe Spending Cap
+          <div className="p-3 rounded-card bg-surface border shadow-xs hover-lift d-flex flex-column justify-content-between h-100">
+            <div className="d-flex align-items-center justify-content-between mb-2">
+              <span className="small fw-semibold text-secondary" style={{ fontSize: "11px", letterSpacing: "0.02em" }}>
+                Safe Daily Spending Cap
               </span>
-              <Calendar style={{ width: "15px", height: "15px" }} className="text-success" />
+              <div 
+                className="rounded-circle d-flex align-items-center justify-content-center bg-success-soft flex-shrink-0"
+                style={{ width: "28px", height: "28px" }}
+              >
+                <Calendar style={{ width: "14px", height: "14px" }} />
+              </div>
             </div>
             <div>
-              <CurrencyDisplay amount={safeDailyBudget} size="md" />
-              <span className="small text-secondary ms-1" style={{ fontSize: "11px" }}>
-                / day
-              </span>
+              <div className="d-flex align-items-baseline gap-1">
+                <CurrencyDisplay amount={safeDailyBudget} size="lg" />
+                <span className="small text-secondary fw-medium" style={{ fontSize: "11px" }}>
+                  / day
+                </span>
+              </div>
+              <p className="small text-secondary mb-0 mt-1" style={{ fontSize: "10px" }}>
+                Daily cap to maintain positive reserves
+              </p>
             </div>
-            <p className="small text-secondary mb-0 mt-1" style={{ fontSize: "10px" }}>
-              Daily allowance for next {daysRemaining} days
-            </p>
           </div>
         </div>
       </div>
 
       {/* Month Progress Strip */}
-      <div className="mt-3 pt-2.5 border-top d-flex align-items-center gap-3">
+      <div className="mt-3 pt-3 border-top d-flex align-items-center gap-3">
         <span className="small fw-semibold text-secondary flex-shrink-0" style={{ fontSize: "11px" }}>
-          Month Elapsed: {monthPercentElapsed}%
+          Month Elapsed: <span className="text-foreground fw-bold">{monthPercentElapsed}%</span>
         </span>
-        <div className="progress flex-grow-1 bg-light rounded-pill" style={{ height: "6px" }}>
+        <div className="progress flex-grow-1 bg-light rounded-pill overflow-hidden shadow-xs" style={{ height: "7px" }}>
           <div
-            className="progress-bar rounded-pill bg-primary"
-            style={{ width: `${monthPercentElapsed}%` }}
+            className="progress-bar rounded-pill"
+            style={{
+              width: `${monthPercentElapsed}%`,
+              background: "linear-gradient(90deg, #4F46E5 0%, #06B6D4 50%, #10B981 100%)",
+              transition: "width 0.6s cubic-bezier(0.16, 1, 0.3, 1)",
+            }}
           />
         </div>
         <span className="small text-secondary flex-shrink-0" style={{ fontSize: "11px" }}>

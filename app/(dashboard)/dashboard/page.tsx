@@ -24,11 +24,11 @@ const ACCOUNT_ICON: Record<string, any> = {
 };
 
 const ACCOUNT_COLOR: Record<string, string> = {
-  CASH: "text-warning bg-warning bg-opacity-15",
-  BANK: "text-primary bg-primary bg-opacity-10",
-  UPI: "text-info bg-info bg-opacity-15",
-  CREDIT_CARD: "text-danger bg-danger bg-opacity-10",
-  WALLET: "text-success bg-success bg-opacity-10",
+  CASH: "bg-warning-soft",
+  BANK: "bg-primary-soft",
+  UPI: "bg-info-soft",
+  CREDIT_CARD: "bg-danger-soft",
+  WALLET: "bg-success-soft",
 };
 
 export default function DashboardPage() {
@@ -183,28 +183,28 @@ export default function DashboardPage() {
           <div className="d-flex gap-2.5 overflow-x-auto pb-1 no-scrollbar">
             {accounts.map((acc) => {
               const Icon = ACCOUNT_ICON[acc.type] || CreditCard;
-              const colCls = ACCOUNT_COLOR[acc.type] || "text-secondary bg-light";
+              const colCls = ACCOUNT_COLOR[acc.type] || "bg-primary-soft";
               const isCreditCard = acc.type === "CREDIT_CARD";
               return (
                 <div
                   key={acc.id}
-                  className="card-elevated d-flex align-items-center gap-2.5 px-3 py-2.5 rounded-btn flex-shrink-0 hover-lift"
-                  style={{ minWidth: "160px" }}
+                  className="card-elevated bg-surface border d-flex align-items-center gap-2.5 px-3 py-2.5 rounded-card flex-shrink-0 hover-lift shadow-xs"
+                  style={{ minWidth: "175px" }}
                 >
                   <div 
                     className={cn("rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 shadow-xs", colCls)}
-                    style={{ width: "32px", height: "32px" }}
+                    style={{ width: "36px", height: "36px" }}
                   >
-                    <Icon style={{ width: "16px", height: "16px" }} />
+                    <Icon style={{ width: "17px", height: "17px" }} />
                   </div>
                   <div className="overflow-hidden">
-                    <p className="small fw-semibold text-foreground text-truncate mb-0" style={{ fontSize: "11px" }}>
+                    <p className="small fw-bold text-foreground text-truncate mb-0" style={{ fontSize: "12px" }}>
                       {acc.name}
                     </p>
                     <div className="mt-0.5">
                       <CurrencyDisplay
                         amount={acc.currentBalance}
-                        size="xs"
+                        size="sm"
                         type={isCreditCard ? "EXPENSE" : "DEFAULT"}
                       />
                     </div>

@@ -129,7 +129,7 @@ export function SummaryCards({ metrics }: SummaryCardsProps) {
                 Total Balance
               </span>
               <div 
-                className="rounded-circle d-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary flex-shrink-0"
+                className="rounded-circle d-flex align-items-center justify-content-center bg-primary-soft flex-shrink-0"
                 style={{ width: "36px", height: "36px" }}
               >
                 <Wallet style={{ width: "18px", height: "18px" }} />
@@ -163,7 +163,7 @@ export function SummaryCards({ metrics }: SummaryCardsProps) {
                 Today&apos;s Spend
               </span>
               <div 
-                className="rounded-circle d-flex align-items-center justify-content-center bg-warning bg-opacity-15 text-warning flex-shrink-0"
+                className="rounded-circle d-flex align-items-center justify-content-center bg-warning-soft flex-shrink-0"
                 style={{ width: "36px", height: "36px" }}
               >
                 <CalendarDays style={{ width: "18px", height: "18px" }} />
@@ -193,7 +193,7 @@ export function SummaryCards({ metrics }: SummaryCardsProps) {
                 Month Income
               </span>
               <div 
-                className="rounded-circle d-flex align-items-center justify-content-center bg-success bg-opacity-10 text-success flex-shrink-0"
+                className="rounded-circle d-flex align-items-center justify-content-center bg-success-soft flex-shrink-0"
                 style={{ width: "36px", height: "36px" }}
               >
                 <TrendingUp style={{ width: "18px", height: "18px" }} />
@@ -227,7 +227,7 @@ export function SummaryCards({ metrics }: SummaryCardsProps) {
                 Month Expense
               </span>
               <div 
-                className="rounded-circle d-flex align-items-center justify-content-center bg-danger bg-opacity-10 text-danger flex-shrink-0"
+                className="rounded-circle d-flex align-items-center justify-content-center bg-danger-soft flex-shrink-0"
                 style={{ width: "36px", height: "36px" }}
               >
                 <TrendingDown style={{ width: "18px", height: "18px" }} />

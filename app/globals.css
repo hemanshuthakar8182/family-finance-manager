@@ -71,6 +71,48 @@
   border-radius: 10px !important;
 }
 
+/* Soft Pastel Color Tokens (High Contrast Tint Badges) */
+.bg-warning-soft {
+  background-color: #FEF3C7 !important;
+  color: #B45309 !important;
+}
+.bg-primary-soft {
+  background-color: #EEF2FF !important;
+  color: #4F46E5 !important;
+}
+.bg-success-soft {
+  background-color: #DCFCE7 !important;
+  color: #15803D !important;
+}
+.bg-danger-soft {
+  background-color: #FFE4E6 !important;
+  color: #E11D48 !important;
+}
+.bg-info-soft {
+  background-color: #E0F2FE !important;
+  color: #0369A1 !important;
+}
+.bg-purple-soft {
+  background-color: #F3E8FF !important;
+  color: #7E22CE !important;
+}
+.bg-orange-soft {
+  background-color: #FFEDD5 !important;
+  color: #C2410C !important;
+}
+
+/* Button & Brand Theming */
+.btn-primary {
+  background-color: var(--primary) !important;
+  border-color: var(--primary) !important;
+  color: var(--primary-foreground, #ffffff) !important;
+}
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active {
+  background-color: var(--primary-hover) !important;
+  border-color: var(--primary-hover) !important;
+  color: var(--primary-foreground, #ffffff) !important;
+}
+
 
 /* ========================================================
    DYNAMIC THEME DEFINITIONS
@@ -741,10 +783,15 @@ body {
 .modal-max-xl { max-width: 900px !important; }
 
 /* Native Bottom Sheet & Dialog Entrance Animation */
+@keyframes modalBackdropFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
 @keyframes slideUpSheet {
   from {
     transform: translateY(100%);
-    opacity: 0.7;
+    opacity: 0.6;
   }
   to {
     transform: translateY(0);
@@ -754,22 +801,65 @@ body {
 
 @keyframes modalScaleIn {
   from {
-    transform: scale(0.95);
+    transform: scale(0.94) translateY(8px);
     opacity: 0;
   }
   to {
-    transform: scale(1);
+    transform: scale(1) translateY(0);
     opacity: 1;
   }
 }
 
-.bottom-sheet-modal {
-  animation: slideUpSheet 0.26s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+.modal-backdrop-blur {
+  background-color: rgba(15, 23, 42, 0.62) !important;
+  backdrop-filter: blur(10px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(10px) saturate(180%) !important;
+  animation: modalBackdropFadeIn 0.22s ease-out forwards;
+}
+
+.modal-sheet-dialog {
+  animation: slideUpSheet 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.8) inset !important;
+  border: 1px solid var(--border) !important;
 }
 
 @media (min-width: 576px) {
-  .bottom-sheet-modal {
-    animation: modalScaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  .modal-sheet-dialog {
+    animation: modalScaleIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    border-radius: 20px !important;
   }
+}
+
+.modal-close-btn {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50% !important;
+  background-color: rgba(148, 163, 184, 0.12);
+  color: var(--text-secondary);
+  border: 1px solid transparent;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-close-btn:hover {
+  background-color: rgba(148, 163, 184, 0.22);
+  color: var(--text-primary);
+  transform: scale(1.08);
+}
+
+.modal-drag-pill {
+  width: 44px;
+  height: 5px;
+  border-radius: 9999px;
+  background-color: rgba(148, 163, 184, 0.45);
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  cursor: pointer;
+}
+
+.modal-drag-pill:hover {
+  background-color: rgba(148, 163, 184, 0.75);
+  transform: scaleY(1.25);
 }
 

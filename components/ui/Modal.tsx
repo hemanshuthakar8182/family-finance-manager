@@ -54,57 +54,64 @@ export function Modal({
 
   return (
     <div 
-      className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-end align-items-sm-center justify-content-center p-0 p-sm-3"
-      style={{ zIndex: 1060, backgroundColor: "rgba(15, 23, 42, 0.6)", backdropFilter: "blur(6px)" }}
+      className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-end align-items-sm-center justify-content-center p-0 p-sm-3 modal-backdrop-blur"
+      style={{ zIndex: 1060 }}
     >
+      {/* Click-away backdrop dismiss overlay */}
       <div
         className="position-fixed top-0 start-0 w-100 h-100"
         onClick={onClose}
         aria-hidden="true"
       />
+
+      {/* Main Dialog / Mobile Sheet Card */}
       <div
         className={cn(
-          "modal-content bottom-sheet-modal position-relative w-100 rounded-top-4 rounded-sm-modal bg-surface shadow-card border overflow-hidden d-flex flex-column z-10",
+          "modal-content modal-sheet-dialog position-relative w-100 rounded-top-4 rounded-sm-4 bg-surface overflow-hidden d-flex flex-column z-10",
           maxWidthStyles[maxWidth]
         )}
         style={{ maxHeight: "90dvh" }}
       >
-        {/* Pinned Top: Drag Handle + Header */}
-        <div className="flex-shrink-0 px-3 px-sm-4 pt-3 pb-3 border-bottom bg-surface user-select-none">
-          {/* Mobile drag handle button */}
+        {/* Pinned Top: Tactile Mobile Pull Pill + Title Bar */}
+        <div className="flex-shrink-0 px-3.5 px-sm-4 pt-3 pb-3 border-bottom bg-surface user-select-none">
+          {/* Mobile tactile pull handle */}
           <div 
             onClick={onClose}
-            className="d-sm-none mx-auto mb-2 rounded-pill bg-secondary bg-opacity-25"
-            style={{ width: "48px", height: "6px", cursor: "pointer" }}
-            title="Tap to dismiss"
+            className="d-sm-none modal-drag-pill mx-auto mb-2.5"
+            title="Tap or drag to dismiss"
           />
 
-          <div className="d-flex align-items-start justify-content-between gap-3">
-            <div>
+          <div className="d-flex align-items-center justify-content-between gap-3">
+            <div className="overflow-hidden">
               {title && (
-                <h3 className="h6 fw-bold text-dark mb-0">
+                <h3 className="h6 fw-bold text-foreground mb-0 text-truncate" style={{ letterSpacing: "-0.01em" }}>
                   {title}
                 </h3>
               )}
               {description && (
-                <p className="small text-secondary mb-0 mt-1">{description}</p>
+                <p className="small text-secondary mb-0 mt-0.5 text-truncate" style={{ fontSize: "12px" }}>
+                  {description}
+                </p>
               )}
             </div>
             <button
               onClick={onClose}
               type="button"
-              className="btn btn-sm btn-light rounded-circle p-1 text-secondary"
+              className="modal-close-btn flex-shrink-0"
               aria-label="Close dialog"
             >
-              <X className="w-4 h-4" style={{ width: "18px", height: "18px" }} />
+              <X style={{ width: "16px", height: "16px", strokeWidth: 2.2 }} />
             </button>
           </div>
         </div>
 
-        {/* Scrollable Body Container */}
+        {/* Scrollable Body Container with safe-area padding */}
         <div 
-          className="flex-grow-1 overflow-y-auto px-3 px-sm-4 py-3"
-          style={{ paddingBottom: "max(1.25rem, env(safe-area-inset-bottom, 20px))" }}
+          className="flex-grow-1 overflow-y-auto px-3.5 px-sm-4 py-3"
+          style={{ 
+            overscrollBehavior: "contain",
+            paddingBottom: "max(1.25rem, env(safe-area-inset-bottom, 24px))" 
+          }}
         >
           {children}
         </div>
