@@ -48,10 +48,10 @@ export function SummaryCards({ metrics }: SummaryCardsProps) {
           {/* Balance primary */}
           <div className="d-flex align-items-center justify-content-between mb-1">
             <span className="small fw-semibold opacity-85 text-uppercase" style={{ fontSize: "11px", letterSpacing: "0.06em" }}>
-              Total Family Balance
+              {balanceHealthy ? "Total Family Balance" : "Net Family Balance (Deficit)"}
             </span>
             <span className="badge rounded-pill bg-white bg-opacity-20 text-white py-0.5 px-2" style={{ fontSize: "10px" }}>
-              Live Ledger
+              {balanceHealthy ? "Live Ledger" : "Overdrawn"}
             </span>
           </div>
 
@@ -63,7 +63,9 @@ export function SummaryCards({ metrics }: SummaryCardsProps) {
               showDecimals={false}
             />
           </div>
-          <p className="small opacity-75 mb-0" style={{ fontSize: "11px" }}>Across all bank accounts &amp; cash wallets</p>
+          <p className="small opacity-75 mb-0" style={{ fontSize: "11px" }}>
+            {balanceHealthy ? "Across all bank accounts & cash wallets" : "Family reserves currently overdrawn"}
+          </p>
         </div>
 
         {/* Three sub-metrics row */}
@@ -123,13 +125,23 @@ export function SummaryCards({ metrics }: SummaryCardsProps) {
       <div className="d-none d-lg-flex row g-3">
         {/* Balance Card */}
         <div className="col-12 col-sm-6 col-lg-3">
-          <div className="kpi-card kpi-card-balance d-flex flex-column justify-content-between h-100">
+          <div 
+            className={cn("kpi-card d-flex flex-column justify-content-between h-100", balanceHealthy ? "kpi-card-balance" : "border-danger-subtle")}
+            style={{
+              background: balanceHealthy
+                ? undefined
+                : "linear-gradient(180deg, rgba(239, 68, 68, 0.04) 0%, var(--surface) 80%)"
+            }}
+          >
             <div className="d-flex align-items-center justify-content-between mb-3">
-              <span className="small fw-bold text-secondary text-uppercase" style={{ fontSize: "11px", letterSpacing: "0.05em" }}>
-                Total Balance
+              <span className={cn("small fw-bold text-uppercase", balanceHealthy ? "text-secondary" : "text-danger")} style={{ fontSize: "11px", letterSpacing: "0.05em" }}>
+                {balanceHealthy ? "Total Balance" : "Net Deficit"}
               </span>
               <div 
-                className="rounded-3 d-flex align-items-center justify-content-center bg-primary-soft flex-shrink-0 shadow-xs"
+                className={cn(
+                  "rounded-3 d-flex align-items-center justify-content-center flex-shrink-0 shadow-xs",
+                  balanceHealthy ? "bg-primary-soft text-primary" : "bg-danger-soft text-danger"
+                )}
                 style={{ width: "40px", height: "40px" }}
               >
                 <Wallet style={{ width: "20px", height: "20px" }} />
@@ -144,11 +156,11 @@ export function SummaryCards({ metrics }: SummaryCardsProps) {
                 />
               </div>
               <div className="d-flex align-items-center justify-content-between pt-2 border-top border-light-subtle">
-                <span className="badge rounded-pill bg-primary-soft fw-semibold px-2 py-0.5" style={{ fontSize: "10px" }}>
-                  All Accounts
+                <span className={cn("badge rounded-pill fw-semibold px-2 py-0.5", balanceHealthy ? "bg-primary-soft text-primary" : "bg-danger-soft text-danger")} style={{ fontSize: "10px" }}>
+                  {balanceHealthy ? "All Accounts" : "Overdrawn"}
                 </span>
-                <span className="small text-secondary text-truncate" style={{ fontSize: "11px" }}>
-                  Liquid Reserves
+                <span className={cn("small text-truncate", balanceHealthy ? "text-secondary" : "text-danger fw-medium")} style={{ fontSize: "11px" }}>
+                  {balanceHealthy ? "Liquid Reserves" : "Negative Reserves"}
                 </span>
               </div>
             </div>

@@ -77,7 +77,7 @@ export function CurrencyDisplay({
       )}
       style={{ letterSpacing: "-0.02em" }}
     >
-      {sign && <span className="me-0.5">{sign}</span>}
+      {sign && <span>{sign}</span>}
       <span className={cn("me-0.5 fw-semibold", currentSize.symbol)} style={{ opacity: 0.85 }}>
         ₹
       </span>
