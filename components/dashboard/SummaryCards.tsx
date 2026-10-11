@@ -123,32 +123,32 @@ export function SummaryCards({ metrics }: SummaryCardsProps) {
       <div className="d-none d-lg-flex row g-3">
         {/* Balance Card */}
         <div className="col-12 col-sm-6 col-lg-3">
-          <div className="p-3.5 card-elevated card-accent-balance d-flex flex-column justify-content-between h-100">
+          <div className="kpi-card kpi-card-balance d-flex flex-column justify-content-between h-100">
             <div className="d-flex align-items-center justify-content-between mb-3">
-              <span className="small fw-bold text-secondary text-uppercase" style={{ fontSize: "11px", letterSpacing: "0.04em" }}>
+              <span className="small fw-bold text-secondary text-uppercase" style={{ fontSize: "11px", letterSpacing: "0.05em" }}>
                 Total Balance
               </span>
               <div 
-                className="rounded-circle d-flex align-items-center justify-content-center bg-primary-soft flex-shrink-0 shadow-xs"
-                style={{ width: "36px", height: "36px" }}
+                className="rounded-3 d-flex align-items-center justify-content-center bg-primary-soft flex-shrink-0 shadow-xs"
+                style={{ width: "40px", height: "40px" }}
               >
-                <Wallet style={{ width: "18px", height: "18px" }} />
+                <Wallet style={{ width: "20px", height: "20px" }} />
               </div>
             </div>
             <div>
-              <div className="mb-2">
+              <div className="mb-3">
                 <CurrencyDisplay
                   amount={metrics.currentBalance}
-                  size="xl"
+                  size="2xl"
                   type={balanceHealthy ? "DEFAULT" : "EXPENSE"}
                 />
               </div>
-              <div className="d-flex align-items-center gap-1.5 pt-1 border-top border-light">
+              <div className="d-flex align-items-center justify-content-between pt-2 border-top border-light-subtle">
                 <span className="badge rounded-pill bg-primary-soft fw-semibold px-2 py-0.5" style={{ fontSize: "10px" }}>
                   All Accounts
                 </span>
                 <span className="small text-secondary text-truncate" style={{ fontSize: "11px" }}>
-                  Family net liquid reserves
+                  Liquid Reserves
                 </span>
               </div>
             </div>
@@ -157,31 +157,31 @@ export function SummaryCards({ metrics }: SummaryCardsProps) {
 
         {/* Today Card */}
         <div className="col-12 col-sm-6 col-lg-3">
-          <div className="p-3.5 card-elevated card-accent-warning d-flex flex-column justify-content-between h-100">
+          <div className="kpi-card kpi-card-today d-flex flex-column justify-content-between h-100">
             <div className="d-flex align-items-center justify-content-between mb-3">
-              <span className="small fw-bold text-secondary text-uppercase" style={{ fontSize: "11px", letterSpacing: "0.04em" }}>
+              <span className="small fw-bold text-secondary text-uppercase" style={{ fontSize: "11px", letterSpacing: "0.05em" }}>
                 Today&apos;s Spend
               </span>
               <div 
-                className="rounded-circle d-flex align-items-center justify-content-center bg-warning-soft flex-shrink-0 shadow-xs"
-                style={{ width: "36px", height: "36px" }}
+                className="rounded-3 d-flex align-items-center justify-content-center bg-warning-soft flex-shrink-0 shadow-xs"
+                style={{ width: "40px", height: "40px" }}
               >
-                <CalendarDays style={{ width: "18px", height: "18px" }} />
+                <CalendarDays style={{ width: "20px", height: "20px" }} />
               </div>
             </div>
             <div>
-              <div className="mb-2">
+              <div className="mb-3">
                 <CurrencyDisplay
                   amount={metrics.todayExpense}
-                  size="xl"
+                  size="2xl"
                 />
               </div>
-              <div className="d-flex align-items-center gap-1.5 pt-1 border-top border-light">
+              <div className="d-flex align-items-center justify-content-between pt-2 border-top border-light-subtle">
                 <span className="badge rounded-pill bg-warning-soft fw-semibold px-2 py-0.5" style={{ fontSize: "10px" }}>
                   Today
                 </span>
                 <span className="small text-secondary text-truncate" style={{ fontSize: "11px" }}>
-                  Daily household outflow
+                  Daily Outflow
                 </span>
               </div>
             </div>
@@ -190,27 +190,27 @@ export function SummaryCards({ metrics }: SummaryCardsProps) {
 
         {/* Month Income Card */}
         <div className="col-12 col-sm-6 col-lg-3">
-          <div className="p-3.5 card-elevated card-accent-success d-flex flex-column justify-content-between h-100">
+          <div className="kpi-card kpi-card-income d-flex flex-column justify-content-between h-100">
             <div className="d-flex align-items-center justify-content-between mb-3">
-              <span className="small fw-bold text-secondary text-uppercase" style={{ fontSize: "11px", letterSpacing: "0.04em" }}>
+              <span className="small fw-bold text-secondary text-uppercase" style={{ fontSize: "11px", letterSpacing: "0.05em" }}>
                 Month Income
               </span>
               <div 
-                className="rounded-circle d-flex align-items-center justify-content-center bg-success-soft flex-shrink-0 shadow-xs"
-                style={{ width: "36px", height: "36px" }}
+                className="rounded-3 d-flex align-items-center justify-content-center bg-success-soft flex-shrink-0 shadow-xs"
+                style={{ width: "40px", height: "40px" }}
               >
-                <TrendingUp style={{ width: "18px", height: "18px" }} />
+                <TrendingUp style={{ width: "20px", height: "20px" }} />
               </div>
             </div>
             <div>
-              <div className="mb-2">
+              <div className="mb-3">
                 <CurrencyDisplay
                   amount={metrics.totalIncome}
-                  size="xl"
+                  size="2xl"
                   type="INCOME"
                 />
               </div>
-              <div className="d-flex align-items-center gap-1.5 pt-1 border-top border-light">
+              <div className="d-flex align-items-center justify-content-between pt-2 border-top border-light-subtle">
                 <span className="badge rounded-pill bg-success-soft fw-semibold px-2 py-0.5" style={{ fontSize: "10px" }}>
                   <ArrowUpRight style={{ width: "12px", height: "12px" }} /> Inflows
                 </span>
@@ -224,32 +224,32 @@ export function SummaryCards({ metrics }: SummaryCardsProps) {
 
         {/* Month Expense Card */}
         <div className="col-12 col-sm-6 col-lg-3">
-          <div className="p-3.5 card-elevated card-accent-danger d-flex flex-column justify-content-between h-100">
+          <div className="kpi-card kpi-card-expense d-flex flex-column justify-content-between h-100">
             <div className="d-flex align-items-center justify-content-between mb-3">
-              <span className="small fw-bold text-secondary text-uppercase" style={{ fontSize: "11px", letterSpacing: "0.04em" }}>
+              <span className="small fw-bold text-secondary text-uppercase" style={{ fontSize: "11px", letterSpacing: "0.05em" }}>
                 Month Expense
               </span>
               <div 
-                className="rounded-circle d-flex align-items-center justify-content-center bg-danger-soft flex-shrink-0 shadow-xs"
-                style={{ width: "36px", height: "36px" }}
+                className="rounded-3 d-flex align-items-center justify-content-center bg-danger-soft flex-shrink-0 shadow-xs"
+                style={{ width: "40px", height: "40px" }}
               >
-                <TrendingDown style={{ width: "18px", height: "18px" }} />
+                <TrendingDown style={{ width: "20px", height: "20px" }} />
               </div>
             </div>
             <div>
-              <div className="mb-2">
+              <div className="mb-3">
                 <CurrencyDisplay
                   amount={metrics.totalExpense}
-                  size="xl"
+                  size="2xl"
                   type="EXPENSE"
                 />
               </div>
-              <div className="d-flex align-items-center gap-1.5 pt-1 border-top border-light">
+              <div className="d-flex align-items-center justify-content-between pt-2 border-top border-light-subtle">
                 <span className="badge rounded-pill bg-danger-soft fw-semibold px-2 py-0.5" style={{ fontSize: "10px" }}>
                   <ArrowDownRight style={{ width: "12px", height: "12px" }} /> Outflows
                 </span>
                 <span className="small text-secondary text-truncate" style={{ fontSize: "11px" }}>
-                  Total spent this month
+                  Total monthly spend
                 </span>
               </div>
             </div>
