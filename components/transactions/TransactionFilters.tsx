@@ -212,7 +212,7 @@ export function TransactionFilters({
           <select
             value={filters.categoryId}
             onChange={(e) => onChange({ ...filters, categoryId: e.target.value })}
-            className="form-select form-select-sm rounded-btn py-1.5 px-3 small text-dark bg-surface border w-auto"
+            className="form-select form-select-sm rounded-btn py-1.5 ps-3 pe-4 small text-dark bg-surface border w-auto"
           >
             <option value="">All Categories</option>
             {categories.map((c) => (
@@ -226,7 +226,7 @@ export function TransactionFilters({
           <select
             value={filters.accountId}
             onChange={(e) => onChange({ ...filters, accountId: e.target.value })}
-            className="form-select form-select-sm rounded-btn py-1.5 px-3 small text-dark bg-surface border w-auto"
+            className="form-select form-select-sm rounded-btn py-1.5 ps-3 pe-4 small text-dark bg-surface border w-auto"
           >
             <option value="">All Accounts</option>
             {accounts.map((a) => (
@@ -241,7 +241,7 @@ export function TransactionFilters({
             <select
               value={filters.memberId}
               onChange={(e) => onChange({ ...filters, memberId: e.target.value })}
-              className="form-select form-select-sm rounded-btn py-1.5 px-3 small text-dark bg-surface border w-auto"
+              className="form-select form-select-sm rounded-btn py-1.5 ps-3 pe-4 small text-dark bg-surface border w-auto"
             >
               <option value="">All Members</option>
               {members.map((m) => (
@@ -266,7 +266,7 @@ export function TransactionFilters({
                 : "CUSTOM"
             }
             onChange={(e) => handleDatePreset(e.target.value as any)}
-            className="form-select form-select-sm rounded-btn py-1.5 px-3 small text-dark bg-surface border w-auto"
+            className="form-select form-select-sm rounded-btn py-1.5 ps-3 pe-4 small text-dark bg-surface border w-auto"
           >
             <option value="ALL">All Time</option>
             <option value="TODAY">Today</option>
@@ -551,7 +551,7 @@ export function TransactionFilters({
             <select
               value={filters.categoryId}
               onChange={(e) => onChange({ ...filters, categoryId: e.target.value })}
-              className="form-select form-select-sm rounded-input py-2 px-3 small border bg-white"
+              className="form-select form-select-sm rounded-input py-2 ps-3 pe-4 small border bg-white"
             >
               <option value="">All Categories</option>
               {categories.map((c) => (
@@ -570,7 +570,7 @@ export function TransactionFilters({
             <select
               value={filters.accountId}
               onChange={(e) => onChange({ ...filters, accountId: e.target.value })}
-              className="form-select form-select-sm rounded-input py-2 px-3 small border bg-white"
+              className="form-select form-select-sm rounded-input py-2 ps-3 pe-4 small border bg-white"
             >
               <option value="">All Accounts</option>
               {accounts.map((a) => (

@@ -36,10 +36,14 @@ export function CurrencyDisplay({
   if (numericAmount < 0) {
     sign = "-";
   } else if (showSign) {
-    if (type === "INCOME" || numericAmount > 0) {
+    if (type === "INCOME") {
       sign = "+";
+    } else if (type === "EXPENSE") {
+      sign = "-";
     } else if (type === "TRANSFER") {
       sign = "⇄ ";
+    } else if (numericAmount > 0) {
+      sign = "+";
     }
   }
 

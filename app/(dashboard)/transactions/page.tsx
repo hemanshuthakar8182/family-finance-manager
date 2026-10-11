@@ -173,7 +173,7 @@ export default function TransactionsPage() {
           <Button
             size="md"
             onClick={onOpenQuickAdd}
-            className="btn-primary text-white fw-semibold small d-inline-flex align-items-center gap-1.5 py-1.5 px-3 rounded-btn shadow-sm"
+            className="d-sm-none btn-primary text-white fw-semibold small d-inline-flex align-items-center gap-1.5 py-1.5 px-3 rounded-btn shadow-sm"
           >
             <Plus style={{ width: "16px", height: "16px" }} />
             <span>Add Transaction</span>

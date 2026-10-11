@@ -75,12 +75,14 @@ export function TransactionTable({ transactions, onSelectTransaction }: Transact
                   {t.description || <span className="text-secondary fst-italic">None</span>}
                 </td>
                 <td className="py-3 px-3 text-dark text-nowrap">
-                  <span className="d-inline-flex align-items-center gap-1.5 fw-medium">
+                  <span className="d-inline-flex align-items-center gap-2 fw-medium">
                     <span 
-                      className="rounded-circle bg-primary d-inline-block"
-                      style={{ width: "8px", height: "8px" }}
-                    />
-                    {t.member.user.name}
+                      className="rounded-circle d-inline-flex align-items-center justify-content-center bg-surface-muted border text-secondary fw-bold"
+                      style={{ width: "22px", height: "22px", fontSize: "10px", lineHeight: 1 }}
+                    >
+                      {(t.member?.user?.name || "M").charAt(0).toUpperCase()}
+                    </span>
+                    <span>{t.member?.user?.name}</span>
                   </span>
                 </td>
                 <td className="py-3 px-3 text-secondary text-nowrap" style={{ fontSize: "11px" }}>
