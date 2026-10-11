@@ -105,7 +105,7 @@ export function TransactionFilters({
             placeholder="Search by note, description, merchant, or amount..."
             value={filters.search}
             onChange={(e) => onChange({ ...filters, search: e.target.value })}
-            className="form-control rounded-input ps-5 pe-5 small text-dark bg-surface border shadow-none"
+            className="form-control rounded-input ps-5 pe-5 small text-foreground bg-surface border shadow-none"
             style={{ minHeight: "44px" }}
           />
           {filters.search && (
@@ -153,6 +153,62 @@ export function TransactionFilters({
             <span>Reset</span>
           </Button>
         )}
+      </div>
+
+      {/* ── Mobile Quick Type Filter Strip (Phone View Only) ── */}
+      <div className="d-lg-none d-flex align-items-center gap-1.5 overflow-x-auto text-nowrap pb-1">
+        <button
+          type="button"
+          onClick={() => onChange({ ...filters, type: "ALL" })}
+          className={cn(
+            "btn btn-sm rounded-pill py-1 px-3 small fw-semibold transition flex-shrink-0",
+            filters.type === "ALL"
+              ? "btn-primary text-white shadow-xs fw-bold"
+              : "btn-light border text-secondary"
+          )}
+          style={{ fontSize: "12px" }}
+        >
+          All
+        </button>
+        <button
+          type="button"
+          onClick={() => onChange({ ...filters, type: "EXPENSE" })}
+          className={cn(
+            "btn btn-sm rounded-pill py-1 px-3 small fw-semibold transition flex-shrink-0",
+            filters.type === "EXPENSE"
+              ? "btn-danger text-white shadow-xs fw-bold"
+              : "btn-light border text-danger"
+          )}
+          style={{ fontSize: "12px" }}
+        >
+          Expenses
+        </button>
+        <button
+          type="button"
+          onClick={() => onChange({ ...filters, type: "INCOME" })}
+          className={cn(
+            "btn btn-sm rounded-pill py-1 px-3 small fw-semibold transition flex-shrink-0",
+            filters.type === "INCOME"
+              ? "btn-success text-white shadow-xs fw-bold"
+              : "btn-light border text-success"
+          )}
+          style={{ fontSize: "12px" }}
+        >
+          Income
+        </button>
+        <button
+          type="button"
+          onClick={() => onChange({ ...filters, type: "TRANSFER" })}
+          className={cn(
+            "btn btn-sm rounded-pill py-1 px-3 small fw-semibold transition flex-shrink-0",
+            filters.type === "TRANSFER"
+              ? "btn-primary text-white shadow-xs fw-bold"
+              : "btn-light border text-primary"
+          )}
+          style={{ fontSize: "12px" }}
+        >
+          Transfers
+        </button>
       </div>
 
       {/* ── 2. Unified Desktop Filter Bar ── */}

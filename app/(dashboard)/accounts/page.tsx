@@ -180,8 +180,8 @@ export default function AccountsPage() {
         <p className="small fw-semibold opacity-85 mb-1 text-uppercase" style={{ fontSize: "11px", letterSpacing: "0.05em" }}>
           Total Family Balance
         </p>
-        <div className="my-1">
-          <CurrencyDisplay amount={totalBalance} size="2xl" className="text-white" />
+        <div className="my-1 text-nowrap">
+          <CurrencyDisplay amount={totalBalance} size="xl" className="text-white" />
         </div>
         <p className="small opacity-75 mb-0" style={{ fontSize: "11px" }}>
           Across {accounts.length} active account{accounts.length !== 1 ? "s" : ""}

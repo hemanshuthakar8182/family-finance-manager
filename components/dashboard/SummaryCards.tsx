@@ -70,34 +70,34 @@ export function SummaryCards({ metrics }: SummaryCardsProps) {
 
         {/* Three sub-metrics row */}
         <div className="row g-0 border-top border-white border-opacity-20 text-center">
-          <div className="col-4 p-3 border-end border-white border-opacity-20">
-            <p className="small fw-semibold opacity-75 text-uppercase mb-1" style={{ fontSize: "10px" }}>
+          <div className="col-4 py-2.5 px-1 px-sm-3 border-end border-white border-opacity-20">
+            <p className="small fw-semibold opacity-75 text-uppercase mb-0.5" style={{ fontSize: "10px" }}>
               Today
             </p>
-            <div>
+            <div className="text-nowrap">
               <CurrencyDisplay amount={metrics.todayExpense} size="sm" className="text-white" />
             </div>
-            <p className="small opacity-75 mb-0" style={{ fontSize: "10px" }}>spent</p>
+            <p className="small opacity-75 mb-0" style={{ fontSize: "9px" }}>spent</p>
           </div>
 
-          <div className="col-4 p-3 border-end border-white border-opacity-20">
-            <p className="small fw-semibold opacity-75 text-uppercase mb-1" style={{ fontSize: "10px" }}>
+          <div className="col-4 py-2.5 px-1 px-sm-3 border-end border-white border-opacity-20">
+            <p className="small fw-semibold opacity-75 text-uppercase mb-0.5" style={{ fontSize: "10px" }}>
               Income
             </p>
-            <div>
+            <div className="text-nowrap">
               <CurrencyDisplay amount={metrics.totalIncome} size="sm" className="text-white" />
             </div>
-            <p className="small opacity-75 mb-0" style={{ fontSize: "10px" }}>this month</p>
+            <p className="small opacity-75 mb-0" style={{ fontSize: "9px" }}>this month</p>
           </div>
 
-          <div className="col-4 p-3">
-            <p className="small fw-semibold opacity-75 text-uppercase mb-1" style={{ fontSize: "10px" }}>
+          <div className="col-4 py-2.5 px-1 px-sm-3">
+            <p className="small fw-semibold opacity-75 text-uppercase mb-0.5" style={{ fontSize: "10px" }}>
               Spent
             </p>
-            <div>
+            <div className="text-nowrap">
               <CurrencyDisplay amount={metrics.totalExpense} size="sm" className="text-white" />
             </div>
-            <p className="small opacity-75 mb-0" style={{ fontSize: "10px" }}>this month</p>
+            <p className="small opacity-75 mb-0" style={{ fontSize: "9px" }}>this month</p>
           </div>
         </div>
 

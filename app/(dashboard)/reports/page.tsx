@@ -220,7 +220,7 @@ export default function ReportsPage() {
                 <TrendingUp style={{ width: "14px", height: "14px" }} />
               </div>
             </div>
-            <div className="fs-5 fs-sm-4 fw-bold font-amount text-income">
+            <div className="fs-5 fs-sm-4 fw-bold font-amount text-income text-nowrap">
               {formatCurrency(report?.totalIncome || 0)}
             </div>
           </div>
@@ -234,7 +234,7 @@ export default function ReportsPage() {
                 <TrendingDown style={{ width: "14px", height: "14px" }} />
               </div>
             </div>
-            <div className="fs-5 fs-sm-4 fw-bold font-amount text-expense">
+            <div className="fs-5 fs-sm-4 fw-bold font-amount text-expense text-nowrap">
               {formatCurrency(report?.totalExpense || 0)}
             </div>
           </div>
@@ -248,7 +248,7 @@ export default function ReportsPage() {
                 <PiggyBank style={{ width: "14px", height: "14px" }} />
               </div>
             </div>
-            <div className="fs-5 fs-sm-4 fw-bold font-amount text-foreground">
+            <div className="fs-5 fs-sm-4 fw-bold font-amount text-foreground text-nowrap">
               {formatCurrency(report?.netSavings || 0)}
             </div>
           </div>

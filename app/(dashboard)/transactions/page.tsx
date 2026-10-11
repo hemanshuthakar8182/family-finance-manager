@@ -175,15 +175,6 @@ export default function TransactionsPage() {
             <Download style={{ width: "16px", height: "16px" }} className="text-primary" />
             <span className="d-none d-sm-inline">Export CSV</span>
           </button>
-
-          <Button
-            size="md"
-            onClick={onOpenQuickAdd}
-            className="d-sm-none btn-primary text-white fw-semibold small d-inline-flex align-items-center gap-1.5 py-1.5 px-3 rounded-btn shadow-sm"
-          >
-            <Plus style={{ width: "16px", height: "16px" }} />
-            <span>Add Transaction</span>
-          </Button>
         </div>
       </div>
 
@@ -285,8 +276,8 @@ export default function TransactionsPage() {
 
           {/* Pagination */}
           {pagination.totalPages > 1 && (
-            <div className="d-flex align-items-center justify-content-between pt-3 border-top small text-secondary">
-              <span>
+            <div className="d-flex flex-column flex-sm-row align-items-center justify-content-between gap-2.5 pt-3 border-top small text-secondary">
+              <span className="text-center text-sm-start text-nowrap">
                 Page {pagination.page} of {pagination.totalPages} ({pagination.totalCount} total)
               </span>
               <div className="d-flex align-items-center gap-2">

@@ -44,16 +44,16 @@ export function TransactionCard({ transaction, onClick }: TransactionCardProps) 
       onClick={onClick}
       role="button"
       tabIndex={0}
-      className="card-elevated d-flex align-items-center justify-content-between p-3 rounded-card border bg-surface hover-lift text-start"
+      className="card-elevated d-flex align-items-center justify-content-between p-2.5 p-sm-3 rounded-card border bg-surface hover-lift text-start"
       style={{ cursor: "pointer" }}
     >
-      <div className="d-flex align-items-center gap-3 overflow-hidden">
+      <div className="d-flex align-items-center gap-2.5 gap-sm-3 overflow-hidden">
         {/* Category or Transfer Icon */}
         <div
           className="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 text-white shadow-sm"
           style={{
-            width: "38px",
-            height: "38px",
+            width: "36px",
+            height: "36px",
             backgroundColor: isTransfer
               ? "#0284C7"
               : transaction.category?.color || "#0F766E",
@@ -62,14 +62,14 @@ export function TransactionCard({ transaction, onClick }: TransactionCardProps) 
           {isTransfer ? (
             <ArrowRightLeft style={{ width: "16px", height: "16px" }} />
           ) : (
-            <CategoryIcon name={transaction.category?.icon || "tag"} size={18} />
+            <CategoryIcon name={transaction.category?.icon || "tag"} size={17} />
           )}
         </div>
 
         {/* Details */}
         <div className="overflow-hidden">
           <div className="d-flex align-items-center gap-2">
-            <h4 className="small fw-bold text-dark text-truncate mb-0">
+            <h4 className="small fw-bold text-foreground text-truncate mb-0" style={{ fontSize: "13px" }}>
               {isTransfer
                 ? `${transaction.account?.name || "Account"} → ${transaction.toAccount?.name || "Account"}`
                 : transaction.category?.name || "Uncategorized"}
@@ -82,17 +82,23 @@ export function TransactionCard({ transaction, onClick }: TransactionCardProps) 
           </div>
 
           <div className="d-flex align-items-center gap-1.5 text-secondary small mt-0.5 flex-wrap" style={{ fontSize: "11px" }}>
-            <span className="fw-medium text-dark">
-              {transaction.member.user.name}
+            <span className="badge bg-surface-muted text-foreground border rounded-pill py-0.5 px-1.5 fw-semibold d-inline-flex align-items-center gap-1">
+              <span 
+                className="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center fw-bold" 
+                style={{ width: "13px", height: "13px", fontSize: "8px" }}
+              >
+                {transaction.member?.user?.name?.charAt(0).toUpperCase() || "M"}
+              </span>
+              <span className="text-truncate" style={{ maxWidth: "80px" }}>{transaction.member?.user?.name}</span>
             </span>
             {!isTransfer && transaction.account && (
               <>
                 <span>•</span>
-                <span className="text-secondary text-truncate">{transaction.account.name}</span>
+                <span className="text-secondary text-truncate" style={{ maxWidth: "85px" }}>{transaction.account.name}</span>
               </>
             )}
             <span>•</span>
-            <span>{formatTransactionDate(transaction.date)}</span>
+            <span className="text-nowrap">{formatTransactionDate(transaction.date)}</span>
           </div>
 
           {transaction.description && (
@@ -104,8 +110,8 @@ export function TransactionCard({ transaction, onClick }: TransactionCardProps) 
       </div>
 
       {/* Amount with tabular formatting and badge */}
-      <div className="text-end flex-shrink-0 ps-3">
-        <div>
+      <div className="text-end flex-shrink-0 ps-2 ps-sm-3">
+        <div className="text-nowrap">
           <CurrencyDisplay
             amount={transaction.amount}
             showSign={true}

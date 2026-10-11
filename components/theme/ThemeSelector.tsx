@@ -82,9 +82,10 @@ export function ThemeSelector() {
       {/* Popover Dropdown */}
       {isOpen && (
         <div
-          className="theme-popover-dropdown rounded-card bg-surface border p-3 overflow-y-auto"
+          className="position-absolute end-0 top-100 mt-2 rounded-card bg-surface border p-3 overflow-y-auto shadow-lg"
           style={{
             zIndex: 1070,
+            width: "min(330px, calc(100vw - 24px))",
             maxHeight: "82vh",
             backdropFilter: "blur(14px)",
           }}

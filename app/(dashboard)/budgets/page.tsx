@@ -250,16 +250,16 @@ export default function BudgetsPage() {
           {/* Three KPI chips */}
           <div className="row g-2 text-center">
             <div className="col-4">
-              <p className="small text-secondary fw-semibold text-uppercase mb-0" style={{ fontSize: "10px" }}>Total Budget</p>
-              <p className="h6 fw-bold text-dark mb-0">{formatCurrency(totalBudgeted)}</p>
+              <p className="small text-secondary fw-semibold text-uppercase mb-0.5" style={{ fontSize: "10px" }}>Total Budget</p>
+              <p className="small fw-bold text-foreground text-nowrap mb-0">{formatCurrency(totalBudgeted)}</p>
             </div>
             <div className="col-4">
-              <p className="small text-secondary fw-semibold text-uppercase mb-0" style={{ fontSize: "10px" }}>Spent</p>
-              <p className={cn("h6 fw-bold mb-0", overallStatus === "EXCEEDED" ? "text-danger" : "text-dark")}>{formatCurrency(totalSpent)}</p>
+              <p className="small text-secondary fw-semibold text-uppercase mb-0.5" style={{ fontSize: "10px" }}>Spent</p>
+              <p className={cn("small fw-bold text-nowrap mb-0", overallStatus === "EXCEEDED" ? "text-danger" : "text-foreground")}>{formatCurrency(totalSpent)}</p>
             </div>
             <div className="col-4">
-              <p className="small text-secondary fw-semibold text-uppercase mb-0" style={{ fontSize: "10px" }}>Remaining</p>
-              <p className={cn("h6 fw-bold mb-0", totalRemaining > 0 ? "text-success" : "text-danger")}>{formatCurrency(totalRemaining)}</p>
+              <p className="small text-secondary fw-semibold text-uppercase mb-0.5" style={{ fontSize: "10px" }}>Remaining</p>
+              <p className={cn("small fw-bold text-nowrap mb-0", totalRemaining > 0 ? "text-success" : "text-danger")}>{formatCurrency(totalRemaining)}</p>
             </div>
           </div>
         </div>

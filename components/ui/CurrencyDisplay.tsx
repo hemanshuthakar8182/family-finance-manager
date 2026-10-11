@@ -74,7 +74,7 @@ export function CurrencyDisplay({
   return (
     <span
       className={cn(
-        "d-inline-flex align-items-baseline font-amount user-select-none",
+        "d-inline-flex align-items-baseline font-amount user-select-none text-nowrap",
         colorClass,
         currentSize.main,
         className

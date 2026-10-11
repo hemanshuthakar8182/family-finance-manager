@@ -167,7 +167,7 @@ export default function DashboardPage() {
           <button
             onClick={onOpenQuickAdd}
             type="button"
-            className="btn btn-sm btn-primary text-white fw-semibold shadow-sm d-flex align-items-center gap-1.5 py-1.5 px-3 rounded-btn"
+            className="btn btn-sm btn-primary text-white fw-semibold shadow-sm d-none d-sm-inline-flex align-items-center gap-1.5 py-1.5 px-3 rounded-btn"
           >
             <Plus style={{ width: "16px", height: "16px" }} />
             <span>Quick Expense</span>
@@ -209,7 +209,80 @@ export default function DashboardPage() {
             </span>
           </div>
 
-          <div className="row g-3">
+          {/* MOBILE ONLY: Horizontal swipeable accounts strip */}
+          <div 
+            className="d-flex d-md-none flex-nowrap overflow-x-auto gap-2.5 pb-2" 
+            style={{ scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch" }}
+          >
+            {accounts.map((acc) => {
+              const Icon = ACCOUNT_ICON[acc.type] || CreditCard;
+              const colCls = ACCOUNT_COLOR[acc.type] || "bg-primary-soft text-primary";
+              const badgeCls = ACCOUNT_BADGE_CLASS[acc.type] || "bg-light border text-secondary";
+              const ambientBg = ACCOUNT_AMBIENT_BG[acc.type] || "var(--surface)";
+              const typeLabel = ACCOUNT_TYPE_LABEL[acc.type] || acc.type.replace("_", " ");
+              const isCreditCard = acc.type === "CREDIT_CARD";
+              const displayName = acc.name.toLowerCase() === "case" ? "Cash" : acc.name;
+              const bal = Number(acc.currentBalance || 0);
+              const isOverdrawn = !isCreditCard && bal < 0;
+              const balanceLabel = isCreditCard ? "Total Due" : isOverdrawn ? "Current Deficit" : "Available Balance";
+              const statusText = isCreditCard ? "Active Card" : isOverdrawn ? "Overdrawn" : bal === 0 ? "Zero Balance" : "Ready to Spend";
+
+              return (
+                <div 
+                  key={`mobile-${acc.id}`} 
+                  className="card-elevated border p-3 rounded-card shadow-xs d-flex flex-column justify-content-between flex-shrink-0"
+                  style={{ width: "230px", background: ambientBg, scrollSnapAlign: "start" }}
+                >
+                  <div className="d-flex align-items-center justify-content-between mb-2">
+                    <div className="d-flex align-items-center gap-2 overflow-hidden">
+                      <div 
+                        className={cn("rounded-3 d-flex align-items-center justify-content-center flex-shrink-0 shadow-xs", colCls)}
+                        style={{ width: "32px", height: "32px" }}
+                      >
+                        <Icon style={{ width: "16px", height: "16px" }} />
+                      </div>
+                      <div className="overflow-hidden">
+                        <p className="small fw-bold text-foreground text-truncate mb-0" style={{ fontSize: "13px" }}>
+                          {displayName}
+                        </p>
+                      </div>
+                    </div>
+                    <span className={cn("badge rounded-pill border fw-bold px-1.5 py-0.5", badgeCls)} style={{ fontSize: "9px" }}>
+                      {typeLabel}
+                    </span>
+                  </div>
+
+                  <div className="pt-2 border-top border-light-subtle d-flex align-items-end justify-content-between">
+                    <div>
+                      <span className={cn("small fw-semibold text-uppercase d-block", isOverdrawn ? "text-danger" : "text-secondary")} style={{ fontSize: "9px" }}>
+                        {balanceLabel}
+                      </span>
+                      <div className="mt-0.5 text-nowrap">
+                        <CurrencyDisplay
+                          amount={acc.currentBalance}
+                          size="md"
+                          type={isCreditCard || isOverdrawn ? "EXPENSE" : "DEFAULT"}
+                        />
+                      </div>
+                    </div>
+                    <span 
+                      className={cn("small d-inline-flex align-items-center gap-1", isOverdrawn ? "text-danger fw-semibold" : bal > 0 ? "text-success fw-medium" : "text-secondary")} 
+                      style={{ fontSize: "10px" }}
+                    >
+                      <span 
+                        className={cn("rounded-circle flex-shrink-0", isOverdrawn ? "bg-danger" : bal > 0 ? "bg-success" : "bg-secondary")} 
+                        style={{ width: "5px", height: "5px" }} 
+                      />
+                      {statusText}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* DESKTOP/TABLET ONLY: Multi-column responsive grid */}
+          <div className="d-none d-md-flex row g-3">
             {accounts.map((acc) => {
               const Icon = ACCOUNT_ICON[acc.type] || CreditCard;
               const colCls = ACCOUNT_COLOR[acc.type] || "bg-primary-soft text-primary";

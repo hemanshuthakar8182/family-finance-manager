@@ -63,8 +63,8 @@ export function BottomNav({ onOpenQuickAdd }: BottomNavProps) {
               onClick={onOpenQuickAdd}
               type="button"
               aria-label="Add Transaction"
-              className="btn btn-primary rounded-circle shadow-lg d-flex align-items-center justify-content-center p-0 border border-4 border-white"
-              style={{ width: "52px", height: "52px" }}
+              className="btn btn-primary rounded-circle shadow-lg d-flex align-items-center justify-content-center p-0 border border-4"
+              style={{ width: "52px", height: "52px", borderColor: "var(--surface)" }}
             >
               <Plus style={{ width: "26px", height: "26px", strokeWidth: "2.5" }} />
             </button>
