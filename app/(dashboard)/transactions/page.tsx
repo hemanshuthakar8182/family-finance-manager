@@ -138,49 +138,50 @@ export default function TransactionsPage() {
   };
 
   return (
-    <div className="space-y-5">
+    <div className="d-flex flex-column gap-4">
       {/* ── Title & Add CTA ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
+          <h1 className="h4 fw-bold text-dark mb-1">
             Family Transactions
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+          <p className="small text-secondary mb-0">
             Search, filter, and audit all family spending &amp; earnings
           </p>
         </div>
 
-        <div className="flex items-center gap-2 self-start sm:self-auto flex-wrap">
+        <div className="d-flex align-items-center gap-2 flex-wrap">
           <Link
             href="/import"
             title="Import bank statement (CSV/Excel)"
-            className="h-9 sm:h-10 px-2.5 sm:px-3 rounded-btn border border-border bg-surface text-slate-700 hover:bg-surface-muted text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-colors shrink-0"
+            className="btn btn-sm btn-light border text-dark fw-semibold d-inline-flex align-items-center gap-1.5 py-1.5 px-3 rounded-btn text-decoration-none"
           >
-            <UploadCloud className="w-4 h-4 text-primary" />
-            <span className="hidden sm:inline">Import Statement</span>
+            <UploadCloud style={{ width: "16px", height: "16px" }} className="text-primary" />
+            <span className="d-none d-sm-inline">Import Statement</span>
           </Link>
 
           <button
             onClick={handleExportCSV}
             title="Export filtered transactions to CSV"
-            className="h-9 sm:h-10 px-2.5 sm:px-3 rounded-btn border border-border bg-surface text-slate-700 hover:bg-surface-muted text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-colors shrink-0"
+            type="button"
+            className="btn btn-sm btn-light border text-dark fw-semibold d-inline-flex align-items-center gap-1.5 py-1.5 px-3 rounded-btn"
           >
-            <Download className="w-4 h-4 text-primary" />
-            <span className="hidden sm:inline">Export CSV</span>
+            <Download style={{ width: "16px", height: "16px" }} className="text-primary" />
+            <span className="d-none d-sm-inline">Export CSV</span>
           </button>
 
           <Button
             size="md"
             onClick={onOpenQuickAdd}
-            className="h-9 sm:h-10 px-3 sm:px-4 shadow-sm font-semibold text-xs sm:text-sm whitespace-nowrap shrink-0"
+            className="btn-primary text-white fw-semibold small d-inline-flex align-items-center gap-1.5 py-1.5 px-3 rounded-btn shadow-sm"
           >
-            <Plus className="w-4 h-4 mr-1 sm:mr-1.5" />
+            <Plus style={{ width: "16px", height: "16px" }} />
             <span>Add Transaction</span>
           </Button>
         </div>
       </div>
 
-      {/* ── Unified Filters (Single clear row with type, presets, accounts, categories, members) ── */}
+      {/* ── Unified Filters ── */}
       <TransactionFilters
         filters={filters}
         categories={categories}
@@ -193,23 +194,27 @@ export default function TransactionsPage() {
 
       {/* ── Transaction List ── */}
       {isLoading ? (
-        <div className="space-y-3 animate-pulse">
+        <div className="d-flex flex-column gap-3">
           {[1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="h-16 bg-slate-200 rounded-card" />
+            <div key={i} className="bg-light rounded-card p-4 placeholder-glow" style={{ height: "64px" }} />
           ))}
         </div>
       ) : transactions.length === 0 ? (
-        <div className="py-14 text-center bg-surface rounded-card border border-border p-6 shadow-soft">
-          <div className="w-14 h-14 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto mb-3">
-            <Receipt className="w-7 h-7" />
+        <div className="py-5 text-center bg-surface rounded-card border shadow-sm p-4">
+          <div 
+            className="rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center mx-auto mb-3"
+            style={{ width: "54px", height: "54px" }}
+          >
+            <Receipt style={{ width: "26px", height: "26px" }} />
           </div>
-          <h3 className="text-base font-bold text-slate-900">No transactions found</h3>
-          <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
+          <h3 className="h6 fw-bold text-dark mb-1">No transactions found</h3>
+          <p className="small text-secondary mb-3 mx-auto" style={{ maxWidth: "360px" }}>
             Try adjusting your search filters or record a new daily expense.
           </p>
           <button
             onClick={onOpenQuickAdd}
-            className="mt-4 px-4 py-2 bg-primary hover:bg-primary-hover text-primary-foreground text-xs font-semibold rounded-btn shadow-sm transition-all"
+            type="button"
+            className="btn btn-sm btn-primary text-white fw-semibold rounded-btn px-4 py-2"
           >
             + Add New Expense
           </button>
@@ -217,20 +222,17 @@ export default function TransactionsPage() {
       ) : (
         <>
           {/* ── MOBILE: Date-grouped cards ── */}
-          <div className="space-y-5 lg:hidden">
+          <div className="d-flex flex-column gap-4 d-lg-none">
             {Object.entries(grouped).map(([label, txs]) => {
               const totals = dayTotals[label];
               return (
                 <div key={label}>
                   {/* Date group header */}
-                  <div className="flex items-center justify-between mb-2 px-0.5">
-                    <div className="flex items-center gap-2">
-                      <div className="h-px flex-1 bg-slate-200 w-2" />
-                      <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-                        {label}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2 text-[11px] font-semibold ml-3">
+                  <div className="d-flex align-items-center justify-content-between mb-2 px-1">
+                    <span className="small fw-bold text-secondary text-uppercase" style={{ fontSize: "11px", letterSpacing: "0.05em" }}>
+                      {label}
+                    </span>
+                    <div className="d-flex align-items-center gap-2 small fw-semibold" style={{ fontSize: "11px" }}>
                       {totals.income > 0 && (
                         <span className="text-income">+{formatCurrency(totals.income)}</span>
                       )}
@@ -240,7 +242,7 @@ export default function TransactionsPage() {
                     </div>
                   </div>
 
-                  <div className="space-y-2">
+                  <div className="d-flex flex-column gap-2">
                     {txs.map((t) => (
                       <TransactionCard
                         key={t.id}
@@ -255,7 +257,7 @@ export default function TransactionsPage() {
           </div>
 
           {/* ── DESKTOP: Clean data table ── */}
-          <div className="hidden lg:block">
+          <div className="d-none d-lg-block">
             <TransactionTable
               transactions={transactions}
               onSelectTransaction={onSelectTransaction}
@@ -264,26 +266,28 @@ export default function TransactionsPage() {
 
           {/* Pagination */}
           {pagination.totalPages > 1 && (
-            <div className="flex items-center justify-between pt-4 border-t border-slate-200 text-xs text-slate-600">
+            <div className="d-flex align-items-center justify-content-between pt-3 border-top small text-secondary">
               <span>
                 Page {pagination.page} of {pagination.totalPages} ({pagination.totalCount} total)
               </span>
-              <div className="flex items-center gap-2">
+              <div className="d-flex align-items-center gap-2">
                 <Button
                   variant="outline"
                   size="sm"
                   disabled={pagination.page <= 1}
                   onClick={() => fetchTransactions(pagination.page - 1)}
+                  className="small"
                 >
-                  <ChevronLeft className="w-4 h-4 mr-1" /> Previous
+                  <ChevronLeft style={{ width: "14px", height: "14px" }} className="me-1" /> Previous
                 </Button>
                 <Button
                   variant="outline"
                   size="sm"
                   disabled={pagination.page >= pagination.totalPages}
                   onClick={() => fetchTransactions(pagination.page + 1)}
+                  className="small"
                 >
-                  Next <ChevronRight className="w-4 h-4 ml-1" />
+                  Next <ChevronRight style={{ width: "14px", height: "14px" }} className="ms-1" />
                 </Button>
               </div>
             </div>

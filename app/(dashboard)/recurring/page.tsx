@@ -218,36 +218,36 @@ export default function RecurringPage() {
   const filteredCategories = categories.filter((c) => c.type === formData.type);
 
   return (
-    <div className="space-y-6">
+    <div className="d-flex flex-column gap-4">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
-            Recurring Bills & Subscriptions
+          <h1 className="h4 fw-bold text-foreground mb-1">
+            Recurring Bills &amp; Subscriptions
           </h1>
-          <p className="text-xs sm:text-sm text-muted mt-0.5">
+          <p className="small text-muted mb-0">
             Automate monthly rent, utilities, SIPs, and OTT subscriptions
           </p>
         </div>
 
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
+        <div className="d-flex flex-column flex-sm-row align-items-stretch align-items-sm-center gap-2 w-100 w-sm-auto">
           <Button
             variant="outline"
             size="md"
             isLoading={isProcessing}
             onClick={handleRunDue}
-            className="text-xs font-semibold justify-center"
+            className="small fw-semibold justify-content-center"
           >
-            <Play className="w-3.5 h-3.5 mr-1 text-primary" />
-            Check & Run Due Now
+            <Play style={{ width: "14px", height: "14px" }} className="me-1 text-primary" />
+            Check &amp; Run Due Now
           </Button>
 
           <Button
             size="md"
             onClick={() => setIsAddOpen(true)}
-            className="font-semibold shadow-sm text-xs sm:text-sm justify-center"
+            className="fw-semibold shadow-sm small justify-content-center"
           >
-            <Plus className="w-4 h-4 mr-1.5" />
+            <Plus style={{ width: "16px", height: "16px" }} className="me-1" />
             New Schedule
           </Button>
         </div>
@@ -255,129 +255,144 @@ export default function RecurringPage() {
 
       {/* Grid of Recurring Rules */}
       {isLoading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-pulse">
+        <div className="row g-3">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-28 bg-slate-200 rounded-card" />
+            <div key={i} className="col-12 col-sm-6">
+              <div className="card border rounded-card p-4 shadow-sm" style={{ minHeight: "120px" }}>
+                <div className="spinner-border spinner-border-sm text-primary mb-2" role="status" />
+                <span className="small text-muted">Loading schedule...</span>
+              </div>
+            </div>
           ))}
         </div>
       ) : recurringList.length === 0 ? (
-        <div className="py-14 text-center bg-surface rounded-card border border-border shadow-soft">
-          <Repeat className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-          <h3 className="text-sm font-bold text-slate-700">No recurring schedules set</h3>
-          <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
+        <div className="text-center py-5 bg-surface rounded-card border border-border shadow-sm">
+          <Repeat style={{ width: "40px", height: "40px" }} className="text-secondary opacity-50 mx-auto mb-3" />
+          <h3 className="h6 fw-bold text-foreground mb-1">No recurring schedules set</h3>
+          <p className="small text-muted mb-3 mx-auto" style={{ maxWidth: "380px" }}>
             Automate recurring household bills like electricity, maid salary, school fees, and rent.
           </p>
-          <button
+          <Button
             onClick={() => setIsAddOpen(true)}
-            className="mt-4 px-4 py-2 bg-primary text-primary-foreground text-xs font-semibold rounded-btn shadow-sm hover:bg-primary-hover transition-colors"
+            variant="primary"
+            size="sm"
+            className="fw-semibold shadow-sm"
           >
             + Set First Recurring Rule
-          </button>
+          </Button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="row g-3">
           {recurringList.map((item) => (
-            <div
-              key={item.id}
-              className={cn(
-                "p-4 rounded-card border bg-surface shadow-soft transition-all",
-                item.isActive ? "border-border" : "border-slate-200 opacity-60 bg-slate-50/50"
-              )}
-            >
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-3">
-                  <div
-                    className="w-10 h-10 rounded-full flex items-center justify-center text-white shrink-0 shadow-xs"
-                    style={{ backgroundColor: item.category?.color || "#0F766E" }}
-                  >
-                    <CategoryIcon name={item.category?.icon || "tag"} size={18} />
+            <div key={item.id} className="col-12 col-sm-6">
+              <div
+                className={cn(
+                  "card rounded-card border bg-surface shadow-sm p-3 h-100 transition",
+                  item.isActive ? "border-border" : "border-secondary-subtle opacity-75 bg-light"
+                )}
+              >
+                <div className="d-flex align-items-center justify-content-between mb-3">
+                  <div className="d-flex align-items-center gap-3">
+                    <div
+                      className="rounded-circle d-flex align-items-center justify-content-center text-white flex-shrink-0 shadow-sm"
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                        backgroundColor: item.category?.color || "#0F766E",
+                      }}
+                    >
+                      <CategoryIcon name={item.category?.icon || "tag"} size={18} />
+                    </div>
+                    <div>
+                      <h4 className="h6 fw-bold text-foreground mb-0">
+                        {item.category?.name}
+                      </h4>
+                      <span className="badge bg-primary-subtle text-primary fw-bold text-uppercase mt-1" style={{ fontSize: "10px", letterSpacing: "0.05em" }}>
+                        {item.frequency}
+                      </span>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="text-sm font-bold text-slate-900">
-                      {item.category?.name}
-                    </h4>
-                    <span className="text-[11px] font-semibold text-primary uppercase tracking-wider">
-                      {item.frequency}
-                    </span>
+
+                  <div className="text-end">
+                    <div className="fs-6 fw-bold font-amount text-foreground">
+                      {formatCurrency(item.amount)}
+                    </div>
+                    <Badge variant={item.type === "INCOME" ? "income" : "expense"}>
+                      {item.type}
+                    </Badge>
                   </div>
                 </div>
 
-                <div className="text-right">
-                  <div className="text-base font-bold font-amount text-slate-900">
-                    {formatCurrency(item.amount)}
+                {/* Meta information */}
+                <div className="pt-2 border-top d-flex align-items-center justify-content-between small text-muted mt-auto">
+                  <div className="d-flex align-items-center gap-1.5">
+                    <CreditCard style={{ width: "14px", height: "14px" }} className="text-secondary" />
+                    <span>{item.account?.name || "Unassigned"}</span>
                   </div>
-                  <Badge variant={item.type === "INCOME" ? "income" : "expense"}>
-                    {item.type}
-                  </Badge>
+
+                  <div className="d-flex align-items-center gap-1">
+                    <button
+                      onClick={() => handleOpenEdit(item)}
+                      className="btn btn-sm btn-light border-0 text-secondary p-1 rounded-circle"
+                      title="Edit schedule"
+                      type="button"
+                    >
+                      <Pencil style={{ width: "14px", height: "14px" }} />
+                    </button>
+
+                    <button
+                      onClick={() => handleToggle(item.id, item.isActive)}
+                      className="btn btn-sm btn-light border-0 text-secondary p-1 rounded-circle"
+                      title={item.isActive ? "Pause schedule" : "Resume schedule"}
+                      type="button"
+                    >
+                      {item.isActive ? (
+                        <PauseCircle style={{ width: "16px", height: "16px" }} className="text-warning" />
+                      ) : (
+                        <CheckCircle2 style={{ width: "16px", height: "16px" }} className="text-success" />
+                      )}
+                    </button>
+
+                    <button
+                      onClick={() => handleDelete(item.id)}
+                      className="btn btn-sm btn-light border-0 text-danger p-1 rounded-circle"
+                      title="Delete schedule"
+                      type="button"
+                    >
+                      <Trash2 style={{ width: "14px", height: "14px" }} />
+                    </button>
+                  </div>
                 </div>
+
+                {item.lastRunAt && (
+                  <p className="small text-secondary mb-0 mt-2" style={{ fontSize: "10px" }}>
+                    Last recorded: {formatShortDate(item.lastRunAt)}
+                  </p>
+                )}
               </div>
-
-              {/* Meta information */}
-              <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-                <div className="flex items-center gap-2">
-                  <CreditCard className="w-3.5 h-3.5 text-slate-400" />
-                  <span>{item.account?.name || "Unassigned"}</span>
-                </div>
-
-                <div className="flex items-center gap-1">
-                  <button
-                    onClick={() => handleOpenEdit(item)}
-                    className="p-1.5 rounded-btn hover:bg-slate-100 text-slate-400 hover:text-primary transition-colors"
-                    title="Edit schedule"
-                  >
-                    <Pencil className="w-3.5 h-3.5" />
-                  </button>
-
-                  <button
-                    onClick={() => handleToggle(item.id, item.isActive)}
-                    className="p-1.5 rounded-btn hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors"
-                    title={item.isActive ? "Pause schedule" : "Resume schedule"}
-                  >
-                    {item.isActive ? (
-                      <PauseCircle className="w-4 h-4 text-amber-600" />
-                    ) : (
-                      <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                    )}
-                  </button>
-
-                  <button
-                    onClick={() => handleDelete(item.id)}
-                    className="p-1.5 rounded-btn hover:bg-red-50 text-slate-400 hover:text-expense transition-colors"
-                    title="Delete schedule"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              </div>
-
-              {item.lastRunAt && (
-                <p className="text-[10px] text-slate-400 mt-1">
-                  Last recorded: {formatShortDate(item.lastRunAt)}
-                </p>
-              )}
             </div>
           ))}
         </div>
       )}
 
-      {/* Modal */}
+      {/* New Recurring Modal */}
       <Modal
         isOpen={isAddOpen}
         onClose={() => setIsAddOpen(false)}
         title="New Recurring Schedule"
         description="Automatically log repeated earnings or expenses"
       >
-        <form onSubmit={handleCreate} className="space-y-4 pt-1">
+        <form onSubmit={handleCreate} className="d-flex flex-column gap-3 pt-1">
           {/* Type Toggle */}
-          <div className="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-btn">
+          <div className="btn-group w-100 p-1 bg-light rounded-btn border" role="group">
             <button
               type="button"
               onClick={() => setFormData({ ...formData, type: "EXPENSE", categoryId: "" })}
               className={cn(
-                "py-2 rounded-btn font-semibold text-xs transition-all",
+                "btn btn-sm py-1.5 rounded-btn fw-bold small transition",
                 formData.type === "EXPENSE"
-                  ? "bg-expense text-white shadow-xs"
-                  : "text-slate-600 hover:text-slate-900"
+                  ? "btn-danger text-white shadow-sm"
+                  : "btn-link text-secondary text-decoration-none"
               )}
             >
               Expense
@@ -386,10 +401,10 @@ export default function RecurringPage() {
               type="button"
               onClick={() => setFormData({ ...formData, type: "INCOME", categoryId: "" })}
               className={cn(
-                "py-2 rounded-btn font-semibold text-xs transition-all",
+                "btn btn-sm py-1.5 rounded-btn fw-bold small transition",
                 formData.type === "INCOME"
-                  ? "bg-income text-white shadow-xs"
-                  : "text-slate-600 hover:text-slate-900"
+                  ? "btn-success text-white shadow-sm"
+                  : "btn-link text-secondary text-decoration-none"
               )}
             >
               Income
@@ -397,14 +412,14 @@ export default function RecurringPage() {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
+            <label className="form-label small fw-semibold text-foreground mb-1">
               Category *
             </label>
             <select
               required
               value={formData.categoryId}
               onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
-              className="w-full h-10 px-3 rounded-input border border-border text-xs focus:outline-none focus:ring-2 focus:ring-primary"
+              className="form-select form-select-sm rounded-input"
             >
               <option value="">Select category</option>
               {filteredCategories.map((c) => (
@@ -416,7 +431,7 @@ export default function RecurringPage() {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
+            <label className="form-label small fw-semibold text-foreground mb-1">
               Amount (₹) *
             </label>
             <input
@@ -426,19 +441,19 @@ export default function RecurringPage() {
               placeholder="e.g. 15000"
               value={formData.amount}
               onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
-              className="w-full h-10 px-3 rounded-input border border-border text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-primary"
+              className="form-control form-control-sm rounded-input fw-bold font-amount"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+          <div className="row g-2">
+            <div className="col-6">
+              <label className="form-label small fw-semibold text-foreground mb-1">
                 Frequency
               </label>
               <select
                 value={formData.frequency}
                 onChange={(e) => setFormData({ ...formData, frequency: e.target.value })}
-                className="w-full h-10 px-2 rounded-input border border-border text-xs focus:outline-none focus:ring-2 focus:ring-primary"
+                className="form-select form-select-sm rounded-input"
               >
                 <option value="DAILY">Daily</option>
                 <option value="WEEKLY">Weekly</option>
@@ -447,14 +462,14 @@ export default function RecurringPage() {
               </select>
             </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+            <div className="col-6">
+              <label className="form-label small fw-semibold text-foreground mb-1">
                 Account
               </label>
               <select
                 value={formData.accountId}
                 onChange={(e) => setFormData({ ...formData, accountId: e.target.value })}
-                className="w-full h-10 px-2 rounded-input border border-border text-xs focus:outline-none focus:ring-2 focus:ring-primary"
+                className="form-select form-select-sm rounded-input"
               >
                 <option value="">Select account</option>
                 {accounts.map((a) => (
@@ -466,22 +481,22 @@ export default function RecurringPage() {
             </div>
           </div>
 
-          <div className="sticky bottom-0 -mx-4 -mb-3.5 sm:-mx-6 sm:-mb-4 px-4 sm:px-6 py-3 bg-surface/95 backdrop-blur-md border-t border-border mt-auto flex gap-2 z-20">
+          <div className="modal-footer px-0 pb-0 pt-3 border-top mt-2 d-flex gap-2">
             <Button
               type="submit"
               variant="primary"
-              size="lg"
+              size="md"
               isLoading={submitting}
-              className="flex-1 font-bold text-xs"
+              className="flex-grow-1 fw-bold small"
             >
               Save Schedule
             </Button>
             <Button
               type="button"
               variant="outline"
-              size="lg"
+              size="md"
               onClick={() => setIsAddOpen(false)}
-              className="text-xs"
+              className="small"
             >
               Cancel
             </Button>
@@ -496,9 +511,9 @@ export default function RecurringPage() {
         title="Edit Recurring Schedule"
         description="Update recurring payment details and schedule"
       >
-        <form onSubmit={handleUpdateSchedule} className="space-y-4 pt-2">
+        <form onSubmit={handleUpdateSchedule} className="d-flex flex-column gap-3 pt-1">
           {/* Type Toggle */}
-          <div className="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-btn">
+          <div className="btn-group w-100 p-1 bg-light rounded-btn border" role="group">
             <button
               type="button"
               onClick={() =>
@@ -509,10 +524,10 @@ export default function RecurringPage() {
                 })
               }
               className={cn(
-                "py-2 rounded-btn text-xs font-semibold transition-all",
+                "btn btn-sm py-1.5 rounded-btn fw-bold small transition",
                 editFormData.type === "EXPENSE"
-                  ? "bg-expense text-white shadow-xs"
-                  : "text-slate-600"
+                  ? "btn-danger text-white shadow-sm"
+                  : "btn-link text-secondary text-decoration-none"
               )}
             >
               Expense Schedule
@@ -527,19 +542,19 @@ export default function RecurringPage() {
                 })
               }
               className={cn(
-                "py-2 rounded-btn text-xs font-semibold transition-all",
+                "btn btn-sm py-1.5 rounded-btn fw-bold small transition",
                 editFormData.type === "INCOME"
-                  ? "bg-income text-white shadow-xs"
-                  : "text-slate-600"
+                  ? "btn-success text-white shadow-sm"
+                  : "btn-link text-secondary text-decoration-none"
               )}
             >
               Income Schedule
             </button>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+          <div className="row g-2">
+            <div className="col-6">
+              <label className="form-label small fw-semibold text-foreground mb-1">
                 Category *
               </label>
               <select
@@ -551,7 +566,7 @@ export default function RecurringPage() {
                     categoryId: e.target.value,
                   })
                 }
-                className="w-full h-10 px-2 rounded-input border border-border text-xs focus:outline-none focus:ring-2 focus:ring-primary"
+                className="form-select form-select-sm rounded-input"
               >
                 <option value="">Select category</option>
                 {categories
@@ -564,8 +579,8 @@ export default function RecurringPage() {
               </select>
             </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+            <div className="col-6">
+              <label className="form-label small fw-semibold text-foreground mb-1">
                 Amount (₹) *
               </label>
               <input
@@ -577,14 +592,14 @@ export default function RecurringPage() {
                   setEditFormData({ ...editFormData, amount: e.target.value })
                 }
                 placeholder="0"
-                className="w-full h-10 px-3 rounded-input border border-border text-xs font-amount font-semibold focus:outline-none focus:ring-2 focus:ring-primary"
+                className="form-control form-control-sm rounded-input fw-bold font-amount"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+          <div className="row g-2">
+            <div className="col-6">
+              <label className="form-label small fw-semibold text-foreground mb-1">
                 Frequency *
               </label>
               <select
@@ -595,7 +610,7 @@ export default function RecurringPage() {
                     frequency: e.target.value,
                   })
                 }
-                className="w-full h-10 px-2 rounded-input border border-border text-xs focus:outline-none focus:ring-2 focus:ring-primary"
+                className="form-select form-select-sm rounded-input"
               >
                 <option value="DAILY">Daily</option>
                 <option value="WEEKLY">Weekly</option>
@@ -604,8 +619,8 @@ export default function RecurringPage() {
               </select>
             </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+            <div className="col-6">
+              <label className="form-label small fw-semibold text-foreground mb-1">
                 Account / Wallet
               </label>
               <select
@@ -613,7 +628,7 @@ export default function RecurringPage() {
                 onChange={(e) =>
                   setEditFormData({ ...editFormData, accountId: e.target.value })
                 }
-                className="w-full h-10 px-2 rounded-input border border-border text-xs focus:outline-none focus:ring-2 focus:ring-primary"
+                className="form-select form-select-sm rounded-input"
               >
                 <option value="">Select account</option>
                 {accounts.map((a) => (
@@ -625,22 +640,22 @@ export default function RecurringPage() {
             </div>
           </div>
 
-          <div className="sticky bottom-0 -mx-4 -mb-3.5 sm:-mx-6 sm:-mb-4 px-4 sm:px-6 py-3 bg-surface/95 backdrop-blur-md border-t border-border mt-auto flex gap-2 z-20">
+          <div className="modal-footer px-0 pb-0 pt-3 border-top mt-2 d-flex gap-2">
             <Button
               type="submit"
               variant="primary"
-              size="lg"
+              size="md"
               isLoading={editSubmitting}
-              className="flex-1 font-bold text-xs"
+              className="flex-grow-1 fw-bold small"
             >
               Update Schedule
             </Button>
             <Button
               type="button"
               variant="outline"
-              size="lg"
+              size="md"
               onClick={() => setEditItem(null)}
-              className="text-xs"
+              className="small"
             >
               Cancel
             </Button>

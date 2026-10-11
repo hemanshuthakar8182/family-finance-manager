@@ -164,60 +164,61 @@ export default function CategoriesPage() {
   };
 
   const CategoryList = ({ items, type }: { items: any[]; type: string }) => (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+    <div className="row g-2">
       {items.length === 0 ? (
-        <div className="col-span-2 py-6 text-center text-xs text-slate-400">
+        <div className="col-12 py-4 text-center small text-secondary">
           No {type.toLowerCase()} categories yet.
         </div>
       ) : (
         items.map((cat) => (
-          <div
-            key={cat.id}
-            className="flex items-center justify-between p-3 rounded-card border border-border bg-surface shadow-soft hover:shadow-card transition-all"
-          >
-            <div className="flex items-center gap-3">
-              <div
-                className="w-9 h-9 rounded-full flex items-center justify-center text-white shrink-0 shadow-xs"
-                style={{ backgroundColor: cat.color }}
-              >
-                <CategoryIcon name={cat.icon} categoryName={cat.name} size={16} />
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-slate-900">{cat.name}</p>
-                <p className="text-[11px] text-slate-400">
-                  {cat._count?.transactions || 0} transactions
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-1">
-              <button
-                onClick={() => {
-                  setEditCategory(cat);
-                  setEditFormData({
-                    name: cat.name,
-                    icon: cat.icon || "Tag",
-                    color: cat.color || "#0F766E",
-                  });
-                }}
-                title="Edit Category"
-                className="text-slate-400 hover:text-primary p-1.5 rounded-btn hover:bg-slate-100 transition-colors"
-              >
-                <Pencil className="w-3.5 h-3.5" />
-              </button>
-              {!cat.isDefault && (
-                <button
-                  onClick={() => handleArchive(cat.id, cat.name)}
-                  title="Archive Category"
-                  className="text-slate-400 hover:text-slate-700 p-1.5 rounded-btn hover:bg-slate-100 transition-colors"
+          <div key={cat.id} className="col-12 col-sm-6">
+            <div className="card rounded-card border bg-surface p-3 shadow-sm d-flex flex-row align-items-center justify-content-between h-100">
+              <div className="d-flex align-items-center gap-3 overflow-hidden">
+                <div
+                  className="rounded-circle d-flex align-items-center justify-content-center text-white flex-shrink-0 shadow-sm"
+                  style={{ width: "36px", height: "36px", backgroundColor: cat.color }}
                 >
-                  <Archive className="w-3.5 h-3.5" />
+                  <CategoryIcon name={cat.icon} categoryName={cat.name} size={16} />
+                </div>
+                <div className="overflow-hidden">
+                  <p className="h6 fw-bold text-dark text-truncate mb-0">{cat.name}</p>
+                  <p className="small text-secondary text-truncate mb-0" style={{ fontSize: "11px" }}>
+                    {cat._count?.transactions || 0} transactions
+                  </p>
+                </div>
+              </div>
+              <div className="d-flex align-items-center gap-1 flex-shrink-0 ms-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEditCategory(cat);
+                    setEditFormData({
+                      name: cat.name,
+                      icon: cat.icon || "Tag",
+                      color: cat.color || "#0F766E",
+                    });
+                  }}
+                  title="Edit Category"
+                  className="btn btn-sm btn-link text-secondary p-1 text-decoration-none"
+                >
+                  <Pencil style={{ width: "14px", height: "14px" }} />
                 </button>
-              )}
-              {cat.isDefault && (
-                <Badge variant="secondary" className="text-[10px]">
-                  Default
-                </Badge>
-              )}
+                {!cat.isDefault && (
+                  <button
+                    type="button"
+                    onClick={() => handleArchive(cat.id, cat.name)}
+                    title="Archive Category"
+                    className="btn btn-sm btn-link text-secondary p-1 text-decoration-none"
+                  >
+                    <Archive style={{ width: "14px", height: "14px" }} />
+                  </button>
+                )}
+                {cat.isDefault && (
+                  <Badge variant="secondary" style={{ fontSize: "10px" }}>
+                    Default
+                  </Badge>
+                )}
+              </div>
             </div>
           </div>
         ))
@@ -226,20 +227,20 @@ export default function CategoriesPage() {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="d-flex flex-column gap-4">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+          <h1 className="h4 fw-bold text-dark mb-1">
             Categories
           </h1>
-          <p className="text-xs sm:text-sm text-muted mt-0.5">
+          <p className="small text-secondary mb-0">
             Manage family expense and income categories
           </p>
         </div>
-        <Button size="md" onClick={openAddModal} className="w-full sm:w-auto justify-center font-semibold shadow-sm">
-          <Plus className="w-4 h-4 mr-1.5" />
-          New Category
+        <Button size="md" onClick={openAddModal} className="fw-semibold shadow-sm gap-2">
+          <Plus style={{ width: "16px", height: "16px" }} />
+          <span>New Category</span>
         </Button>
       </div>
 
@@ -250,9 +251,13 @@ export default function CategoriesPage() {
           <Badge variant="expense">{expenseCategories.length}</Badge>
         </CardHeader>
         {isLoading ? (
-          <div className="grid grid-cols-2 gap-2 animate-pulse">
+          <div className="row g-2">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="h-16 bg-slate-200 rounded-card" />
+              <div key={i} className="col-12 col-sm-6">
+                <div className="card rounded-card border p-3 bg-light placeholder-glow" style={{ height: "60px" }}>
+                  <span className="placeholder col-6"></span>
+                </div>
+              </div>
             ))}
           </div>
         ) : (
@@ -267,9 +272,13 @@ export default function CategoriesPage() {
           <Badge variant="income">{incomeCategories.length}</Badge>
         </CardHeader>
         {isLoading ? (
-          <div className="grid grid-cols-2 gap-2 animate-pulse">
+          <div className="row g-2">
             {[1, 2].map((i) => (
-              <div key={i} className="h-16 bg-slate-200 rounded-card" />
+              <div key={i} className="col-12 col-sm-6">
+                <div className="card rounded-card border p-3 bg-light placeholder-glow" style={{ height: "60px" }}>
+                  <span className="placeholder col-6"></span>
+                </div>
+              </div>
             ))}
           </div>
         ) : (
@@ -284,16 +293,16 @@ export default function CategoriesPage() {
         title="Create New Category"
         description="Add a custom expense or income category with smart icon detection"
       >
-        <form onSubmit={handleAdd} className="space-y-4 pt-2">
+        <form onSubmit={handleAdd} className="d-flex flex-column gap-3 pt-2">
           {/* Type Toggle */}
-          <div className="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-btn">
+          <div className="btn-group w-100">
             <button
               type="button"
               onClick={() => handleTypeChange("EXPENSE")}
-              className={`py-2 rounded-btn text-xs font-semibold transition-all ${
+              className={`btn btn-sm fw-bold py-2 ${
                 formData.type === "EXPENSE"
-                  ? "bg-expense text-white shadow-xs"
-                  : "text-slate-600 hover:text-slate-900"
+                  ? "btn-danger shadow-sm text-white"
+                  : "btn-light border text-secondary"
               }`}
             >
               Expense
@@ -301,10 +310,10 @@ export default function CategoriesPage() {
             <button
               type="button"
               onClick={() => handleTypeChange("INCOME")}
-              className={`py-2 rounded-btn text-xs font-semibold transition-all ${
+              className={`btn btn-sm fw-bold py-2 ${
                 formData.type === "INCOME"
-                  ? "bg-income text-white shadow-xs"
-                  : "text-slate-600 hover:text-slate-900"
+                  ? "btn-success shadow-sm text-white"
+                  : "btn-light border text-secondary"
               }`}
             >
               Income
@@ -313,7 +322,7 @@ export default function CategoriesPage() {
 
           {/* Category Name */}
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
+            <label className="form-label small fw-semibold text-dark mb-1">
               Category Name *
             </label>
             <input
@@ -321,12 +330,12 @@ export default function CategoriesPage() {
               value={formData.name}
               onChange={(e) => handleNameChange(e.target.value)}
               placeholder="e.g. Pet Care, Gym, Electricity, Grocery, Uber"
-              className="w-full h-11 px-3 rounded-input border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary placeholder:text-slate-400"
+              className="form-control rounded-input py-2"
             />
             {!isIconCustom && formData.name.trim().length > 0 && (
-              <p className="flex items-center gap-1 text-[11px] text-teal-700 mt-1.5 font-medium">
-                <Sparkles className="w-3.5 h-3.5 text-teal-600 shrink-0" />
-                Icon & color auto-detected from name
+              <p className="d-flex align-items-center gap-1 text-primary mt-1 mb-0 small fw-medium" style={{ fontSize: "11px" }}>
+                <Sparkles style={{ width: "14px", height: "14px" }} />
+                <span>Icon & color auto-detected from name</span>
               </p>
             )}
           </div>
@@ -354,46 +363,46 @@ export default function CategoriesPage() {
           />
 
           {/* Live Category Preview */}
-          <div className="flex items-center gap-3 p-3 rounded-card border border-border/80 bg-slate-50/80">
+          <div className="card rounded-card border bg-light p-3 d-flex flex-row align-items-center gap-3 shadow-none">
             <div
-              className="w-10 h-10 rounded-full flex items-center justify-center text-white shrink-0 shadow-xs"
-              style={{ backgroundColor: formData.color }}
+              className="rounded-circle d-flex align-items-center justify-content-center text-white flex-shrink-0 shadow-sm"
+              style={{ width: "40px", height: "40px", backgroundColor: formData.color }}
             >
               <CategoryIcon name={formData.icon} categoryName={formData.name} size={18} />
             </div>
-            <div className="min-w-0">
-              <p className="text-xs font-bold text-slate-900 truncate">
+            <div className="overflow-hidden">
+              <p className="small fw-bold text-dark text-truncate mb-0">
                 {formData.name || "Category Preview"}
               </p>
-              <div className="flex items-center gap-1.5 mt-0.5">
-                <span className="text-[10px] text-slate-500 font-medium">
+              <div className="d-flex align-items-center gap-1 mt-0.5 small text-secondary" style={{ fontSize: "11px" }}>
+                <span>
                   {formData.type === "EXPENSE" ? "Expense" : "Income"} Category
                 </span>
-                <span className="text-[10px] text-slate-300">•</span>
-                <span className="text-[10px] text-slate-500 font-medium">
+                <span>•</span>
+                <span>
                   Icon: {formData.icon}
                 </span>
               </div>
             </div>
           </div>
 
-          <div className="sticky bottom-0 -mx-4 -mb-3.5 sm:-mx-6 sm:-mb-4 px-4 sm:px-6 py-3 bg-surface/95 backdrop-blur-md border-t border-border mt-auto flex gap-2 z-20">
-            <Button
-              type="submit"
-              variant="primary"
-              size="lg"
-              isLoading={submitting}
-              className="flex-1 font-bold shadow-xs"
-            >
-              Create Category
-            </Button>
+          <div className="d-flex align-items-center justify-content-end gap-2 pt-2 border-top mt-2">
             <Button
               type="button"
               variant="outline"
-              size="lg"
+              size="md"
               onClick={() => setIsAddOpen(false)}
             >
               Cancel
+            </Button>
+            <Button
+              type="submit"
+              variant="primary"
+              size="md"
+              isLoading={submitting}
+              className="fw-bold px-4 shadow-sm"
+            >
+              Create Category
             </Button>
           </div>
         </form>
@@ -406,10 +415,10 @@ export default function CategoriesPage() {
         title="Edit Category"
         description="Update category name, icon, and theme color"
       >
-        <form onSubmit={handleUpdate} className="space-y-4 pt-2">
+        <form onSubmit={handleUpdate} className="d-flex flex-column gap-3 pt-2">
           {/* Category Name */}
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
+            <label className="form-label small fw-semibold text-dark mb-1">
               Category Name *
             </label>
             <input
@@ -419,7 +428,7 @@ export default function CategoriesPage() {
                 setEditFormData({ ...editFormData, name: e.target.value })
               }
               placeholder="Category name"
-              className="w-full h-11 px-3 rounded-input border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+              className="form-control rounded-input py-2"
             />
           </div>
 
@@ -444,10 +453,10 @@ export default function CategoriesPage() {
           />
 
           {/* Live Preview */}
-          <div className="flex items-center gap-3 p-3 rounded-card border border-border/80 bg-slate-50/80">
+          <div className="card rounded-card border bg-light p-3 d-flex flex-row align-items-center gap-3 shadow-none">
             <div
-              className="w-10 h-10 rounded-full flex items-center justify-center text-white shrink-0 shadow-xs"
-              style={{ backgroundColor: editFormData.color }}
+              className="rounded-circle d-flex align-items-center justify-content-center text-white flex-shrink-0 shadow-sm"
+              style={{ width: "40px", height: "40px", backgroundColor: editFormData.color }}
             >
               <CategoryIcon
                 name={editFormData.icon}
@@ -455,39 +464,39 @@ export default function CategoriesPage() {
                 size={18}
               />
             </div>
-            <div className="min-w-0">
-              <p className="text-xs font-bold text-slate-900 truncate">
+            <div className="overflow-hidden">
+              <p className="small fw-bold text-dark text-truncate mb-0">
                 {editFormData.name || "Category Preview"}
               </p>
-              <div className="flex items-center gap-1.5 mt-0.5">
-                <span className="text-[10px] text-slate-500 font-medium">
+              <div className="d-flex align-items-center gap-1 mt-0.5 small text-secondary" style={{ fontSize: "11px" }}>
+                <span>
                   {editCategory?.type === "EXPENSE" ? "Expense" : "Income"} Category
                 </span>
-                <span className="text-[10px] text-slate-300">•</span>
-                <span className="text-[10px] text-slate-500 font-medium">
+                <span>•</span>
+                <span>
                   Icon: {editFormData.icon}
                 </span>
               </div>
             </div>
           </div>
 
-          <div className="sticky bottom-0 -mx-4 -mb-3.5 sm:-mx-6 sm:-mb-4 px-4 sm:px-6 py-3 bg-surface/95 backdrop-blur-md border-t border-border mt-auto flex gap-2 z-20">
-            <Button
-              type="submit"
-              variant="primary"
-              size="lg"
-              isLoading={editSubmitting}
-              className="flex-1 font-bold shadow-xs"
-            >
-              Save Changes
-            </Button>
+          <div className="d-flex align-items-center justify-content-end gap-2 pt-2 border-top mt-2">
             <Button
               type="button"
               variant="outline"
-              size="lg"
+              size="md"
               onClick={() => setEditCategory(null)}
             >
               Cancel
+            </Button>
+            <Button
+              type="submit"
+              variant="primary"
+              size="md"
+              isLoading={editSubmitting}
+              className="fw-bold px-4 shadow-sm"
+            >
+              Save Changes
             </Button>
           </div>
         </form>
@@ -495,3 +504,4 @@ export default function CategoriesPage() {
     </div>
   );
 }
+

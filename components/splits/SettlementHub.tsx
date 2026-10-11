@@ -128,9 +128,11 @@ export function SettlementHub() {
 
   if (loading && !data) {
     return (
-      <div className="flex flex-col items-center justify-center p-12 space-y-3">
-        <RefreshCw className="w-8 h-8 text-primary animate-spin" />
-        <p className="text-xs text-slate-500 font-medium">Loading family debts & balances...</p>
+      <div className="d-flex flex-column align-items-center justify-content-center p-5 text-center">
+        <div className="spinner-border text-primary mb-3" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+        <p className="small text-secondary fw-medium mb-0">Loading family debts & balances...</p>
       </div>
     );
   }
@@ -142,134 +144,153 @@ export function SettlementHub() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="d-flex flex-column gap-4">
       {/* ── 1. Top KPI Summary ── */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="row g-3">
         {/* You are owed */}
-        <div className="bg-emerald-50/70 border border-emerald-200/80 rounded-card p-4 flex items-center justify-between">
-          <div>
-            <span className="text-xs font-bold text-emerald-800 tracking-wide">
-              YOU ARE OWED
-            </span>
-            <div className="text-2xl font-bold font-amount text-emerald-950 mt-1">
-              +{formatCurrency(userBalance.youAreOwed)}
+        <div className="col-12 col-md-4">
+          <div className="card rounded-card border border-success-subtle bg-success-subtle p-3 h-100 shadow-sm">
+            <div className="d-flex align-items-center justify-content-between">
+              <div>
+                <span className="small fw-bold text-success text-uppercase">
+                  YOU ARE OWED
+                </span>
+                <div className="h3 fw-bold text-success-emphasis mb-0 mt-1">
+                  +{formatCurrency(userBalance.youAreOwed)}
+                </div>
+                <span className="small text-success-emphasis" style={{ fontSize: "11px" }}>
+                  from family members
+                </span>
+              </div>
+              <div
+                className="rounded-circle bg-success text-white d-flex align-items-center justify-content-center flex-shrink-0"
+                style={{ width: "42px", height: "42px" }}
+              >
+                <CheckCircle2 style={{ width: "22px", height: "22px" }} />
+              </div>
             </div>
-            <span className="text-[11px] text-emerald-700 font-medium">
-              from family members
-            </span>
-          </div>
-          <div className="w-10 h-10 rounded-xl bg-emerald-100/80 text-emerald-700 flex items-center justify-center shrink-0">
-            <CheckCircle2 className="w-5 h-5" />
           </div>
         </div>
 
         {/* You owe */}
-        <div className="bg-rose-50/70 border border-rose-200/80 rounded-card p-4 flex items-center justify-between">
-          <div>
-            <span className="text-xs font-bold text-rose-800 tracking-wide">
-              YOU OWE
-            </span>
-            <div className="text-2xl font-bold font-amount text-rose-950 mt-1">
-              -{formatCurrency(userBalance.youOwe)}
+        <div className="col-12 col-md-4">
+          <div className="card rounded-card border border-danger-subtle bg-danger-subtle p-3 h-100 shadow-sm">
+            <div className="d-flex align-items-center justify-content-between">
+              <div>
+                <span className="small fw-bold text-danger text-uppercase">
+                  YOU OWE
+                </span>
+                <div className="h3 fw-bold text-danger-emphasis mb-0 mt-1">
+                  -{formatCurrency(userBalance.youOwe)}
+                </div>
+                <span className="small text-danger-emphasis" style={{ fontSize: "11px" }}>
+                  to family members
+                </span>
+              </div>
+              <div
+                className="rounded-circle bg-danger text-white d-flex align-items-center justify-content-center flex-shrink-0"
+                style={{ width: "42px", height: "42px" }}
+              >
+                <AlertCircle style={{ width: "22px", height: "22px" }} />
+              </div>
             </div>
-            <span className="text-[11px] text-rose-700 font-medium">
-              to family members
-            </span>
-          </div>
-          <div className="w-10 h-10 rounded-xl bg-rose-100/80 text-rose-700 flex items-center justify-center shrink-0">
-            <AlertCircle className="w-5 h-5" />
           </div>
         </div>
 
         {/* Net position */}
-        <div className="bg-surface border border-border rounded-card p-4 flex items-center justify-between shadow-card">
-          <div>
-            <span className="text-xs font-bold text-slate-500 tracking-wide">
-              NET POSITION
-            </span>
-            <div
-              className={`text-2xl font-bold font-amount mt-1 ${
-                userBalance.netBalance >= 0 ? "text-income" : "text-expense"
-              }`}
-            >
-              {userBalance.netBalance >= 0 ? "+" : ""}
-              {formatCurrency(userBalance.netBalance)}
+        <div className="col-12 col-md-4">
+          <div className="card rounded-card border bg-surface p-3 h-100 shadow-sm">
+            <div className="d-flex align-items-center justify-content-between">
+              <div>
+                <span className="small fw-bold text-secondary text-uppercase">
+                  NET POSITION
+                </span>
+                <div
+                  className={`h3 fw-bold mb-0 mt-1 ${
+                    userBalance.netBalance >= 0 ? "text-income" : "text-expense"
+                  }`}
+                >
+                  {userBalance.netBalance >= 0 ? "+" : ""}
+                  {formatCurrency(userBalance.netBalance)}
+                </div>
+                <span className="small text-secondary" style={{ fontSize: "11px" }}>
+                  {userBalance.netBalance >= 0 ? "Overall in credit" : "Overall in debit"}
+                </span>
+              </div>
+              <div
+                className="rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center flex-shrink-0"
+                style={{ width: "42px", height: "42px" }}
+              >
+                <HandCoins style={{ width: "22px", height: "22px" }} />
+              </div>
             </div>
-            <span className="text-[11px] text-slate-500 font-medium">
-              {userBalance.netBalance >= 0
-                ? "Overall in credit"
-                : "Overall in debit"}
-            </span>
-          </div>
-          <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
-            <HandCoins className="w-5 h-5" />
           </div>
         </div>
       </div>
 
       {/* ── 2. Who Owes Whom Matrix ── */}
-      <div className="bg-surface rounded-card border border-border p-6 shadow-card space-y-4">
-        <div className="flex items-center justify-between">
+      <div className="card rounded-card border bg-surface p-3 p-sm-4 shadow-sm">
+        <div className="d-flex align-items-center justify-content-between mb-3">
           <div>
-            <h3 className="text-base font-bold text-slate-900">
+            <h3 className="h6 fw-bold text-dark mb-0">
               Outstanding Family Settlements
             </h3>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <p className="small text-secondary mb-0">
               Pairwise netted balances between all family members
             </p>
           </div>
           <button
             onClick={fetchLedger}
-            className="p-1.5 rounded-lg border border-border text-slate-500 hover:text-slate-800 transition-colors"
+            className="btn btn-sm btn-light border text-secondary"
             title="Refresh balances"
           >
-            <RefreshCw className="w-4 h-4" />
+            <RefreshCw style={{ width: "14px", height: "14px" }} />
           </button>
         </div>
 
         {nettedDebts.length === 0 ? (
-          <div className="p-8 text-center bg-slate-50 rounded-card border border-dashed border-slate-200">
-            <CheckCircle2 className="w-8 h-8 text-income mx-auto mb-2" />
-            <h4 className="text-sm font-bold text-slate-800">
-              All Squared Up!
-            </h4>
-            <p className="text-xs text-slate-500 mt-0.5">
+          <div className="p-4 text-center bg-light rounded-card border border-dashed">
+            <CheckCircle2 className="text-income mx-auto mb-2" style={{ width: "32px", height: "32px" }} />
+            <h4 className="h6 fw-bold text-dark mb-1">All Squared Up!</h4>
+            <p className="small text-secondary mb-0">
               No outstanding balances or debts between family members.
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="row g-3">
             {nettedDebts.map((debt, idx) => (
-              <div
-                key={idx}
-                className="p-4 rounded-card border border-border bg-slate-50/50 hover:bg-slate-50 flex items-center justify-between gap-4 transition-all"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs text-slate-700 shrink-0">
-                    {debt.debtor.name.charAt(0)}
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-800">
-                      <span className="font-bold text-slate-900">{debt.debtor.name}</span>
-                      <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
-                      <span className="font-bold text-slate-900">{debt.creditor.name}</span>
+              <div key={idx} className="col-12 col-md-6">
+                <div className="card rounded-card border bg-light p-3 d-flex flex-row align-items-center justify-content-between gap-3 shadow-none">
+                  <div className="d-flex align-items-center gap-3 overflow-hidden">
+                    <div
+                      className="rounded-circle bg-secondary bg-opacity-10 text-dark fw-bold d-flex align-items-center justify-content-center flex-shrink-0 small"
+                      style={{ width: "36px", height: "36px" }}
+                    >
+                      {debt.debtor.name.charAt(0)}
                     </div>
-                    <span className="text-[11px] text-slate-500">
-                      {debt.debtor.name} owes {debt.creditor.name}
-                    </span>
+                    <div className="overflow-hidden">
+                      <div className="d-flex align-items-center gap-1 small fw-semibold text-dark text-truncate">
+                        <span className="fw-bold">{debt.debtor.name}</span>
+                        <ArrowRight style={{ width: "12px", height: "12px" }} className="text-secondary flex-shrink-0" />
+                        <span className="fw-bold">{debt.creditor.name}</span>
+                      </div>
+                      <span className="small text-secondary text-truncate d-block" style={{ fontSize: "11px" }}>
+                        {debt.debtor.name} owes {debt.creditor.name}
+                      </span>
+                    </div>
                   </div>
-                </div>
 
-                <div className="flex items-center gap-3">
-                  <span className="text-sm font-bold font-amount text-slate-900">
-                    {formatCurrency(debt.amount)}
-                  </span>
-                  <button
-                    onClick={() => openSettleModal(debt)}
-                    className="px-3 py-1.5 bg-primary text-primary-foreground rounded-btn text-xs font-bold hover:bg-primary-hover transition-colors shadow-2xs"
-                  >
-                    Settle Up
-                  </button>
+                  <div className="d-flex align-items-center gap-2 flex-shrink-0">
+                    <span className="fw-bold text-dark small">
+                      {formatCurrency(debt.amount)}
+                    </span>
+                    <button
+                      onClick={() => openSettleModal(debt)}
+                      className="btn btn-sm btn-primary rounded-btn fw-bold px-2.5 py-1 shadow-sm small"
+                    >
+                      Settle Up
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
@@ -278,38 +299,38 @@ export function SettlementHub() {
       </div>
 
       {/* ── 3. Shared Expenses Ledger ── */}
-      <div className="bg-surface rounded-card border border-border shadow-card overflow-hidden">
-        <div className="p-4 sm:p-6 border-b border-border flex items-center justify-between">
+      <div className="card rounded-card border bg-surface shadow-sm overflow-hidden">
+        <div className="p-3 p-sm-4 border-bottom d-flex align-items-center justify-content-between">
           <div>
-            <h3 className="text-base font-bold text-slate-900">
+            <h3 className="h6 fw-bold text-dark mb-0">
               Recent Split Expenses
             </h3>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <p className="small text-secondary mb-0">
               Audit log of shared household bills and member allocations
             </p>
           </div>
-          <span className="text-xs font-bold text-slate-500">
+          <span className="badge bg-light text-secondary border small">
             {splits.length} shared bills
           </span>
         </div>
 
         {splits.length === 0 ? (
-          <div className="p-8 text-center text-xs text-slate-500">
+          <div className="p-4 text-center small text-secondary">
             No split expenses recorded yet. Check &quot;Split with Family&quot; when adding an expense.
           </div>
         ) : (
-          <div className="divide-y divide-border">
+          <div className="list-group list-group-flush">
             {splits.map((s) => (
-              <div key={s.id} className="p-4 sm:p-5 hover:bg-slate-50 transition-colors space-y-2">
-                <div className="flex items-start justify-between gap-4">
+              <div key={s.id} className="list-group-item p-3 p-sm-4 bg-transparent">
+                <div className="d-flex align-items-start justify-content-between gap-3 mb-2">
                   <div>
-                    <h4 className="text-sm font-bold text-slate-800">
+                    <h4 className="small fw-bold text-dark mb-1">
                       {s.description}
                     </h4>
-                    <div className="flex items-center gap-2 mt-1 text-xs text-slate-500">
+                    <div className="d-flex align-items-center gap-2 small text-secondary flex-wrap" style={{ fontSize: "11px" }}>
                       <span>{new Date(s.date).toLocaleDateString()}</span>
                       <span>•</span>
-                      <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-[10px] font-semibold">
+                      <span className="badge bg-light text-dark border">
                         {s.categoryName}
                       </span>
                       <span>•</span>
@@ -317,31 +338,32 @@ export function SettlementHub() {
                     </div>
                   </div>
 
-                  <span className="text-sm font-bold font-amount text-slate-900">
+                  <span className="fw-bold text-dark small flex-shrink-0">
                     {formatCurrency(s.totalAmount)}
                   </span>
                 </div>
 
                 {/* Shares breakdown */}
-                <div className="flex flex-wrap gap-2 pt-1">
+                <div className="d-flex flex-wrap gap-2 pt-1">
                   {s.shares.map((sh) => (
                     <div
                       key={sh.id}
-                      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold border ${
+                      className={`badge rounded-pill d-inline-flex align-items-center gap-1 px-2.5 py-1 border ${
                         sh.isSettled
-                          ? "bg-emerald-50 text-emerald-800 border-emerald-200"
-                          : "bg-amber-50 text-amber-900 border-amber-200"
+                          ? "bg-success-subtle text-success border-success-subtle"
+                          : "bg-warning-subtle text-warning-emphasis border-warning-subtle"
                       }`}
+                      style={{ fontSize: "11px" }}
                     >
                       {sh.isSettled ? (
-                        <Check className="w-3 h-3 text-emerald-600" />
+                        <Check style={{ width: "12px", height: "12px" }} />
                       ) : (
-                        <Clock className="w-3 h-3 text-amber-600" />
+                        <Clock style={{ width: "12px", height: "12px" }} />
                       )}
                       <span>
                         {sh.memberName}: {formatCurrency(sh.amount)}
                       </span>
-                      <span className="text-[9px] uppercase tracking-wide opacity-75">
+                      <span className="text-uppercase" style={{ fontSize: "9px", opacity: 0.8 }}>
                         ({sh.isSettled ? "Settled" : "Pending"})
                       </span>
                     </div>
@@ -360,20 +382,20 @@ export function SettlementHub() {
           onClose={() => setSettleTarget(null)}
           title="Settle Up Family Balance"
         >
-          <div className="space-y-4 pt-2">
-            <div className="p-3 bg-slate-50 rounded-card border border-border text-xs text-slate-700 flex items-center justify-between">
+          <div className="d-flex flex-column gap-3 pt-2">
+            <div className="p-3 bg-light rounded-card border small text-dark d-flex align-items-center justify-content-between">
               <div>
-                <span className="font-bold text-slate-900">{settleTarget.debtor.name}</span>
-                <span className="text-slate-500"> pays </span>
-                <span className="font-bold text-slate-900">{settleTarget.creditor.name}</span>
+                <span className="fw-bold">{settleTarget.debtor.name}</span>
+                <span className="text-secondary"> pays </span>
+                <span className="fw-bold">{settleTarget.creditor.name}</span>
               </div>
-              <span className="font-bold text-sm text-slate-900">
+              <span className="fw-bold small text-dark">
                 {formatCurrency(settleTarget.amount)}
               </span>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="form-label small fw-semibold text-dark mb-1">
                 Settlement Amount (₹)
               </label>
               <input
@@ -383,20 +405,20 @@ export function SettlementHub() {
                 max={settleTarget.amount}
                 value={settleAmount}
                 onChange={(e) => setSettleAmount(e.target.value)}
-                className="w-full px-3 py-2 rounded-input border border-border text-sm font-bold focus:ring-2 focus:ring-primary focus:outline-none"
+                className="form-control rounded-input fw-bold"
               />
             </div>
 
-            <p className="text-[11px] text-slate-500">
+            <p className="small text-secondary mb-0" style={{ fontSize: "11px" }}>
               Recording this settlement marks pending split shares as settled and aligns the family ledger.
             </p>
 
-            <div className="sticky bottom-0 -mx-4 -mb-3.5 sm:-mx-6 sm:-mb-4 px-4 sm:px-6 py-3 bg-surface/95 backdrop-blur-md border-t border-border mt-auto flex items-center justify-end gap-2 z-20">
+            <div className="d-flex align-items-center justify-content-end gap-2 pt-2 border-top">
               <button
                 type="button"
                 onClick={() => setSettleTarget(null)}
                 disabled={isSettling}
-                className="px-4 py-2 border border-border rounded-btn text-xs font-semibold text-muted hover:bg-surface-muted"
+                className="btn btn-sm btn-light border rounded-btn fw-semibold px-3 py-2 text-secondary"
               >
                 Cancel
               </button>
@@ -404,15 +426,17 @@ export function SettlementHub() {
                 type="button"
                 onClick={handleConfirmSettle}
                 disabled={isSettling || !settleAmount || parseFloat(settleAmount) <= 0}
-                className="px-5 py-2 bg-primary text-primary-foreground rounded-btn text-xs font-bold hover:bg-primary-hover disabled:opacity-50 transition-colors shadow-sm flex items-center gap-1.5"
+                className="btn btn-sm btn-primary rounded-btn fw-bold px-4 py-2 d-flex align-items-center gap-2 shadow-sm"
               >
                 {isSettling ? (
                   <>
-                    <RefreshCw className="w-3.5 h-3.5 animate-spin" /> Settling...
+                    <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true" />
+                    <span>Settling...</span>
                   </>
                 ) : (
                   <>
-                    <Check className="w-3.5 h-3.5" /> Confirm Settlement
+                    <Check style={{ width: "16px", height: "16px" }} />
+                    <span>Confirm Settlement</span>
                   </>
                 )}
               </button>
@@ -423,3 +447,4 @@ export function SettlementHub() {
     </div>
   );
 }
+

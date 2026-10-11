@@ -18,40 +18,45 @@ export function RecentTransactionsWidget({
 }: RecentTransactionsWidgetProps) {
   if (!transactions || transactions.length === 0) {
     return (
-      <div className="py-8 text-center bg-surface rounded-card border border-border p-6 shadow-soft">
-        <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto mb-3">
-          <Receipt className="w-6 h-6" />
+      <div className="card rounded-card border p-4 text-center bg-surface shadow-sm">
+        <div
+          className="rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center mx-auto mb-3"
+          style={{ width: "48px", height: "48px" }}
+        >
+          <Receipt style={{ width: "24px", height: "24px" }} />
         </div>
-        <h4 className="text-sm font-bold text-slate-800">No transactions yet</h4>
-        <p className="text-xs text-slate-500 mt-1 max-w-xs mx-auto">
+        <h4 className="h6 fw-bold text-dark mb-1">No transactions yet</h4>
+        <p className="small text-secondary mx-auto mb-3" style={{ maxWidth: "320px" }}>
           Start tracking your family daily income and expenses in a few seconds.
         </p>
-        <button
-          onClick={onOpenQuickAdd}
-          className="mt-4 px-4 py-2 bg-primary hover:bg-primary-hover text-primary-foreground text-xs font-semibold rounded-btn shadow-sm transition-all"
-        >
-          + Add First Transaction
-        </button>
+        <div>
+          <button
+            onClick={onOpenQuickAdd}
+            className="btn btn-sm btn-primary rounded-btn fw-bold px-3 py-2 shadow-sm"
+          >
+            + Add First Transaction
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-2.5">
-      <div className="flex items-center justify-between px-1">
-        <h3 className="text-sm sm:text-base font-bold text-slate-900 tracking-tight">
+    <div className="d-flex flex-column gap-2">
+      <div className="d-flex align-items-center justify-content-between px-1">
+        <h3 className="h6 fw-bold text-dark mb-0">
           Recent Transactions
         </h3>
         <Link
           href="/transactions"
-          className="text-xs font-semibold text-primary hover:underline flex items-center gap-0.5"
+          className="small fw-semibold text-primary text-decoration-none d-flex align-items-center gap-1"
         >
           <span>View All</span>
-          <ChevronRight className="w-3.5 h-3.5" />
+          <ChevronRight style={{ width: "14px", height: "14px" }} />
         </Link>
       </div>
 
-      <div className="space-y-2">
+      <div className="d-flex flex-column gap-2">
         {transactions.map((t) => (
           <TransactionCard
             key={t.id}
@@ -63,3 +68,4 @@ export function RecentTransactionsWidget({
     </div>
   );
 }
+

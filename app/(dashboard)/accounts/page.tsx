@@ -144,102 +144,115 @@ export default function AccountsPage() {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="d-flex flex-column gap-4">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+          <h1 className="h4 fw-bold text-dark mb-1">
             Accounts & Wallets
           </h1>
-          <p className="text-xs sm:text-sm text-muted mt-0.5">
+          <p className="small text-secondary mb-0">
             Manage family bank accounts, UPI wallets and cash
           </p>
         </div>
-        <Button size="md" onClick={() => setIsAddOpen(true)} className="w-full sm:w-auto justify-center font-semibold shadow-sm">
-          <Plus className="w-4 h-4 mr-1.5" />
-          Add Account
+        <Button size="md" onClick={() => setIsAddOpen(true)} className="fw-semibold shadow-sm gap-2">
+          <Plus style={{ width: "16px", height: "16px" }} />
+          <span>Add Account</span>
         </Button>
       </div>
 
       {/* Total Balance Banner */}
-      <div className="p-5 rounded-card bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-md">
-        <p className="text-xs font-semibold opacity-80">Total Family Balance</p>
-        <div className="text-3xl font-bold font-amount mt-1">
+      <div
+        className="card rounded-card p-4 text-white shadow-sm border-0"
+        style={{ background: "linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%)" }}
+      >
+        <p className="small fw-semibold opacity-75 mb-1">Total Family Balance</p>
+        <div className="h2 fw-bold mb-1">
           {formatCurrency(totalBalance)}
         </div>
-        <p className="text-[11px] opacity-70 mt-0.5">
+        <p className="small opacity-75 mb-0" style={{ fontSize: "11px" }}>
           Across {accounts.length} active account{accounts.length !== 1 ? "s" : ""}
         </p>
       </div>
 
       {/* Account Grid */}
       {isLoading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 animate-pulse">
+        <div className="row g-3">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-28 bg-slate-200 rounded-card" />
+            <div key={i} className="col-12 col-sm-6 col-lg-4">
+              <div className="card rounded-card border p-4 bg-light placeholder-glow" style={{ height: "120px" }}>
+                <span className="placeholder col-6"></span>
+                <span className="placeholder col-8 mt-2"></span>
+              </div>
+            </div>
           ))}
         </div>
       ) : accounts.length === 0 ? (
-        <div className="py-12 text-center bg-surface rounded-card border border-border shadow-soft">
-          <CreditCard className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-          <h3 className="text-sm font-bold text-slate-700">No accounts yet</h3>
-          <p className="text-xs text-slate-400 mt-1">
+        <div className="card rounded-card border p-5 text-center bg-surface shadow-sm">
+          <CreditCard className="text-secondary mx-auto mb-3" style={{ width: "40px", height: "40px" }} />
+          <h3 className="h6 fw-bold text-dark mb-1">No accounts yet</h3>
+          <p className="small text-secondary mb-0">
             Add your first bank account or wallet to get started.
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="row g-3">
           {accounts.map((acc) => {
             const config = ACCOUNT_TYPE_CONFIG[acc.type] || ACCOUNT_TYPE_CONFIG.BANK;
             const Icon = config.icon;
             return (
-              <div
-                key={acc.id}
-                className="p-4 rounded-card border border-border bg-surface shadow-soft hover:shadow-card transition-all"
-              >
-                <div className="flex items-center justify-between mb-3">
-                  <div className={`w-9 h-9 rounded-btn flex items-center justify-center ${config.bg} ${config.color}`}>
-                    <Icon className="w-5 h-5" />
+              <div key={acc.id} className="col-12 col-sm-6 col-lg-4">
+                <div className="card rounded-card border bg-surface p-3 shadow-sm h-100">
+                  <div className="d-flex align-items-center justify-content-between mb-3">
+                    <div
+                      className="rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center flex-shrink-0"
+                      style={{ width: "36px", height: "36px" }}
+                    >
+                      <Icon style={{ width: "18px", height: "18px" }} />
+                    </div>
+                    <div className="d-flex align-items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditAccount(acc);
+                          setEditFormData({ name: acc.name, type: acc.type });
+                        }}
+                        title="Edit Account Details"
+                        className="btn btn-sm btn-link text-secondary p-1 text-decoration-none"
+                      >
+                        <Pencil style={{ width: "16px", height: "16px" }} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setReconcileAccount(acc)}
+                        title="Reconcile balance with statement"
+                        className="btn btn-sm btn-link text-secondary p-1 text-decoration-none"
+                      >
+                        <Sliders style={{ width: "16px", height: "16px" }} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleArchive(acc.id, acc.name)}
+                        title="Archive Account"
+                        className="btn btn-sm btn-link text-secondary p-1 text-decoration-none"
+                      >
+                        <Archive style={{ width: "16px", height: "16px" }} />
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <button
-                      onClick={() => {
-                        setEditAccount(acc);
-                        setEditFormData({ name: acc.name, type: acc.type });
-                      }}
-                      title="Edit Account Details"
-                      className="text-slate-400 hover:text-primary p-1.5 rounded-btn hover:bg-slate-100 transition-colors"
-                    >
-                      <Pencil className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => setReconcileAccount(acc)}
-                      title="Reconcile balance with statement"
-                      className="text-slate-400 hover:text-primary p-1.5 rounded-btn hover:bg-primary/10 transition-colors"
-                    >
-                      <Sliders className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => handleArchive(acc.id, acc.name)}
-                      title="Archive Account"
-                      className="text-slate-400 hover:text-slate-700 p-1.5 rounded-btn hover:bg-slate-100 transition-colors"
-                    >
-                      <Archive className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
 
-                <h3 className="font-bold text-slate-900 text-sm truncate">{acc.name}</h3>
-                <p className="text-[11px] text-slate-400 mt-0.5">{config.label}</p>
+                  <h3 className="h6 fw-bold text-dark text-truncate mb-0">{acc.name}</h3>
+                  <p className="small text-secondary mb-0" style={{ fontSize: "11px" }}>{config.label}</p>
 
-                <div className="mt-3 pt-3 border-t border-slate-100">
-                  <div className="text-xl font-bold font-amount text-slate-900">
-                    {formatCurrency(acc.currentBalance)}
+                  <div className="mt-3 pt-2 border-top">
+                    <div className="h5 fw-bold text-dark mb-0">
+                      {formatCurrency(acc.currentBalance)}
+                    </div>
+                    <p className="small text-secondary mb-0 mt-1" style={{ fontSize: "11px" }}>
+                      {acc._count?.transactions || 0} transactions •{" "}
+                      Opening: {formatCurrency(acc.openingBalance)}
+                    </p>
                   </div>
-                  <p className="text-[10px] text-slate-400 mt-0.5">
-                    {acc._count?.transactions || 0} transactions •{" "}
-                    Opening: {formatCurrency(acc.openingBalance)}
-                  </p>
                 </div>
               </div>
             );
@@ -254,9 +267,9 @@ export default function AccountsPage() {
         title="Add New Account"
         description="Connect a bank account, UPI wallet or cash record"
       >
-        <form onSubmit={handleAdd} className="space-y-4 pt-2">
+        <form onSubmit={handleAdd} className="d-flex flex-column gap-3 pt-2">
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
+            <label className="form-label small fw-semibold text-dark mb-1">
               Account Name *
             </label>
             <input
@@ -264,42 +277,44 @@ export default function AccountsPage() {
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               placeholder="e.g. HDFC Savings, SBI, GPay UPI"
-              className="w-full h-11 px-3 rounded-input border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+              className="form-control rounded-input py-2"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+            <label className="form-label small fw-semibold text-dark mb-1">
               Account Type
             </label>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            <div className="row g-2">
               {Object.entries(ACCOUNT_TYPE_CONFIG).map(([key, cfg]) => {
                 const Icon = cfg.icon;
+                const isSelected = formData.type === key;
                 return (
-                  <button
-                    key={key}
-                    type="button"
-                    onClick={() => setFormData({ ...formData, type: key })}
-                    className={`flex flex-col items-center p-2.5 rounded-btn border text-center transition-all ${
-                      formData.type === key
-                        ? "bg-primary border-primary text-primary-foreground shadow-xs"
-                        : "bg-surface border-border text-slate-700 hover:bg-surface-muted"
-                    }`}
-                  >
-                    <Icon className="w-5 h-5 mb-1" />
-                    <span className="text-[11px] font-semibold">{cfg.label}</span>
-                  </button>
+                  <div key={key} className="col-6 col-sm-4">
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ ...formData, type: key })}
+                      className={`btn btn-sm w-100 p-2.5 rounded-btn border text-center transition d-flex flex-column align-items-center justify-content-center ${
+                        isSelected
+                          ? "btn-primary text-white shadow-sm"
+                          : "btn-light border text-dark"
+                      }`}
+                    >
+                      <Icon style={{ width: "20px", height: "20px" }} className="mb-1" />
+                      <span className="small fw-semibold">{cfg.label}</span>
+                    </button>
+                  </div>
                 );
               })}
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
+            <label className="form-label small fw-semibold text-dark mb-1">
               Opening Balance (₹)
             </label>
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 font-bold text-slate-400">
+            <div className="input-group">
+              <span className="input-group-text bg-light fw-bold text-secondary">
                 ₹
               </span>
               <input
@@ -310,31 +325,31 @@ export default function AccountsPage() {
                   setFormData({ ...formData, openingBalance: e.target.value })
                 }
                 placeholder="0"
-                className="w-full h-11 pl-8 pr-3 rounded-input border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                className="form-control rounded-end-2 py-2 fw-semibold"
               />
             </div>
-            <p className="text-[11px] text-slate-400 mt-1">
+            <p className="small text-secondary mt-1 mb-0" style={{ fontSize: "11px" }}>
               Enter your current balance to start tracking from today.
             </p>
           </div>
 
-          <div className="sticky bottom-0 -mx-4 -mb-3.5 sm:-mx-6 sm:-mb-4 px-4 sm:px-6 py-3 bg-surface/95 backdrop-blur-md border-t border-border mt-auto flex gap-2 z-20">
-            <Button
-              type="submit"
-              variant="primary"
-              size="lg"
-              isLoading={submitting}
-              className="flex-1 font-bold"
-            >
-              Add Account
-            </Button>
+          <div className="d-flex align-items-center justify-content-end gap-2 pt-2 border-top mt-2">
             <Button
               type="button"
               variant="outline"
-              size="lg"
+              size="md"
               onClick={() => setIsAddOpen(false)}
             >
               Cancel
+            </Button>
+            <Button
+              type="submit"
+              variant="primary"
+              size="md"
+              isLoading={submitting}
+              className="fw-bold px-4"
+            >
+              Add Account
             </Button>
           </div>
         </form>
@@ -347,9 +362,9 @@ export default function AccountsPage() {
         title="Edit Account"
         description="Update account name and category type"
       >
-        <form onSubmit={handleEdit} className="space-y-4 pt-2">
+        <form onSubmit={handleEdit} className="d-flex flex-column gap-3 pt-2">
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
+            <label className="form-label small fw-semibold text-dark mb-1">
               Account Name *
             </label>
             <input
@@ -359,60 +374,57 @@ export default function AccountsPage() {
                 setEditFormData({ ...editFormData, name: e.target.value })
               }
               placeholder="e.g. HDFC Salary, Emergency Cash"
-              className="w-full h-11 px-3 rounded-input border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+              className="form-control rounded-input py-2"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+            <label className="form-label small fw-semibold text-dark mb-1">
               Account Type *
             </label>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="row g-2">
               {Object.entries(ACCOUNT_TYPE_CONFIG).map(([key, cfg]) => {
                 const Icon = cfg.icon;
                 const isSelected = editFormData.type === key;
                 return (
-                  <button
-                    key={key}
-                    type="button"
-                    onClick={() =>
-                      setEditFormData({ ...editFormData, type: key })
-                    }
-                    className={`flex items-center gap-2.5 p-3 rounded-card border text-left transition-all ${
-                      isSelected
-                        ? "border-primary bg-primary/10 ring-2 ring-primary/20 text-primary"
-                        : "border-border hover:border-slate-300 text-slate-700"
-                    }`}
-                  >
-                    <div
-                      className={`w-7 h-7 rounded-btn flex items-center justify-center shrink-0 ${cfg.bg} ${cfg.color}`}
+                  <div key={key} className="col-6">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setEditFormData({ ...editFormData, type: key })
+                      }
+                      className={`btn btn-sm w-100 p-2.5 rounded-btn border text-start transition d-flex align-items-center gap-2 ${
+                        isSelected
+                          ? "btn-primary text-white shadow-sm"
+                          : "btn-light border text-dark"
+                      }`}
                     >
-                      <Icon className="w-4 h-4" />
-                    </div>
-                    <span className="text-[11px] font-semibold">{cfg.label}</span>
-                  </button>
+                      <Icon style={{ width: "16px", height: "16px" }} />
+                      <span className="small fw-semibold">{cfg.label}</span>
+                    </button>
+                  </div>
                 );
               })}
             </div>
           </div>
 
-          <div className="sticky bottom-0 -mx-4 -mb-3.5 sm:-mx-6 sm:-mb-4 px-4 sm:px-6 py-3 bg-surface/95 backdrop-blur-md border-t border-border mt-auto flex gap-2 z-20">
-            <Button
-              type="submit"
-              variant="primary"
-              size="lg"
-              isLoading={editSubmitting}
-              className="flex-1 font-bold shadow-xs"
-            >
-              Save Changes
-            </Button>
+          <div className="d-flex align-items-center justify-content-end gap-2 pt-2 border-top mt-2">
             <Button
               type="button"
               variant="outline"
-              size="lg"
+              size="md"
               onClick={() => setEditAccount(null)}
             >
               Cancel
+            </Button>
+            <Button
+              type="submit"
+              variant="primary"
+              size="md"
+              isLoading={editSubmitting}
+              className="fw-bold px-4 shadow-sm"
+            >
+              Save Changes
             </Button>
           </div>
         </form>
@@ -428,3 +440,4 @@ export default function AccountsPage() {
     </div>
   );
 }
+

@@ -16,41 +16,48 @@ interface MemberSpendingListProps {
 export function MemberSpendingList({ data, totalExpense }: MemberSpendingListProps) {
   if (!data || data.length === 0) {
     return (
-      <div className="py-6 text-center text-slate-400 text-xs">
+      <div className="py-4 text-center text-secondary small">
         No family member spending recorded this month
       </div>
     );
   }
 
   return (
-    <div className="space-y-3">
+    <div className="d-flex flex-column gap-3">
       {data.map((member, idx) => {
         const percentage =
           totalExpense > 0 ? Math.round((member.amount / totalExpense) * 100) : 0;
         return (
-          <div key={idx} className="space-y-1">
-            <div className="flex items-center justify-between text-xs">
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-full bg-slate-200 text-slate-700 font-bold flex items-center justify-center text-[10px]">
+          <div key={idx} className="d-flex flex-column gap-1">
+            <div className="d-flex align-items-center justify-content-between small">
+              <div className="d-flex align-items-center gap-2 overflow-hidden">
+                <div
+                  className="rounded-circle bg-light border text-dark fw-bold d-flex align-items-center justify-content-center flex-shrink-0"
+                  style={{ width: "24px", height: "24px", fontSize: "11px" }}
+                >
                   {member.name.charAt(0).toUpperCase()}
                 </div>
-                <span className="font-semibold text-slate-800">{member.name}</span>
+                <span className="fw-semibold text-dark text-truncate">{member.name}</span>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="font-bold text-slate-900 font-amount">
+              <div className="d-flex align-items-center gap-2 flex-shrink-0 ms-2">
+                <span className="fw-bold text-dark">
                   {formatCurrency(member.amount)}
                 </span>
-                <span className="text-slate-400 text-[11px] font-medium w-8 text-right">
+                <span className="text-secondary small fw-medium text-end" style={{ width: "36px" }}>
                   {percentage}%
                 </span>
               </div>
             </div>
 
-            {/* Progress bar */}
-            <div className="w-full h-2 rounded-full bg-surface-muted overflow-hidden">
+            {/* Bootstrap Progress bar */}
+            <div className="progress" style={{ height: "6px" }}>
               <div
-                className="h-full rounded-full bg-primary transition-all duration-300"
+                className="progress-bar bg-primary"
+                role="progressbar"
                 style={{ width: `${Math.min(100, percentage)}%` }}
+                aria-valuenow={percentage}
+                aria-valuemin={0}
+                aria-valuemax={100}
               />
             </div>
           </div>
@@ -59,3 +66,4 @@ export function MemberSpendingList({ data, totalExpense }: MemberSpendingListPro
     </div>
   );
 }
+

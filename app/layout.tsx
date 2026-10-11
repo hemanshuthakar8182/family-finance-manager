@@ -52,7 +52,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="antialiased min-h-screen bg-background text-slate-900 transition-colors duration-150">
+      <body className="min-vh-100 bg-background text-foreground">
         <ThemeProvider>
           <AuthProvider>
             <ToastProvider>{children}</ToastProvider>

@@ -13,27 +13,12 @@ export interface AppLogoProps {
   textClassName?: string;
 }
 
-const SIZE_MAP = {
-  xs: {
-    container: "w-6 h-6 rounded-md text-xs",
-    iconSize: 12,
-  },
-  sm: {
-    container: "w-8 h-8 rounded-lg text-sm",
-    iconSize: 16,
-  },
-  md: {
-    container: "w-9 h-9 rounded-xl text-base",
-    iconSize: 18,
-  },
-  lg: {
-    container: "w-12 h-12 rounded-2xl text-xl",
-    iconSize: 24,
-  },
-  xl: {
-    container: "w-16 h-16 rounded-2xl text-2xl",
-    iconSize: 32,
-  },
+const SIZE_CONFIG = {
+  xs: { size: 24, borderRadius: "6px", fontSize: "11px" },
+  sm: { size: 32, borderRadius: "8px", fontSize: "13px" },
+  md: { size: 36, borderRadius: "10px", fontSize: "15px" },
+  lg: { size: 48, borderRadius: "14px", fontSize: "20px" },
+  xl: { size: 64, borderRadius: "18px", fontSize: "26px" },
 };
 
 export function AppLogo({
@@ -46,7 +31,7 @@ export function AppLogo({
   textClassName,
 }: AppLogoProps) {
   const [imageError, setImageError] = useState(false);
-  const sizeConfig = SIZE_MAP[size] || SIZE_MAP.md;
+  const cfg = SIZE_CONFIG[size] || SIZE_CONFIG.md;
 
   const displayName = name?.trim() || "Family Finance";
   const initial = displayName.charAt(0).toUpperCase();
@@ -56,17 +41,18 @@ export function AppLogo({
       return (
         <div
           className={cn(
-            "relative shrink-0 overflow-hidden bg-surface border border-border shadow-xs flex items-center justify-center p-0.5",
-            sizeConfig.container,
+            "position-relative flex-shrink-0 overflow-hidden bg-surface border shadow-sm d-flex align-items-center justify-content-center p-1",
             className
           )}
+          style={{ width: `${cfg.size}px`, height: `${cfg.size}px`, borderRadius: cfg.borderRadius }}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={logoUrl}
             alt={displayName}
             onError={() => setImageError(true)}
-            className="w-full h-full object-contain rounded-[inherit]"
+            className="w-100 h-100 object-fit-contain"
+            style={{ borderRadius: "inherit" }}
           />
         </div>
       );
@@ -76,14 +62,19 @@ export function AppLogo({
     return (
       <div
         className={cn(
-          "shrink-0 flex items-center justify-center font-bold text-primary-foreground shadow-xs select-none bg-gradient-to-tr from-primary to-accent ring-1 ring-border/30",
-          sizeConfig.container,
+          "flex-shrink-0 d-flex align-items-center justify-content-center fw-bold shadow-sm user-select-none",
           className
         )}
+        style={{
+          width: `${cfg.size}px`,
+          height: `${cfg.size}px`,
+          borderRadius: cfg.borderRadius,
+          background: "linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%)",
+          color: "var(--primary-foreground, #ffffff)",
+          fontSize: cfg.fontSize,
+        }}
       >
-        <span className="font-heading tracking-tight leading-none drop-shadow-xs">
-          {initial}
-        </span>
+        <span style={{ lineHeight: 1 }}>{initial}</span>
       </div>
     );
   };
@@ -93,19 +84,19 @@ export function AppLogo({
   }
 
   return (
-    <div className="flex items-center gap-2.5 min-w-0">
+    <div className="d-flex align-items-center gap-2 overflow-hidden">
       {renderEmblem()}
-      <div className="min-w-0">
+      <div className="overflow-hidden">
         <h2
           className={cn(
-            "text-sm font-bold tracking-tight text-slate-900 truncate leading-snug",
+            "h6 fw-bold text-dark text-truncate mb-0",
             textClassName
           )}
         >
           {displayName}
         </h2>
         {subtitle && (
-          <p className="text-[11px] font-medium text-slate-500 truncate leading-none mt-0.5">
+          <p className="small text-secondary text-truncate mb-0" style={{ fontSize: "11px" }}>
             {subtitle}
           </p>
         )}
@@ -113,3 +104,4 @@ export function AppLogo({
     </div>
   );
 }
+

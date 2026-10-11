@@ -25,7 +25,7 @@ interface IncomeExpenseChartProps {
 export function IncomeExpenseChart({ data }: IncomeExpenseChartProps) {
   if (!data || data.length === 0) {
     return (
-      <div className="h-64 flex items-center justify-center text-slate-400 text-xs">
+      <div className="d-flex align-items-center justify-content-center text-secondary small" style={{ height: "256px" }}>
         No monthly trend data available
       </div>
     );
@@ -34,12 +34,12 @@ export function IncomeExpenseChart({ data }: IncomeExpenseChartProps) {
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="p-3 bg-surface border border-border rounded-btn shadow-xl text-xs space-y-1">
-          <p className="font-semibold text-slate-800">{label}</p>
-          <p className="text-emerald-500 font-medium">
+        <div className="p-2 bg-surface border rounded-card shadow-sm small">
+          <p className="fw-bold text-dark mb-1">{label}</p>
+          <p className="text-success fw-semibold mb-0">
             Income: {formatCurrency(payload[0]?.value)}
           </p>
-          <p className="text-red-500 font-medium">
+          <p className="text-danger fw-semibold mb-0">
             Expense: {formatCurrency(payload[1]?.value)}
           </p>
         </div>
@@ -49,7 +49,7 @@ export function IncomeExpenseChart({ data }: IncomeExpenseChartProps) {
   };
 
   return (
-    <div className="w-full h-72">
+    <div className="w-100" style={{ height: "288px" }}>
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
           data={data}
@@ -95,3 +95,4 @@ export function IncomeExpenseChart({ data }: IncomeExpenseChartProps) {
     </div>
   );
 }
+

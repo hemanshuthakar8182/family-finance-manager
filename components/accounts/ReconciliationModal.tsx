@@ -81,30 +81,30 @@ export function ReconciliationModal({
       description="Compare actual bank statement or cash in hand against app records"
       maxWidth="md"
     >
-      <form onSubmit={handleSubmit} className="space-y-4 pt-1">
+      <form onSubmit={handleSubmit} className="d-flex flex-column gap-3 pt-1">
         {/* Tracked vs Actual Comparison */}
-        <div className="grid grid-cols-2 gap-3 p-3.5 rounded-card bg-slate-50 border border-border">
-          <div>
-            <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">
+        <div className="row g-2 p-3 rounded-card bg-light border mx-0">
+          <div className="col-6">
+            <span className="small fw-semibold text-secondary text-uppercase d-block" style={{ fontSize: "11px" }}>
               App Tracked Balance
             </span>
-            <div className="text-lg font-bold font-amount text-slate-900 mt-0.5">
+            <div className="h6 fw-bold text-dark mt-1 mb-0">
               {formatCurrency(currentBalance)}
             </div>
           </div>
 
-          <div>
-            <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">
+          <div className="col-6">
+            <span className="small fw-semibold text-secondary text-uppercase d-block" style={{ fontSize: "11px" }}>
               Difference
             </span>
             <div
               className={cn(
-                "text-lg font-bold font-amount mt-0.5",
+                "h6 fw-bold mt-1 mb-0",
                 isBalanced
-                  ? "text-emerald-600"
+                  ? "text-success"
                   : diff > 0
-                  ? "text-emerald-600"
-                  : "text-expense"
+                  ? "text-success"
+                  : "text-danger"
               )}
             >
               {isBalanced ? "Balanced ✓" : `${diff > 0 ? "+" : ""}${formatCurrency(diff)}`}
@@ -114,11 +114,11 @@ export function ReconciliationModal({
 
         {/* Input Actual Balance */}
         <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1">
+          <label className="form-label small fw-semibold text-dark mb-1">
             Actual Balance from Bank Statement / Cash (₹) *
           </label>
-          <div className="relative flex items-center">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 font-bold text-slate-400">
+          <div className="input-group">
+            <span className="input-group-text bg-light fw-bold text-secondary">
               ₹
             </span>
             <input
@@ -129,18 +129,18 @@ export function ReconciliationModal({
               placeholder={String(currentBalance)}
               value={actualBalance}
               onChange={(e) => setActualBalance(e.target.value)}
-              className="w-full h-11 pl-8 pr-3 rounded-input border border-border text-base font-semibold focus:outline-none focus:ring-2 focus:ring-primary"
+              className="form-control rounded-end-2 py-2 fw-bold"
             />
           </div>
-          <p className="text-[11px] text-slate-400 mt-1">
+          <p className="small text-secondary mt-1 mb-0" style={{ fontSize: "11px" }}>
             Enter the exact balance currently shown in your bank mobile app or physical wallet.
           </p>
-          {error && <p className="text-xs text-expense font-semibold mt-1">{error}</p>}
+          {error && <p className="small text-danger fw-semibold mt-1 mb-0">{error}</p>}
         </div>
 
         {/* Notes */}
         <div>
-          <label className="block text-xs font-semibold text-slate-600 mb-1">
+          <label className="form-label small fw-semibold text-dark mb-1">
             Adjustment Reason / Notes (Optional)
           </label>
           <input
@@ -148,34 +148,35 @@ export function ReconciliationModal({
             placeholder="e.g. Bank SMS charge, interest credit, cash rounding"
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            className="w-full h-9 px-3 rounded-input border border-border text-xs focus:outline-none focus:ring-2 focus:ring-primary"
+            className="form-control form-control-sm rounded-input py-2"
           />
         </div>
 
         {/* Actions */}
-        <div className="sticky bottom-0 -mx-4 -mb-3.5 sm:-mx-6 sm:-mb-4 px-4 sm:px-6 py-3 bg-surface/95 backdrop-blur-md border-t border-border mt-auto flex gap-2 z-20">
+        <div className="d-flex gap-2 pt-3 border-top mt-2">
           <Button
             type="submit"
             variant="primary"
-            size="lg"
+            size="md"
             isLoading={isSubmitting}
-            className="flex-1 font-bold text-xs"
+            className="flex-grow-1 fw-bold small gap-1"
           >
-            <Sliders className="w-3.5 h-3.5 mr-1" />
-            Adjust & Reconcile
+            <Sliders style={{ width: "14px", height: "14px" }} />
+            <span>Adjust & Reconcile</span>
           </Button>
           <Button
             type="button"
             variant="outline"
-            size="lg"
+            size="md"
             disabled={isSubmitting}
             onClick={onClose}
-            className="text-xs"
+            className="small"
           >
             Cancel
           </Button>
         </div>
       </form>
+
     </Modal>
   );
 }

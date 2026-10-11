@@ -8,12 +8,12 @@ export const metadata: Metadata = {
 
 export default function SplitsPage() {
   return (
-    <div className="space-y-6">
+    <div className="d-flex flex-column gap-4">
       <div>
-        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
+        <h1 className="h4 fw-bold text-dark mb-1">
           Family Splits &amp; Settlements
         </h1>
-        <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+        <p className="small text-secondary mb-0">
           Track shared household bills, see who owes whom, and settle balances seamlessly.
         </p>
       </div>
@@ -22,3 +22,4 @@ export default function SplitsPage() {
     </div>
   );
 }
+

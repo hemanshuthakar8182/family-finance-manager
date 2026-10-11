@@ -22,11 +22,11 @@ const ACCOUNT_ICON: Record<string, any> = {
 };
 
 const ACCOUNT_COLOR: Record<string, string> = {
-  CASH: "text-amber-700 bg-amber-50",
-  BANK: "text-blue-700 bg-blue-50",
-  UPI: "text-violet-700 bg-violet-50",
-  CREDIT_CARD: "text-rose-700 bg-rose-50",
-  WALLET: "text-teal-700 bg-teal-50",
+  CASH: "text-warning bg-warning-subtle",
+  BANK: "text-primary bg-primary-subtle",
+  UPI: "text-info bg-info-subtle",
+  CREDIT_CARD: "text-danger bg-danger-subtle",
+  WALLET: "text-success bg-success-subtle",
 };
 
 export default function DashboardPage() {
@@ -60,57 +60,56 @@ export default function DashboardPage() {
 
   if (isLoading && !metrics) {
     return (
-      <div className="space-y-6 animate-pulse">
-        <div className="h-10 bg-slate-200 rounded-btn w-64" />
-        <div className="h-40 bg-slate-200 rounded-card lg:hidden" />
-        <div className="hidden lg:grid grid-cols-4 gap-4">
+      <div className="d-flex flex-column gap-4">
+        <div className="bg-light rounded-btn p-3 placeholder-glow" style={{ width: "250px", height: "40px" }} />
+        <div className="bg-light rounded-card p-4 placeholder-glow" style={{ height: "140px" }} />
+        <div className="row g-3">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-28 bg-slate-200 rounded-card" />
+            <div key={i} className="col-12 col-md-6 col-lg-3">
+              <div className="bg-light rounded-card p-3 placeholder-glow" style={{ height: "100px" }} />
+            </div>
           ))}
-        </div>
-        <div className="h-14 bg-slate-200 rounded-card" />
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="h-80 bg-slate-200 rounded-card lg:col-span-2" />
-          <div className="h-80 bg-slate-200 rounded-card" />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-5">
+    <div className="d-flex flex-column gap-4">
       {/* ── Header & Greeting ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      <div className="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
+          <h1 className="h4 fw-bold text-dark mb-1">
             Hello, {user?.name?.split(" ")[0] || "Family"} 👋
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-0.5 flex items-center gap-1.5">
-            <Calendar className="w-3.5 h-3.5 text-slate-400" />
+          <p className="small text-secondary mb-0 d-flex align-items-center gap-1.5">
+            <Calendar style={{ width: "14px", height: "14px" }} />
             <span>Overview for {currentMonthStr}</span>
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="d-flex align-items-center gap-2">
           <button
             onClick={fetchAll}
             title="Refresh Dashboard"
-            className="p-2 rounded-btn border border-border bg-surface text-slate-600 hover:bg-surface-muted text-xs flex items-center gap-1.5"
+            type="button"
+            className="btn btn-sm btn-light border text-secondary d-flex align-items-center gap-1.5 py-1.5 px-3 rounded-btn"
           >
-            <RefreshCw className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Refresh</span>
+            <RefreshCw style={{ width: "14px", height: "14px" }} />
+            <span className="d-none d-sm-inline">Refresh</span>
           </button>
           <button
             onClick={onOpenQuickAdd}
-            className="px-3.5 py-2 rounded-btn bg-primary hover:bg-primary-hover text-primary-foreground text-xs font-semibold shadow-sm flex items-center gap-1.5"
+            type="button"
+            className="btn btn-sm btn-primary text-white fw-semibold shadow-sm d-flex align-items-center gap-1.5 py-1.5 px-3 rounded-btn"
           >
-            <Plus className="w-4 h-4" />
+            <Plus style={{ width: "16px", height: "16px" }} />
             <span>Quick Expense</span>
           </button>
         </div>
       </div>
 
-      {/* ── KPI Summary (Hero on mobile, 4-col on desktop) ── */}
+      {/* ── KPI Summary ── */}
       <SummaryCards
         metrics={{
           totalIncome: metrics?.totalIncome || 0,
@@ -122,25 +121,29 @@ export default function DashboardPage() {
 
       {/* ── Quick Account Balances Strip ── */}
       {accounts.length > 0 && (
-        <div className="flex gap-2.5 overflow-x-auto pb-1 no-scrollbar">
+        <div className="d-flex gap-2 overflow-x-auto pb-1">
           {accounts.map((acc) => {
             const Icon = ACCOUNT_ICON[acc.type] || CreditCard;
-            const colCls = ACCOUNT_COLOR[acc.type] || "text-slate-700 bg-slate-100";
+            const colCls = ACCOUNT_COLOR[acc.type] || "text-secondary bg-light";
             const isCreditCard = acc.type === "CREDIT_CARD";
             return (
               <div
                 key={acc.id}
-                className="shrink-0 flex items-center gap-2 px-3 py-2 rounded-btn bg-surface border border-border shadow-soft min-w-[130px]"
+                className="d-flex align-items-center gap-2 px-3 py-2 rounded-btn bg-surface border shadow-sm flex-shrink-0"
+                style={{ minWidth: "140px" }}
               >
-                <div className={cn("w-7 h-7 rounded-full flex items-center justify-center shrink-0", colCls)}>
-                  <Icon className="w-3.5 h-3.5" />
+                <div 
+                  className={cn("rounded-circle d-flex align-items-center justify-content-center flex-shrink-0", colCls)}
+                  style={{ width: "30px", height: "30px" }}
+                >
+                  <Icon style={{ width: "15px", height: "15px" }} />
                 </div>
-                <div className="min-w-0">
-                  <p className="text-[11px] font-semibold text-slate-800 truncate">{acc.name}</p>
+                <div className="overflow-hidden">
+                  <p className="small fw-semibold text-dark text-truncate mb-0" style={{ fontSize: "11px" }}>{acc.name}</p>
                   <p
                     className={cn(
-                      "text-xs font-bold font-amount",
-                      isCreditCard ? "text-expense" : "text-slate-900"
+                      "small fw-bold font-amount mb-0",
+                      isCreditCard ? "text-danger" : "text-dark"
                     )}
                   >
                     {isCreditCard ? "−" : ""}{formatCurrency(acc.currentBalance)}
@@ -152,8 +155,8 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* ── MOBILE: Recent Transactions first (most relevant daily) ── */}
-      <div className="lg:hidden">
+      {/* ── MOBILE: Recent Transactions first ── */}
+      <div className="d-lg-none">
         <RecentTransactionsWidget
           transactions={metrics?.recentTransactions || []}
           onSelectTransaction={onSelectTransaction}
@@ -162,30 +165,34 @@ export default function DashboardPage() {
       </div>
 
       {/* ── Charts & Analytics Grid ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      <div className="row g-4">
         {/* Income vs Expense Monthly Trend */}
-        <Card className="lg:col-span-2">
-          <CardHeader>
-            <CardTitle>Income vs Expense Trend</CardTitle>
-            <span className="text-xs text-slate-400">Past 6 Months</span>
-          </CardHeader>
-          <IncomeExpenseChart data={metrics?.monthlyTrend || []} />
-        </Card>
+        <div className="col-12 col-lg-8">
+          <Card className="h-100">
+            <CardHeader>
+              <CardTitle>Income vs Expense Trend</CardTitle>
+              <span className="small text-secondary" style={{ fontSize: "11px" }}>Past 6 Months</span>
+            </CardHeader>
+            <IncomeExpenseChart data={metrics?.monthlyTrend || []} />
+          </Card>
+        </div>
 
         {/* Expense by Category Donut */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Expenses by Category</CardTitle>
-            <span className="text-xs text-slate-400">{currentMonthStr}</span>
-          </CardHeader>
-          <CategoryExpenseChart data={metrics?.categoryBreakdown || []} />
-        </Card>
+        <div className="col-12 col-lg-4">
+          <Card className="h-100">
+            <CardHeader>
+              <CardTitle>Expenses by Category</CardTitle>
+              <span className="small text-secondary" style={{ fontSize: "11px" }}>{currentMonthStr}</span>
+            </CardHeader>
+            <CategoryExpenseChart data={metrics?.categoryBreakdown || []} />
+          </Card>
+        </div>
       </div>
 
-      {/* ── Secondary Row: Recent Transactions (desktop only) + Member Spending ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      {/* ── Secondary Row: Recent Transactions + Member Spending ── */}
+      <div className="row g-4">
         {/* DESKTOP: Recent Transactions */}
-        <div className="hidden lg:block lg:col-span-2">
+        <div className="d-none d-lg-block col-12 col-lg-8">
           <RecentTransactionsWidget
             transactions={metrics?.recentTransactions || []}
             onSelectTransaction={onSelectTransaction}
@@ -194,11 +201,11 @@ export default function DashboardPage() {
         </div>
 
         {/* Family Member Spending */}
-        <div>
-          <Card>
+        <div className="col-12 col-lg-4">
+          <Card className="h-100">
             <CardHeader>
               <CardTitle>Family Member Spending</CardTitle>
-              <span className="text-xs text-slate-400">{currentMonthStr}</span>
+              <span className="small text-secondary" style={{ fontSize: "11px" }}>{currentMonthStr}</span>
             </CardHeader>
             <MemberSpendingList
               data={metrics?.memberBreakdown || []}

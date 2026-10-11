@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { Shield, Sparkles, Users } from "lucide-react";
+import { Shield, Users } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -48,30 +48,33 @@ export default function LoginPage() {
 
   const handleFillDemo = (demoEmail: string) => {
     setEmail(demoEmail);
-    setPassword("password123");
+    setPassword("hemanshu@8182");
     setError("");
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-8 px-4 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+    <div className="min-vh-100 bg-light d-flex flex-column justify-content-center py-4 px-3">
+      <div className="mx-auto w-100 text-center mb-4" style={{ maxWidth: "420px" }}>
         {/* Brand emblem */}
-        <div className="w-14 h-14 rounded-2xl bg-primary text-primary-foreground font-bold text-2xl flex items-center justify-center mx-auto shadow-md">
+        <div 
+          className="rounded-4 bg-primary text-white fw-bold fs-3 d-flex align-items-center justify-content-center mx-auto shadow-sm"
+          style={{ width: "56px", height: "56px" }}
+        >
           ₹
         </div>
-        <h2 className="mt-4 text-center text-2xl font-bold tracking-tight text-slate-900">
+        <h2 className="mt-3 fs-4 fw-bold text-dark mb-1">
           Sign In to Your Family
         </h2>
-        <p className="mt-1 text-center text-xs sm:text-sm text-slate-500">
+        <p className="text-secondary small mb-0">
           Shared daily expense & finance management for households
         </p>
       </div>
 
-      <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-surface py-7 px-5 sm:px-8 rounded-card border border-border shadow-card">
-          <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="mx-auto w-100" style={{ maxWidth: "420px" }}>
+        <div className="card rounded-card border shadow-sm p-4 bg-surface">
+          <form onSubmit={handleSubmit} className="d-flex flex-column gap-3">
             {error && (
-              <div className="p-3 rounded-btn bg-red-50 border border-red-200 text-xs font-medium text-expense">
+              <div className="p-2.5 rounded-btn bg-danger-subtle border border-danger-subtle text-danger small fw-semibold">
                 {error}
               </div>
             )}
@@ -101,56 +104,57 @@ export default function LoginPage() {
               variant="primary"
               size="lg"
               isLoading={isLoading}
-              className="w-full font-bold shadow-sm"
+              className="w-100 fw-bold shadow-sm mt-1"
             >
               Sign In
             </Button>
           </form>
 
           {/* Quick Demo Logins for Pair Programming/Review */}
-          <div className="mt-6 pt-5 border-t border-slate-100">
-            <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2 text-center">
-              Quick Demo Access
+          <div className="mt-4 pt-3 border-top">
+            <p className="small text-secondary text-uppercase fw-bold mb-2 text-center" style={{ fontSize: "11px", letterSpacing: "0.05em" }}>
+              Quick Family Access
             </p>
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={() => handleFillDemo("himanshu@family.local")}
-                className="p-2.5 rounded-btn border border-teal-200 bg-teal-50/50 hover:bg-teal-50 text-left transition-colors"
-              >
-                <div className="flex items-center gap-1.5 text-xs font-bold text-primary">
-                  <Shield className="w-3.5 h-3.5" />
-                  <span>Admin Login</span>
-                </div>
-                <p className="text-[10px] text-slate-500 mt-0.5 truncate">
-                  himanshu@family.local
-                </p>
-              </button>
+            <div className="row g-2">
+              <div className="col-6">
+                <button
+                  type="button"
+                  onClick={() => handleFillDemo("hemanshuthakar8182@gmail.com")}
+                  className="btn btn-sm btn-light border text-start p-2 w-100 rounded-btn transition"
+                >
+                  <div className="d-flex align-items-center gap-1.5 small fw-bold text-primary">
+                    <Shield style={{ width: "14px", height: "14px" }} />
+                    <span>Admin</span>
+                  </div>
+                  <p className="text-secondary small mb-0 mt-0.5 text-truncate" style={{ fontSize: "10px" }}>
+                    hemanshuthakar8182...
+                  </p>
+                </button>
+              </div>
 
-              <button
-                type="button"
-                onClick={() => handleFillDemo("priya@family.local")}
-                className="p-2.5 rounded-btn border border-slate-200 bg-slate-50 hover:bg-slate-100 text-left transition-colors"
-              >
-                <div className="flex items-center gap-1.5 text-xs font-bold text-slate-700">
-                  <Users className="w-3.5 h-3.5" />
-                  <span>Member Login</span>
-                </div>
-                <p className="text-[10px] text-slate-500 mt-0.5 truncate">
-                  priya@family.local
-                </p>
-              </button>
+              <div className="col-6">
+                <button
+                  type="button"
+                  onClick={() => handleFillDemo("heenathakar8182@gmail.com")}
+                  className="btn btn-sm btn-light border text-start p-2 w-100 rounded-btn transition"
+                >
+                  <div className="d-flex align-items-center gap-1.5 small fw-bold text-dark">
+                    <Users style={{ width: "14px", height: "14px" }} />
+                    <span>Member</span>
+                  </div>
+                  <p className="text-secondary small mb-0 mt-0.5 text-truncate" style={{ fontSize: "10px" }}>
+                    heenathakar8182...
+                  </p>
+                </button>
+              </div>
             </div>
-            <p className="text-[10px] text-slate-400 text-center mt-2">
-              Default password: <span className="font-mono">password123</span>
-            </p>
           </div>
 
-          <div className="mt-6 text-center text-xs text-slate-500">
+          <div className="mt-3 text-center small text-secondary">
             Don&apos;t have a family account yet?{" "}
             <Link
               href="/register"
-              className="font-bold text-primary hover:underline underline-offset-2"
+              className="fw-bold text-primary text-decoration-none"
             >
               Create Family
             </Link>

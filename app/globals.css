@@ -1,9 +1,5 @@
 @import "bootstrap/dist/css/bootstrap.min.css";
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 :root {
   --bs-primary: var(--primary);
   --bs-primary-rgb: var(--primary-rgb);
@@ -13,36 +9,68 @@
   --bs-secondary-color: var(--text-secondary);
 }
 
+/* Bootstrap Surface & Theme Bridges */
 .bg-surface {
   background-color: var(--surface) !important;
 }
 .bg-surface-muted {
   background-color: var(--surface-muted) !important;
 }
+.text-foreground {
+  color: var(--text-primary) !important;
+}
+.text-muted {
+  color: var(--text-secondary) !important;
+}
+.bg-background {
+  background-color: var(--bg) !important;
+}
+.border-border {
+  border-color: var(--border) !important;
+}
+
+/* Income / Expense Financial Colors */
 .text-income {
   color: var(--income) !important;
 }
 .bg-income {
   background-color: var(--income) !important;
+  color: #ffffff !important;
+}
+.bg-income-light {
+  background-color: #F0FDF4 !important;
+}
+.border-income {
+  border-color: #BBF7D0 !important;
 }
 .text-expense {
   color: var(--expense) !important;
 }
 .bg-expense {
   background-color: var(--expense) !important;
+  color: #ffffff !important;
 }
+.bg-expense-light {
+  background-color: #FEF2F2 !important;
+}
+.border-expense {
+  border-color: #FECACA !important;
+}
+
+/* Border Radius Design Tokens */
 .rounded-btn {
-  border-radius: 12px;
+  border-radius: 12px !important;
 }
 .rounded-card {
-  border-radius: 16px;
+  border-radius: 16px !important;
 }
 .rounded-modal {
-  border-radius: 24px;
+  border-radius: 24px !important;
 }
 .rounded-input {
-  border-radius: 10px;
+  border-radius: 10px !important;
 }
+
 
 /* ========================================================
    DYNAMIC THEME DEFINITIONS
@@ -625,14 +653,12 @@ body {
   padding-bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
 }
 
-@layer utilities {
-  .shadow-soft {
-    box-shadow: 0 2px 10px -2px rgba(15, 23, 42, 0.05), 0 1px 3px -1px rgba(15, 23, 42, 0.04);
-  }
-  .shadow-card {
-    box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
-  }
-  .shadow-floating {
-    box-shadow: 0 10px 30px -4px rgba(0, 0, 0, 0.2);
-  }
+.shadow-soft {
+  box-shadow: 0 2px 10px -2px rgba(15, 23, 42, 0.05), 0 1px 3px -1px rgba(15, 23, 42, 0.04) !important;
+}
+.shadow-card {
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.03) !important;
+}
+.shadow-floating {
+  box-shadow: 0 10px 30px -4px rgba(0, 0, 0, 0.2) !important;
 }

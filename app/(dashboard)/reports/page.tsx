@@ -12,20 +12,16 @@ import {
   YAxis,
   Tooltip,
   Legend,
-  PieChart,
-  Pie,
-  Cell,
 } from "recharts";
 import {
   TrendingUp,
   TrendingDown,
   PiggyBank,
-  Receipt,
-  Calendar,
   Download,
   FileText,
 } from "lucide-react";
 import { generateMonthlyPDFReport } from "@/lib/utils/pdf-generator";
+import { cn } from "@/lib/utils/cn";
 
 export default function ReportsPage() {
   const now = new Date();
@@ -118,53 +114,58 @@ export default function ReportsPage() {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="d-flex flex-column gap-4">
       {/* Header & Period Selector */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+      <div className="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center gap-3">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+          <h1 className="h4 fw-bold text-foreground mb-1">
             Financial Reports
           </h1>
-          <p className="text-xs sm:text-sm text-muted mt-0.5">
+          <p className="small text-muted mb-0">
             Deep dive into family spending trends, savings rate, and category distribution
           </p>
         </div>
 
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full lg:w-auto">
+        <div className="d-flex flex-column flex-sm-row align-items-stretch align-items-sm-center gap-2 w-100 w-lg-auto">
           {/* Period Selector Tabs */}
-          <div className="flex items-center gap-1 bg-surface-muted p-1 rounded-btn overflow-x-auto no-scrollbar">
+          <div className="d-flex align-items-center gap-1 bg-surface-muted p-1 rounded-btn overflow-x-auto text-nowrap">
             {periods.map((p) => (
               <button
                 key={p.value}
                 onClick={() => setPeriod(p.value)}
-                className={`px-3 py-1.5 rounded-btn text-xs font-semibold whitespace-nowrap transition-all flex-1 sm:flex-initial text-center ${
+                type="button"
+                className={cn(
+                  "btn btn-sm py-1 px-2.5 rounded-btn small fw-semibold transition",
                   period === p.value
-                    ? "bg-surface text-foreground shadow-xs font-bold"
-                    : "text-muted hover:text-foreground"
-                }`}
+                    ? "btn-primary text-white shadow-sm fw-bold"
+                    : "btn-link text-secondary text-decoration-none"
+                )}
+                style={{ fontSize: "11px" }}
               >
                 {p.label}
               </button>
             ))}
           </div>
 
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="d-flex align-items-center gap-2 flex-shrink-0">
             <button
               onClick={handleDownloadPDF}
               disabled={!report || isLoading}
               title="Download formatted PDF financial statement"
-              className="flex-1 sm:flex-initial px-3 py-1.5 rounded-btn border border-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-100 text-xs font-semibold flex items-center justify-center gap-1.5 shadow-xs transition-colors shrink-0 disabled:opacity-50"
+              type="button"
+              className="btn btn-sm btn-outline-success d-flex align-items-center justify-content-center gap-1.5 shadow-sm fw-semibold flex-grow-1 flex-sm-grow-0"
             >
-              <FileText className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+              <FileText style={{ width: "14px", height: "14px" }} />
               <span>PDF Statement</span>
             </button>
 
             <button
               onClick={handleExportCSV}
               title="Download CSV report"
-              className="flex-1 sm:flex-initial px-3 py-1.5 rounded-btn border border-border bg-surface text-foreground hover:bg-surface-muted text-xs font-semibold flex items-center justify-center gap-1.5 shadow-xs transition-colors shrink-0"
+              type="button"
+              className="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center gap-1.5 shadow-sm fw-semibold flex-grow-1 flex-sm-grow-0"
             >
-              <Download className="w-3.5 h-3.5 text-primary" />
+              <Download style={{ width: "14px", height: "14px" }} />
               <span>Export CSV</span>
             </button>
           </div>
@@ -173,28 +174,31 @@ export default function ReportsPage() {
 
       {/* Custom Date Range Picker Bar */}
       {period === "CUSTOM" && (
-        <div className="flex flex-wrap items-center gap-3 p-3 bg-slate-50 rounded-card border border-border">
-          <div className="flex items-center gap-1.5 text-xs text-slate-600">
-            <span className="font-semibold">Start:</span>
+        <div className="p-3 bg-light rounded-card border d-flex flex-wrap align-items-center gap-3">
+          <div className="d-flex align-items-center gap-2 small text-secondary">
+            <span className="fw-semibold">Start:</span>
             <input
               type="date"
               value={customStart}
               onChange={(e) => setCustomStart(e.target.value)}
-              className="h-8 px-2.5 rounded-btn border border-border text-xs bg-white focus:outline-none focus:ring-1 focus:ring-primary font-medium"
+              className="form-control form-control-sm rounded-input py-1 px-2.5 small"
+              style={{ width: "140px" }}
             />
           </div>
-          <div className="flex items-center gap-1.5 text-xs text-slate-600">
-            <span className="font-semibold">End:</span>
+          <div className="d-flex align-items-center gap-2 small text-secondary">
+            <span className="fw-semibold">End:</span>
             <input
               type="date"
               value={customEnd}
               onChange={(e) => setCustomEnd(e.target.value)}
-              className="h-8 px-2.5 rounded-btn border border-border text-xs bg-white focus:outline-none focus:ring-1 focus:ring-primary font-medium"
+              className="form-control form-control-sm rounded-input py-1 px-2.5 small"
+              style={{ width: "140px" }}
             />
           </div>
           <button
             onClick={handleApplyCustomDates}
-            className="px-3 h-8 bg-primary text-primary-foreground rounded-btn text-xs font-semibold hover:bg-primary-hover transition-colors shadow-xs"
+            type="button"
+            className="btn btn-sm btn-primary rounded-btn fw-semibold shadow-sm"
           >
             Apply Range
           </button>
@@ -202,209 +206,226 @@ export default function ReportsPage() {
       )}
 
       {/* Summary KPI Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <div className="p-4 rounded-card border border-green-100 bg-surface shadow-soft">
-          <div className="flex items-center justify-between text-slate-500 text-xs mb-1.5">
-            <span className="font-semibold">Total Income</span>
-            <TrendingUp className="w-4 h-4 text-income" />
-          </div>
-          <div className="text-lg sm:text-2xl font-bold font-amount text-income">
-            {formatCurrency(report?.totalIncome || 0)}
-          </div>
-        </div>
-
-        <div className="p-4 rounded-card border border-red-100 bg-surface shadow-soft">
-          <div className="flex items-center justify-between text-slate-500 text-xs mb-1.5">
-            <span className="font-semibold">Total Expense</span>
-            <TrendingDown className="w-4 h-4 text-expense" />
-          </div>
-          <div className="text-lg sm:text-2xl font-bold font-amount text-expense">
-            {formatCurrency(report?.totalExpense || 0)}
+      <div className="row g-3">
+        <div className="col-6 col-lg-3">
+          <div className="card rounded-card border border-success-subtle bg-surface shadow-sm p-3 h-100">
+            <div className="d-flex align-items-center justify-content-between text-secondary small mb-1">
+              <span className="fw-semibold" style={{ fontSize: "11px" }}>Total Income</span>
+              <TrendingUp style={{ width: "16px", height: "16px" }} className="text-income" />
+            </div>
+            <div className="fs-5 fs-sm-4 fw-bold font-amount text-income">
+              {formatCurrency(report?.totalIncome || 0)}
+            </div>
           </div>
         </div>
 
-        <div className="p-4 rounded-card border border-teal-100 bg-surface shadow-soft">
-          <div className="flex items-center justify-between text-slate-500 text-xs mb-1.5">
-            <span className="font-semibold">Net Savings</span>
-            <PiggyBank className="w-4 h-4 text-primary" />
-          </div>
-          <div className="text-lg sm:text-2xl font-bold font-amount text-slate-900">
-            {formatCurrency(report?.netSavings || 0)}
+        <div className="col-6 col-lg-3">
+          <div className="card rounded-card border border-danger-subtle bg-surface shadow-sm p-3 h-100">
+            <div className="d-flex align-items-center justify-content-between text-secondary small mb-1">
+              <span className="fw-semibold" style={{ fontSize: "11px" }}>Total Expense</span>
+              <TrendingDown style={{ width: "16px", height: "16px" }} className="text-expense" />
+            </div>
+            <div className="fs-5 fs-sm-4 fw-bold font-amount text-expense">
+              {formatCurrency(report?.totalExpense || 0)}
+            </div>
           </div>
         </div>
 
-        <div className="p-4 rounded-card border border-border bg-surface shadow-soft">
-          <div className="flex items-center justify-between text-slate-500 text-xs mb-1.5">
-            <span className="font-semibold">Savings Rate</span>
-            <Badge variant={report?.savingsRate >= 20 ? "income" : "warning"}>
+        <div className="col-6 col-lg-3">
+          <div className="card rounded-card border bg-surface shadow-sm p-3 h-100">
+            <div className="d-flex align-items-center justify-content-between text-secondary small mb-1">
+              <span className="fw-semibold" style={{ fontSize: "11px" }}>Net Savings</span>
+              <PiggyBank style={{ width: "16px", height: "16px" }} className="text-primary" />
+            </div>
+            <div className="fs-5 fs-sm-4 fw-bold font-amount text-foreground">
+              {formatCurrency(report?.netSavings || 0)}
+            </div>
+          </div>
+        </div>
+
+        <div className="col-6 col-lg-3">
+          <div className="card rounded-card border bg-surface shadow-sm p-3 h-100">
+            <div className="d-flex align-items-center justify-content-between text-secondary small mb-1">
+              <span className="fw-semibold" style={{ fontSize: "11px" }}>Savings Rate</span>
+              <Badge variant={report?.savingsRate >= 20 ? "income" : "warning"}>
+                {report?.savingsRate || 0}%
+              </Badge>
+            </div>
+            <div className="fs-5 fs-sm-4 fw-bold font-amount text-foreground">
               {report?.savingsRate || 0}%
-            </Badge>
+            </div>
+            <p className="small text-secondary mb-0 mt-1" style={{ fontSize: "10px" }}>
+              {report?.transactionCount || 0} recorded transactions
+            </p>
           </div>
-          <div className="text-lg sm:text-2xl font-bold font-amount text-slate-900">
-            {report?.savingsRate || 0}%
-          </div>
-          <p className="text-[10px] text-slate-400 mt-0.5">
-            {report?.transactionCount || 0} recorded transactions
-          </p>
         </div>
       </div>
 
       {/* Main Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="row g-3">
         {/* Timeline Bar Chart */}
-        <Card className="lg:col-span-2">
-          <CardHeader>
-            <CardTitle>Income & Expense Timeline</CardTitle>
-          </CardHeader>
-          <div className="w-full h-72">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={report?.timeline || []}
-                margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
-              >
-                <XAxis
-                  dataKey="label"
-                  stroke="#94a3b8"
-                  fontSize={11}
-                  tickLine={false}
-                  axisLine={false}
-                />
-                <YAxis
-                  stroke="#94a3b8"
-                  fontSize={10}
-                  tickLine={false}
-                  axisLine={false}
-                  tickFormatter={(val) => `₹${val >= 1000 ? `${Math.round(val / 1000)}k` : val}`}
-                />
-                <Tooltip
-                  formatter={(val: any) => [formatCurrency(val), ""]}
-                  contentStyle={{
-                    backgroundColor: "#0F172A",
-                    borderRadius: "8px",
-                    color: "#fff",
-                    fontSize: "12px",
-                  }}
-                />
-                <Legend
-                  verticalAlign="top"
-                  align="right"
-                  iconType="circle"
-                  wrapperStyle={{ paddingBottom: "10px", fontSize: "12px" }}
-                />
-                <Bar
-                  dataKey="income"
-                  name="Income"
-                  fill="#16A34A"
-                  radius={[4, 4, 0, 0]}
-                  maxBarSize={28}
-                />
-                <Bar
-                  dataKey="expense"
-                  name="Expense"
-                  fill="#DC2626"
-                  radius={[4, 4, 0, 0]}
-                  maxBarSize={28}
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </Card>
+        <div className="col-12 col-lg-8">
+          <Card className="h-100">
+            <CardHeader>
+              <CardTitle>Income &amp; Expense Timeline</CardTitle>
+            </CardHeader>
+            <div className="w-100" style={{ height: "300px" }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart
+                  data={report?.timeline || []}
+                  margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                >
+                  <XAxis
+                    dataKey="label"
+                    stroke="#94a3b8"
+                    fontSize={11}
+                    tickLine={false}
+                    axisLine={false}
+                  />
+                  <YAxis
+                    stroke="#94a3b8"
+                    fontSize={10}
+                    tickLine={false}
+                    axisLine={false}
+                    tickFormatter={(val) => `₹${val >= 1000 ? `${Math.round(val / 1000)}k` : val}`}
+                  />
+                  <Tooltip
+                    formatter={(val: any) => [formatCurrency(val), ""]}
+                    contentStyle={{
+                      backgroundColor: "#0F172A",
+                      borderRadius: "8px",
+                      color: "#fff",
+                      fontSize: "12px",
+                      border: "none",
+                    }}
+                  />
+                  <Legend
+                    verticalAlign="top"
+                    align="right"
+                    iconType="circle"
+                    wrapperStyle={{ paddingBottom: "10px", fontSize: "12px" }}
+                  />
+                  <Bar
+                    dataKey="income"
+                    name="Income"
+                    fill="#16A34A"
+                    radius={[4, 4, 0, 0]}
+                    maxBarSize={28}
+                  />
+                  <Bar
+                    dataKey="expense"
+                    name="Expense"
+                    fill="#DC2626"
+                    radius={[4, 4, 0, 0]}
+                    maxBarSize={28}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </Card>
+        </div>
 
-        {/* Category Breakdown Table & Pie */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Spending by Category</CardTitle>
-          </CardHeader>
-          <div className="space-y-3">
-            {report?.categoryBreakdown && report.categoryBreakdown.length > 0 ? (
-              report.categoryBreakdown.map((cat: any, idx: number) => (
-                <div key={idx} className="space-y-1">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-semibold text-slate-800 truncate">
-                      {cat.name}
-                    </span>
-                    <span className="font-bold text-slate-900 font-amount">
-                      {formatCurrency(cat.amount)} ({cat.percentage}%)
-                    </span>
+        {/* Category Breakdown Table */}
+        <div className="col-12 col-lg-4">
+          <Card className="h-100">
+            <CardHeader>
+              <CardTitle>Spending by Category</CardTitle>
+            </CardHeader>
+            <div className="d-flex flex-column gap-3">
+              {report?.categoryBreakdown && report.categoryBreakdown.length > 0 ? (
+                report.categoryBreakdown.map((cat: any, idx: number) => (
+                  <div key={idx} className="d-flex flex-column gap-1">
+                    <div className="d-flex align-items-center justify-content-between small">
+                      <span className="fw-semibold text-foreground text-truncate">
+                        {cat.name}
+                      </span>
+                      <span className="fw-bold font-amount text-foreground">
+                        {formatCurrency(cat.amount)} ({cat.percentage}%)
+                      </span>
+                    </div>
+                    <div className="progress rounded-pill bg-light" style={{ height: "6px" }}>
+                      <div
+                        className="progress-bar rounded-pill"
+                        style={{
+                          width: `${cat.percentage}%`,
+                          backgroundColor: cat.color || "#0F766E",
+                        }}
+                      />
+                    </div>
                   </div>
-                  <div className="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden">
-                    <div
-                      className="h-full rounded-full"
-                      style={{
-                        width: `${cat.percentage}%`,
-                        backgroundColor: cat.color || "#0F766E",
-                      }}
-                    />
-                  </div>
-                </div>
-              ))
-            ) : (
-              <p className="text-center text-xs text-slate-400 py-8">
-                No expense data in this period
-              </p>
-            )}
-          </div>
-        </Card>
+                ))
+              ) : (
+                <p className="text-center small text-secondary py-4 mb-0">
+                  No expense data in this period
+                </p>
+              )}
+            </div>
+          </Card>
+        </div>
       </div>
 
       {/* Member and Account Breakdown Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="row g-3">
         {/* Spending by Member */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Spending by Family Member</CardTitle>
-          </CardHeader>
-          <div className="space-y-3">
-            {report?.memberBreakdown && report.memberBreakdown.length > 0 ? (
-              report.memberBreakdown.map((m: any, idx: number) => (
-                <div key={idx} className="space-y-1">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-semibold text-slate-800">{m.name}</span>
-                    <span className="font-bold text-slate-900 font-amount">
-                      {formatCurrency(m.amount)} ({m.percentage}%)
-                    </span>
+        <div className="col-12 col-md-6">
+          <Card className="h-100">
+            <CardHeader>
+              <CardTitle>Spending by Family Member</CardTitle>
+            </CardHeader>
+            <div className="d-flex flex-column gap-3">
+              {report?.memberBreakdown && report.memberBreakdown.length > 0 ? (
+                report.memberBreakdown.map((m: any, idx: number) => (
+                  <div key={idx} className="d-flex flex-column gap-1">
+                    <div className="d-flex align-items-center justify-content-between small">
+                      <span className="fw-semibold text-foreground">{m.name}</span>
+                      <span className="fw-bold font-amount text-foreground">
+                        {formatCurrency(m.amount)} ({m.percentage}%)
+                      </span>
+                    </div>
+                    <div className="progress rounded-pill bg-light" style={{ height: "6px" }}>
+                      <div
+                        className="progress-bar rounded-pill bg-primary"
+                        style={{ width: `${m.percentage}%` }}
+                      />
+                    </div>
                   </div>
-                  <div className="w-full h-1.5 rounded-full bg-surface-muted overflow-hidden">
-                    <div
-                      className="h-full rounded-full bg-primary"
-                      style={{ width: `${m.percentage}%` }}
-                    />
-                  </div>
-                </div>
-              ))
-            ) : (
-              <p className="text-center text-xs text-slate-400 py-6">
-                No member spending in this period
-              </p>
-            )}
-          </div>
-        </Card>
+                ))
+              ) : (
+                <p className="text-center small text-secondary py-4 mb-0">
+                  No member spending in this period
+                </p>
+              )}
+            </div>
+          </Card>
+        </div>
 
         {/* Spending by Account */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Spending by Account / Wallet</CardTitle>
-          </CardHeader>
-          <div className="space-y-3">
-            {report?.accountBreakdown && report.accountBreakdown.length > 0 ? (
-              report.accountBreakdown.map((acc: any, idx: number) => (
-                <div
-                  key={idx}
-                  className="flex items-center justify-between p-2.5 rounded-btn bg-slate-50 border border-slate-100 text-xs"
-                >
-                  <span className="font-semibold text-slate-800">{acc.name}</span>
-                  <span className="font-bold text-slate-900 font-amount">
-                    {formatCurrency(acc.amount)}
-                  </span>
-                </div>
-              ))
-            ) : (
-              <p className="text-center text-xs text-slate-400 py-6">
-                No account spending in this period
-              </p>
-            )}
-          </div>
-        </Card>
+        <div className="col-12 col-md-6">
+          <Card className="h-100">
+            <CardHeader>
+              <CardTitle>Spending by Account / Wallet</CardTitle>
+            </CardHeader>
+            <div className="d-flex flex-column gap-2">
+              {report?.accountBreakdown && report.accountBreakdown.length > 0 ? (
+                report.accountBreakdown.map((acc: any, idx: number) => (
+                  <div
+                    key={idx}
+                    className="d-flex align-items-center justify-content-between p-2.5 rounded-btn bg-light border small"
+                  >
+                    <span className="fw-semibold text-foreground">{acc.name}</span>
+                    <span className="fw-bold font-amount text-foreground">
+                      {formatCurrency(acc.amount)}
+                    </span>
+                  </div>
+                ))
+              ) : (
+                <p className="text-center small text-secondary py-4 mb-0">
+                  No account spending in this period
+                </p>
+              )}
+            </div>
+          </Card>
+        </div>
       </div>
     </div>
   );

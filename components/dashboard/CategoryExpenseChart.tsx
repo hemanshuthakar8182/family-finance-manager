@@ -24,7 +24,7 @@ interface CategoryExpenseChartProps {
 export function CategoryExpenseChart({ data }: CategoryExpenseChartProps) {
   if (!data || data.length === 0) {
     return (
-      <div className="h-64 flex flex-col items-center justify-center text-slate-400 text-xs">
+      <div className="d-flex flex-column align-items-center justify-content-center text-secondary small" style={{ height: "256px" }}>
         <span>No expense categories this month</span>
       </div>
     );
@@ -37,9 +37,9 @@ export function CategoryExpenseChart({ data }: CategoryExpenseChartProps) {
       const item = payload[0].payload;
       const percentage = total > 0 ? Math.round((item.amount / total) * 100) : 0;
       return (
-        <div className="p-2.5 bg-surface border border-border rounded-btn shadow-lg text-xs space-y-0.5">
-          <p className="font-bold text-slate-800">{item.name}</p>
-          <p className="text-slate-500 font-amount">
+        <div className="p-2 bg-surface border rounded-card shadow-sm small">
+          <p className="fw-bold text-dark mb-0">{item.name}</p>
+          <p className="text-secondary small mb-0">
             {formatCurrency(item.amount)} ({percentage}%)
           </p>
         </div>
@@ -49,8 +49,8 @@ export function CategoryExpenseChart({ data }: CategoryExpenseChartProps) {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="w-full h-52">
+    <div className="d-flex flex-column gap-3">
+      <div className="w-100" style={{ height: "210px" }}>
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Tooltip content={<CustomTooltip />} />
@@ -73,23 +73,23 @@ export function CategoryExpenseChart({ data }: CategoryExpenseChartProps) {
       </div>
 
       {/* Category legend list */}
-      <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
+      <div className="d-flex flex-column gap-2 overflow-y-auto pe-1" style={{ maxHeight: "160px" }}>
         {data.slice(0, 5).map((item, idx) => {
           const percentage = total > 0 ? Math.round((item.amount / total) * 100) : 0;
           return (
-            <div key={idx} className="flex items-center justify-between text-xs">
-              <div className="flex items-center gap-2 truncate">
+            <div key={idx} className="d-flex align-items-center justify-content-between small">
+              <div className="d-flex align-items-center gap-2 overflow-hidden">
                 <span
-                  className="w-3 h-3 rounded-full shrink-0"
-                  style={{ backgroundColor: item.color || "#0F766E" }}
+                  className="rounded-circle flex-shrink-0"
+                  style={{ width: "12px", height: "12px", backgroundColor: item.color || "#0F766E" }}
                 />
-                <span className="font-medium text-slate-700 truncate">{item.name}</span>
+                <span className="fw-medium text-dark text-truncate">{item.name}</span>
               </div>
-              <div className="flex items-center gap-2 shrink-0">
-                <span className="font-bold text-slate-900 font-amount">
+              <div className="d-flex align-items-center gap-2 flex-shrink-0 ms-2">
+                <span className="fw-bold text-dark">
                   {formatCurrency(item.amount)}
                 </span>
-                <span className="text-slate-400 w-8 text-right font-medium">
+                <span className="text-secondary fw-medium text-end" style={{ width: "36px" }}>
                   {percentage}%
                 </span>
               </div>
@@ -100,3 +100,4 @@ export function CategoryExpenseChart({ data }: CategoryExpenseChartProps) {
     </div>
   );
 }
+

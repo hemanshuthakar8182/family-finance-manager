@@ -65,24 +65,27 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-8 px-4 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="w-14 h-14 rounded-2xl bg-primary text-primary-foreground font-bold text-2xl flex items-center justify-center mx-auto shadow-md">
+    <div className="min-vh-100 bg-light d-flex flex-column justify-content-center py-4 px-3">
+      <div className="mx-auto w-100 text-center mb-4" style={{ maxWidth: "420px" }}>
+        <div 
+          className="rounded-4 bg-primary text-white fw-bold fs-3 d-flex align-items-center justify-content-center mx-auto shadow-sm"
+          style={{ width: "56px", height: "56px" }}
+        >
           ₹
         </div>
-        <h2 className="mt-4 text-center text-2xl font-bold tracking-tight text-slate-900">
+        <h2 className="mt-3 fs-4 fw-bold text-dark mb-1">
           Set Up Your Family Space
         </h2>
-        <p className="mt-1 text-center text-xs sm:text-sm text-slate-500">
+        <p className="text-secondary small mb-0">
           Create your household finance workspace in under 30 seconds
         </p>
       </div>
 
-      <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-surface py-7 px-5 sm:px-8 rounded-card border border-border shadow-card">
-          <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="mx-auto w-100" style={{ maxWidth: "420px" }}>
+        <div className="card rounded-card border shadow-sm p-4 bg-surface">
+          <form onSubmit={handleSubmit} className="d-flex flex-column gap-3">
             {error && (
-              <div className="p-3 rounded-btn bg-red-50 border border-red-200 text-xs font-medium text-expense">
+              <div className="p-2.5 rounded-btn bg-danger-subtle border border-danger-subtle text-danger small fw-semibold">
                 {error}
               </div>
             )}
@@ -114,7 +117,7 @@ export default function RegisterPage() {
             />
 
             <Input
-              label="Password (min 6 chars)"
+              label="Password (min 6 characters)"
               type="password"
               placeholder="••••••••"
               autoComplete="new-password"
@@ -128,17 +131,17 @@ export default function RegisterPage() {
               variant="primary"
               size="lg"
               isLoading={isLoading}
-              className="w-full font-bold shadow-sm"
+              className="w-100 fw-bold shadow-sm mt-1"
             >
-              Create Family Account
+              Create Family Space
             </Button>
           </form>
 
-          <div className="mt-6 text-center text-xs text-slate-500">
-            Already have an account?{" "}
+          <div className="mt-4 text-center small text-secondary">
+            Already have a family registered?{" "}
             <Link
               href="/login"
-              className="font-bold text-primary hover:underline underline-offset-2"
+              className="fw-bold text-primary text-decoration-none"
             >
               Sign In
             </Link>

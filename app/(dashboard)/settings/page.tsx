@@ -13,12 +13,10 @@ import {
   User,
   Shield,
   LogOut,
-  ChevronRight,
   IndianRupee,
   Info,
   Globe,
   Upload,
-  Sparkles,
   Building,
   Trash2,
   Edit3,
@@ -280,13 +278,13 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="space-y-6 max-w-2xl">
+    <div className="d-flex flex-column gap-4 mx-auto" style={{ maxWidth: "700px" }}>
       {/* Header */}
       <div>
-        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
+        <h1 className="h4 fw-bold text-foreground mb-1">
           Settings
         </h1>
-        <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+        <p className="small text-muted mb-0">
           Branding, profile, preferences, and security
         </p>
       </div>
@@ -294,39 +292,40 @@ export default function SettingsPage() {
       {/* Family Branding & Identity Card */}
       <Card>
         <CardHeader>
-          <div className="flex items-center gap-2">
-            <Building className="w-4 h-4 text-primary" />
+          <div className="d-flex align-items-center gap-2">
+            <Building style={{ width: "16px", height: "16px" }} className="text-primary" />
             <CardTitle>Family Branding &amp; Identity</CardTitle>
           </div>
         </CardHeader>
 
-        <form onSubmit={handleSaveBranding} className="space-y-4">
+        <form onSubmit={handleSaveBranding} className="d-flex flex-column gap-3">
           {/* Logo Section */}
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-2">
+            <label className="form-label small fw-semibold text-foreground mb-2">
               Project Logo
             </label>
-            <div className="flex items-center gap-4 p-3 bg-slate-50 rounded-card border border-border/80">
+            <div className="d-flex align-items-center gap-3 p-3 bg-light rounded-card border">
               <AppLogo
                 size="xl"
                 logoUrl={logoPreview || currentUser?.familyLogoUrl}
                 name={familyName || currentUser?.familyName}
               />
-              <div className="space-y-1.5 min-w-0 flex-1">
-                <div className="flex items-center gap-2 flex-wrap">
+              <div className="d-flex flex-column gap-1 flex-grow-1 min-vw-0">
+                <div className="d-flex align-items-center gap-2 flex-wrap">
                   <input
                     ref={fileInputRef}
                     type="file"
                     accept="image/png,image/jpeg,image/webp,image/svg+xml"
                     onChange={handleLogoFileSelect}
-                    className="hidden"
+                    className="d-none"
                     id="logo-upload"
                   />
                   <label
                     htmlFor="logo-upload"
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-btn bg-white border border-border text-xs font-semibold text-slate-700 hover:bg-slate-100 cursor-pointer shadow-xs transition-colors"
+                    className="btn btn-sm btn-light border d-inline-flex align-items-center gap-1.5 shadow-sm small fw-semibold"
+                    style={{ cursor: "pointer" }}
                   >
-                    <Upload className="w-3.5 h-3.5 text-primary" />
+                    <Upload style={{ width: "14px", height: "14px" }} className="text-primary" />
                     <span>{logoPreview ? "Change Logo" : "Upload Logo"}</span>
                   </label>
 
@@ -334,14 +333,14 @@ export default function SettingsPage() {
                     <button
                       type="button"
                       onClick={handleRemoveLogo}
-                      className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-btn text-xs font-semibold text-expense hover:bg-red-50 border border-red-200 transition-colors"
+                      className="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-1 small fw-semibold"
                     >
-                      <Trash2 className="w-3.5 h-3.5" />
+                      <Trash2 style={{ width: "14px", height: "14px" }} />
                       <span>Remove</span>
                     </button>
                   )}
                 </div>
-                <p className="text-[11px] text-slate-400">
+                <p className="small text-secondary mb-0" style={{ fontSize: "11px" }}>
                   Recommended: Square PNG, SVG or WEBP (Max 5MB).
                 </p>
               </div>
@@ -350,7 +349,7 @@ export default function SettingsPage() {
 
           {/* Family / Project Title */}
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
+            <label className="form-label small fw-semibold text-foreground mb-1">
               Family / Project Title *
             </label>
             <input
@@ -358,9 +357,9 @@ export default function SettingsPage() {
               value={familyName}
               onChange={(e) => setFamilyName(e.target.value)}
               placeholder="e.g. Sharma Family or Family Finance"
-              className="w-full h-11 px-3 rounded-input border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary font-medium"
+              className="form-control rounded-input small fw-medium"
             />
-            <p className="text-[11px] text-slate-400 mt-1">
+            <p className="small text-secondary mb-0 mt-1" style={{ fontSize: "11px" }}>
               Displayed in the navigation bar, sidebar, and financial statement exports.
             </p>
           </div>
@@ -371,7 +370,7 @@ export default function SettingsPage() {
               variant="primary"
               size="md"
               isLoading={isBrandingLoading}
-              className="font-bold shadow-xs"
+              className="fw-bold shadow-sm"
             >
               Save Branding
             </Button>
@@ -382,9 +381,9 @@ export default function SettingsPage() {
       {/* Profile Section */}
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between w-full">
-            <div className="flex items-center gap-2">
-              <User className="w-4 h-4 text-primary" />
+          <div className="d-flex align-items-center justify-content-between w-100">
+            <div className="d-flex align-items-center gap-2">
+              <User style={{ width: "16px", height: "16px" }} className="text-primary" />
               <CardTitle>Profile Details</CardTitle>
             </div>
             {!isEditingProfile && (
@@ -393,9 +392,9 @@ export default function SettingsPage() {
                 variant="outline"
                 size="sm"
                 onClick={() => setIsEditingProfile(true)}
-                className="text-xs font-semibold gap-1.5 py-1 px-2.5 h-8"
+                className="small fw-semibold gap-1.5 py-1 px-2.5"
               >
-                <Edit3 className="w-3.5 h-3.5" />
+                <Edit3 style={{ width: "14px", height: "14px" }} />
                 <span>Edit Profile</span>
               </Button>
             )}
@@ -403,7 +402,7 @@ export default function SettingsPage() {
         </CardHeader>
 
         {isEditingProfile ? (
-          <form onSubmit={handleSaveProfile} className="space-y-4">
+          <form onSubmit={handleSaveProfile} className="d-flex flex-column gap-3">
             <Input
               label="Full Name"
               value={profileName}
@@ -421,30 +420,30 @@ export default function SettingsPage() {
               required
             />
 
-            <div className="p-3 bg-surface-muted rounded-card border border-border/80 text-xs space-y-1.5">
-              <div className="flex items-center justify-between">
-                <span className="text-slate-500">Family Workspace</span>
-                <span className="font-semibold text-slate-800">
+            <div className="p-3 bg-light rounded-card border small d-flex flex-column gap-1.5">
+              <div className="d-flex align-items-center justify-content-between">
+                <span className="text-secondary">Family Workspace</span>
+                <span className="fw-semibold text-foreground">
                   {familyName || currentUser?.familyName || "Thakar Family's"}
                 </span>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-slate-500">Access Role</span>
-                <span className="font-semibold text-slate-800">
+              <div className="d-flex align-items-center justify-content-between">
+                <span className="text-secondary">Access Role</span>
+                <span className="fw-semibold text-foreground">
                   {profileRole === "ADMIN" ? "Family Admin" : "Family Member"}
                 </span>
               </div>
             </div>
 
-            <div className="flex items-center gap-2 pt-1">
+            <div className="d-flex align-items-center gap-2 pt-1">
               <Button
                 type="submit"
                 variant="primary"
                 size="sm"
                 isLoading={isProfileSaving}
-                className="font-bold text-xs"
+                className="fw-bold small"
               >
-                <Save className="w-3.5 h-3.5 mr-1.5" />
+                <Save style={{ width: "14px", height: "14px" }} className="me-1" />
                 Save Changes
               </Button>
               <Button
@@ -456,37 +455,37 @@ export default function SettingsPage() {
                   setProfileEmail(currentUser?.email || "");
                   setIsEditingProfile(false);
                 }}
-                className="text-xs"
+                className="small"
               >
                 Cancel
               </Button>
             </div>
           </form>
         ) : (
-          <div className="space-y-3 text-sm">
-            <div className="flex items-center justify-between py-2.5 border-b border-border">
-              <span className="text-slate-500">Full Name</span>
-              <span className="font-semibold text-slate-900">
+          <div className="d-flex flex-column small">
+            <div className="d-flex align-items-center justify-content-between py-2.5 border-bottom">
+              <span className="text-secondary">Full Name</span>
+              <span className="fw-semibold text-foreground">
                 {profileName || currentUser?.name || "—"}
               </span>
             </div>
-            <div className="flex items-center justify-between py-2.5 border-b border-border">
-              <span className="text-slate-500">Email Address</span>
-              <span className="font-semibold text-slate-900">
+            <div className="d-flex align-items-center justify-content-between py-2.5 border-bottom">
+              <span className="text-secondary">Email Address</span>
+              <span className="fw-semibold text-foreground">
                 {profileEmail || currentUser?.email || "—"}
               </span>
             </div>
-            <div className="flex items-center justify-between py-2.5 border-b border-border">
-              <span className="text-slate-500">Family Name</span>
-              <span className="font-semibold text-slate-900">
+            <div className="d-flex align-items-center justify-content-between py-2.5 border-bottom">
+              <span className="text-secondary">Family Name</span>
+              <span className="fw-semibold text-foreground">
                 {familyName || currentUser?.familyName || "—"}
               </span>
             </div>
-            <div className="flex items-center justify-between py-2.5">
-              <span className="text-slate-500">Access Role</span>
+            <div className="d-flex align-items-center justify-content-between py-2.5">
+              <span className="text-secondary">Access Role</span>
               <Badge
                 variant={profileRole === "ADMIN" ? "info" : "secondary"}
-                className="font-semibold text-xs capitalize"
+                className="fw-semibold small text-capitalize"
               >
                 {profileRole === "ADMIN" ? "Family Admin" : "Family Member"}
               </Badge>
@@ -498,42 +497,44 @@ export default function SettingsPage() {
       {/* Preferences */}
       <Card>
         <CardHeader>
-          <div className="flex items-center gap-2">
-            <Globe className="w-4 h-4 text-primary" />
+          <div className="d-flex align-items-center gap-2">
+            <Globe style={{ width: "16px", height: "16px" }} className="text-primary" />
             <CardTitle>Preferences</CardTitle>
           </div>
         </CardHeader>
 
-        <div className="space-y-3 text-sm">
-          <div className="flex items-center justify-between py-2.5 border-b border-slate-100">
+        <div className="d-flex flex-column small">
+          <div className="d-flex align-items-center justify-content-between py-2.5 border-bottom">
             <div>
-              <span className="text-slate-700 font-medium">Appearance & Theme</span>
-              <p className="text-[11px] text-slate-400 mt-0.5">
+              <span className="text-foreground fw-medium">Appearance &amp; Theme</span>
+              <p className="small text-secondary mb-0 mt-0.5" style={{ fontSize: "11px" }}>
                 Switch between Classic, Light, Mix Gradients, and Dark themes
               </p>
             </div>
             <ThemeSelector />
           </div>
 
-          <div className="flex items-center justify-between py-2.5 border-b border-slate-100">
+          <div className="d-flex align-items-center justify-content-between py-2.5 border-bottom">
             <div>
-              <span className="text-slate-700 font-medium">Currency</span>
-              <p className="text-[11px] text-slate-400 mt-0.5">
+              <span className="text-foreground fw-medium">Currency</span>
+              <p className="small text-secondary mb-0 mt-0.5" style={{ fontSize: "11px" }}>
                 Used for all amounts and reports
               </p>
             </div>
-            <div className="flex items-center gap-1.5 text-primary font-semibold">
-              <IndianRupee className="w-4 h-4" />
+            <div className="d-flex align-items-center gap-1.5 text-primary fw-semibold">
+              <IndianRupee style={{ width: "16px", height: "16px" }} />
               <span>INR (₹)</span>
             </div>
           </div>
 
-          <div className="flex items-center justify-between py-2.5">
+          <div className="d-flex align-items-center justify-content-between py-2.5">
             <div>
-              <span className="text-slate-700 font-medium">Date Format</span>
-              <p className="text-[11px] text-slate-400 mt-0.5">Transaction date display</p>
+              <span className="text-foreground fw-medium">Date Format</span>
+              <p className="small text-secondary mb-0 mt-0.5" style={{ fontSize: "11px" }}>
+                Transaction date display
+              </p>
             </div>
-            <span className="text-slate-800 font-semibold text-xs">DD MMM YYYY</span>
+            <span className="text-foreground fw-semibold">DD MMM YYYY</span>
           </div>
         </div>
       </Card>
@@ -541,15 +542,15 @@ export default function SettingsPage() {
       {/* Security */}
       <Card>
         <CardHeader>
-          <div className="flex items-center gap-2">
-            <Shield className="w-4 h-4 text-primary" />
+          <div className="d-flex align-items-center gap-2">
+            <Shield style={{ width: "16px", height: "16px" }} className="text-primary" />
             <CardTitle>Security</CardTitle>
           </div>
         </CardHeader>
 
-        <form onSubmit={handlePasswordChange} className="space-y-3">
+        <form onSubmit={handlePasswordChange} className="d-flex flex-column gap-3">
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
+            <label className="form-label small fw-semibold text-foreground mb-1">
               Current Password
             </label>
             <input
@@ -559,12 +560,12 @@ export default function SettingsPage() {
                 setPasswordForm({ ...passwordForm, currentPassword: e.target.value })
               }
               placeholder="••••••••"
-              className="w-full h-10 px-3 rounded-input border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+              className="form-control rounded-input small"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
+            <label className="form-label small fw-semibold text-foreground mb-1">
               New Password
             </label>
             <input
@@ -574,12 +575,12 @@ export default function SettingsPage() {
                 setPasswordForm({ ...passwordForm, newPassword: e.target.value })
               }
               placeholder="Min 6 characters"
-              className="w-full h-10 px-3 rounded-input border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+              className="form-control rounded-input small"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
+            <label className="form-label small fw-semibold text-foreground mb-1">
               Confirm New Password
             </label>
             <input
@@ -589,7 +590,7 @@ export default function SettingsPage() {
                 setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })
               }
               placeholder="Repeat new password"
-              className="w-full h-10 px-3 rounded-input border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+              className="form-control rounded-input small"
             />
           </div>
 
@@ -598,7 +599,7 @@ export default function SettingsPage() {
             variant="secondary"
             size="md"
             isLoading={passwordLoading}
-            className="font-semibold"
+            className="fw-semibold align-self-start"
           >
             Update Password
           </Button>
@@ -608,27 +609,27 @@ export default function SettingsPage() {
       {/* About */}
       <Card>
         <CardHeader>
-          <div className="flex items-center gap-2">
-            <Info className="w-4 h-4 text-primary" />
+          <div className="d-flex align-items-center gap-2">
+            <Info style={{ width: "16px", height: "16px" }} className="text-primary" />
             <CardTitle>About</CardTitle>
           </div>
         </CardHeader>
-        <div className="space-y-2 text-xs text-slate-600">
-          <div className="flex justify-between py-1">
+        <div className="d-flex flex-column gap-2 small text-secondary">
+          <div className="d-flex justify-content-between py-1">
             <span>Application</span>
-            <span className="font-semibold text-slate-800">Family Personal Finance Manager</span>
+            <span className="fw-semibold text-foreground">Family Personal Finance Manager</span>
           </div>
-          <div className="flex justify-between py-1">
+          <div className="d-flex justify-content-between py-1">
             <span>Version</span>
-            <span className="font-semibold text-slate-800">1.0.0 MVP</span>
+            <span className="fw-semibold text-foreground">1.0.0 MVP</span>
           </div>
-          <div className="flex justify-between py-1">
+          <div className="d-flex justify-content-between py-1">
             <span>Stack</span>
-            <span className="font-semibold text-slate-800">Next.js · Prisma · MySQL</span>
+            <span className="fw-semibold text-foreground">Next.js · Prisma · MySQL · Bootstrap 5</span>
           </div>
-          <div className="flex justify-between py-1">
+          <div className="d-flex justify-content-between py-1">
             <span>Database</span>
-            <span className="font-semibold text-slate-800">MySQL (XAMPP Local)</span>
+            <span className="fw-semibold text-foreground">TiDB Cloud / MySQL</span>
           </div>
         </div>
       </Card>
@@ -637,10 +638,11 @@ export default function SettingsPage() {
       <div className="pt-2">
         <button
           onClick={() => signOut({ callbackUrl: "/login" })}
-          className="w-full flex items-center justify-center gap-2 p-3.5 text-sm font-bold text-expense bg-red-50 hover:bg-red-100 rounded-btn border border-red-200 transition-colors"
+          type="button"
+          className="btn btn-outline-danger w-100 d-flex align-items-center justify-content-center gap-2 p-3 fw-bold rounded-btn shadow-sm"
         >
-          <LogOut className="w-4 h-4" />
-          Sign Out from Family Account
+          <LogOut style={{ width: "16px", height: "16px" }} />
+          <span>Sign Out from Family Account</span>
         </button>
       </div>
     </div>

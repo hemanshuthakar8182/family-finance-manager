@@ -266,185 +266,200 @@ export function StatementImporter() {
 
   if (loadingInitial) {
     return (
-      <div className="flex flex-col items-center justify-center p-12 space-y-4">
-        <RefreshCw className="w-8 h-8 text-primary animate-spin" />
-        <p className="text-slate-500 font-medium">Loading statement tools...</p>
+      <div className="d-flex flex-column align-items-center justify-content-center p-5 text-center">
+        <div className="spinner-border text-primary mb-3" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+        <p className="small text-secondary fw-medium mb-0">Loading statement tools...</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="d-flex flex-column gap-4">
       {/* Success banner if imported */}
       {importSuccess && (
-        <div className="bg-emerald-50 border border-emerald-200 rounded-card p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 animate-in fade-in">
-          <div className="flex items-start gap-3">
-            <CheckCircle2 className="w-7 h-7 text-income flex-shrink-0 mt-0.5" />
-            <div>
-              <h3 className="text-base font-bold text-emerald-950">
-                Successfully Imported {importSuccess.importedCount} Transactions!
-              </h3>
-              <p className="text-sm text-emerald-800 mt-1">
-                {importSuccess.skippedCount > 0 && (
-                  <span className="mr-2">
-                    ({importSuccess.skippedCount} duplicate rows skipped.)
-                  </span>
-                )}
-                Updated {selectedAccount?.name} balance:{" "}
-                <span className="font-bold">
-                  {formatCurrency(importSuccess.newBalance)}
-                </span>
-              </p>
+        <div className="card rounded-card border border-success-subtle bg-success-subtle p-3 p-sm-4 shadow-sm">
+          <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between gap-3">
+            <div className="d-flex align-items-start gap-3">
+              <CheckCircle2 className="text-success flex-shrink-0 mt-1" style={{ width: "28px", height: "28px" }} />
+              <div>
+                <h3 className="h6 fw-bold text-success-emphasis mb-1">
+                  Successfully Imported {importSuccess.importedCount} Transactions!
+                </h3>
+                <p className="small text-success-emphasis mb-0">
+                  {importSuccess.skippedCount > 0 && (
+                    <span className="me-2">
+                      ({importSuccess.skippedCount} duplicate rows skipped.)
+                    </span>
+                  )}
+                  Updated {selectedAccount?.name} balance:{" "}
+                  <strong>
+                    {formatCurrency(importSuccess.newBalance)}
+                  </strong>
+                </p>
+              </div>
             </div>
-          </div>
-          <div className="flex items-center gap-3 w-full sm:w-auto">
-            <button
-              onClick={() => {
-                setFile(null);
-                setParsedRows([]);
-                setImportSuccess(null);
-                if (fileInputRef.current) fileInputRef.current.value = "";
-              }}
-              className="flex-1 sm:flex-none px-4 py-2 border border-emerald-300 rounded-btn text-sm font-semibold text-emerald-800 bg-white hover:bg-emerald-100 transition-colors"
-            >
-              Import Another
-            </button>
-            <Link
-              href="/transactions"
-              className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-4 py-2 bg-primary text-white rounded-btn text-sm font-semibold hover:bg-primary-hover transition-colors shadow-sm"
-            >
-              View Transactions <ArrowRight className="w-4 h-4" />
-            </Link>
+            <div className="d-flex align-items-center gap-2 w-100 w-sm-auto">
+              <button
+                onClick={() => {
+                  setFile(null);
+                  setParsedRows([]);
+                  setImportSuccess(null);
+                  if (fileInputRef.current) fileInputRef.current.value = "";
+                }}
+                className="btn btn-sm btn-light border rounded-btn fw-bold px-3 py-2 text-dark flex-grow-1 flex-sm-grow-0"
+              >
+                Import Another
+              </button>
+              <Link
+                href="/transactions"
+                className="btn btn-sm btn-primary rounded-btn fw-bold px-3 py-2 d-inline-flex align-items-center justify-content-center gap-1.5 shadow-sm flex-grow-1 flex-sm-grow-0 text-decoration-none"
+              >
+                View Transactions <ArrowRight style={{ width: "16px", height: "16px" }} />
+              </Link>
+            </div>
           </div>
         </div>
       )}
 
       {/* Target Account & File Upload Zone */}
       {!importSuccess && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="row g-4">
           {/* Account Selector Card */}
-          <div className="bg-surface rounded-card p-6 border border-border shadow-card flex flex-col justify-between">
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <Building2 className="w-5 h-5 text-primary" />
-                <h3 className="font-bold text-slate-800">1. Select Target Account</h3>
-              </div>
-              <p className="text-xs text-slate-500 mb-4">
-                Choose the bank or wallet account to which these statement entries belong.
-              </p>
-
-              <label className="text-xs font-semibold text-slate-700 block mb-1">
-                Bank / Wallet Account
-              </label>
-              <select
-                value={selectedAccountId}
-                onChange={(e) => setSelectedAccountId(e.target.value)}
-                className="w-full px-3 py-2.5 bg-slate-50 border border-border rounded-input text-sm font-medium focus:ring-2 focus:ring-primary/20 focus:outline-none"
-              >
-                {accounts.map((acc) => (
-                  <option key={acc.id} value={acc.id}>
-                    {acc.name} ({formatCurrency(acc.currentBalance)})
-                  </option>
-                ))}
-              </select>
-
-              {selectedAccount && (
-                <div className="mt-4 p-3 bg-slate-50 rounded-lg border border-slate-100 flex items-center justify-between">
-                  <span className="text-xs text-slate-600">Current Balance:</span>
-                  <span className="text-sm font-bold text-slate-900">
-                    {formatCurrency(selectedAccount.currentBalance)}
-                  </span>
+          <div className="col-12 col-md-4">
+            <div className="card rounded-card p-3 p-sm-4 border bg-surface shadow-sm h-100 d-flex flex-column justify-content-between">
+              <div>
+                <div className="d-flex align-items-center gap-2 mb-2">
+                  <Building2 className="text-primary" style={{ width: "20px", height: "20px" }} />
+                  <h3 className="h6 fw-bold text-dark mb-0">1. Select Target Account</h3>
                 </div>
-              )}
-            </div>
+                <p className="small text-secondary mb-3">
+                  Choose the bank or wallet account to which these statement entries belong.
+                </p>
 
-            <div className="mt-6 pt-4 border-t border-slate-100 text-xs text-slate-500">
-              💡 Supports HDFC, SBI, ICICI, Kotak, Axis, Paytm, or generic CSV/Excel statements.
+                <label className="form-label small fw-semibold text-dark mb-1">
+                  Bank / Wallet Account
+                </label>
+                <select
+                  value={selectedAccountId}
+                  onChange={(e) => setSelectedAccountId(e.target.value)}
+                  className="form-select rounded-input small fw-medium"
+                >
+                  {accounts.map((acc) => (
+                    <option key={acc.id} value={acc.id}>
+                      {acc.name} ({formatCurrency(acc.currentBalance)})
+                    </option>
+                  ))}
+                </select>
+
+                {selectedAccount && (
+                  <div className="mt-3 p-2.5 bg-light rounded-btn border d-flex align-items-center justify-content-between">
+                    <span className="small text-secondary">Current Balance:</span>
+                    <span className="small fw-bold text-dark">
+                      {formatCurrency(selectedAccount.currentBalance)}
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              <div className="mt-4 pt-3 border-top small text-secondary" style={{ fontSize: "11px" }}>
+                💡 Supports HDFC, SBI, ICICI, Kotak, Axis, Paytm, or generic CSV/Excel statements.
+              </div>
             </div>
           </div>
 
           {/* Upload Dropzone */}
-          <div
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={handleDrop}
-            onClick={() => fileInputRef.current?.click()}
-            className="md:col-span-2 bg-surface rounded-card p-8 border-2 border-dashed border-border hover:border-primary/50 transition-colors flex flex-col items-center justify-center text-center cursor-pointer shadow-card group"
-          >
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept=".csv,.xlsx,.xls"
-              onChange={handleFileChange}
-              className="hidden"
-            />
-            <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform mb-3">
-              {parsing ? (
-                <RefreshCw className="w-7 h-7 animate-spin" />
-              ) : (
-                <UploadCloud className="w-7 h-7" />
+          <div className="col-12 col-md-8">
+            <div
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={handleDrop}
+              onClick={() => fileInputRef.current?.click()}
+              className="card rounded-card p-4 p-sm-5 border-2 border-dashed bg-surface shadow-sm text-center d-flex flex-column align-items-center justify-content-center cursor-pointer h-100"
+              style={{ minHeight: "220px", cursor: "pointer" }}
+            >
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".csv,.xlsx,.xls"
+                onChange={handleFileChange}
+                className="d-none"
+              />
+              <div
+                className="rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center mb-3"
+                style={{ width: "56px", height: "56px" }}
+              >
+                {parsing ? (
+                  <span className="spinner-border text-primary" role="status" aria-hidden="true" />
+                ) : (
+                  <UploadCloud style={{ width: "28px", height: "28px" }} />
+                )}
+              </div>
+
+              <h3 className="h6 fw-bold text-dark mb-1">
+                {file ? file.name : "Click or drag & drop bank statement"}
+              </h3>
+              <p className="small text-secondary mb-0" style={{ maxWidth: "380px" }}>
+                Supports <strong>.CSV, .XLSX, and .XLS</strong> files. Date,
+                Amount, Narration, and Debit/Credit columns are auto-detected.
+              </p>
+
+              {file && (
+                <span className="mt-3 badge rounded-pill bg-success-subtle text-success border border-success-subtle px-3 py-1.5 small fw-semibold d-inline-flex align-items-center gap-1">
+                  <Check style={{ width: "14px", height: "14px" }} /> File Loaded ({(file.size / 1024).toFixed(1)} KB)
+                </span>
               )}
             </div>
-
-            <h3 className="text-base font-bold text-slate-800">
-              {file ? file.name : "Click or drag & drop bank statement"}
-            </h3>
-            <p className="text-xs text-slate-500 max-w-sm mt-1">
-              Supports <strong className="text-slate-700">.CSV, .XLSX, and .XLS</strong> files. Date,
-              Amount, Narration, and Debit/Credit columns are auto-detected.
-            </p>
-
-            {file && (
-              <span className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full text-xs font-semibold">
-                <Check className="w-3.5 h-3.5" /> File Loaded ({(file.size / 1024).toFixed(1)} KB)
-              </span>
-            )}
           </div>
         </div>
       )}
 
       {/* Review & Edit Grid */}
       {parsedRows.length > 0 && !importSuccess && (
-        <div className="bg-surface rounded-card border border-border shadow-card overflow-hidden">
+        <div className="card rounded-card border bg-surface shadow-sm overflow-hidden">
           {/* Header & Batch Controls */}
-          <div className="p-4 sm:p-6 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-50/50">
+          <div className="p-3 p-sm-4 border-bottom d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3 bg-light">
             <div>
-              <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                <FileSpreadsheet className="w-5 h-5 text-primary" />
+              <h3 className="h6 fw-bold text-dark d-flex align-items-center gap-2 mb-1">
+                <FileSpreadsheet className="text-primary" style={{ width: "20px", height: "20px" }} />
                 Review & Categorize Transactions
               </h3>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <p className="small text-secondary mb-0">
                 Review suggested categories, toggle transactions, or uncheck any rows you do not wish to import.
               </p>
             </div>
 
-            <div className="flex flex-wrap items-center gap-2">
-              <div className="inline-flex rounded-lg border border-border p-1 bg-white">
+            <div className="d-flex flex-wrap align-items-center gap-2">
+              <div className="btn-group btn-group-sm">
                 <button
+                  type="button"
                   onClick={() => setFilterType("ALL")}
-                  className={`px-3 py-1 text-xs font-semibold rounded-md transition-colors ${
+                  className={`btn btn-sm fw-bold ${
                     filterType === "ALL"
-                      ? "bg-primary text-white"
-                      : "text-slate-600 hover:text-slate-900"
+                      ? "btn-primary shadow-sm"
+                      : "btn-light border text-secondary"
                   }`}
                 >
                   All ({parsedRows.length})
                 </button>
                 <button
+                  type="button"
                   onClick={() => setFilterType("EXPENSE")}
-                  className={`px-3 py-1 text-xs font-semibold rounded-md transition-colors ${
+                  className={`btn btn-sm fw-bold ${
                     filterType === "EXPENSE"
-                      ? "bg-expense text-white"
-                      : "text-slate-600 hover:text-slate-900"
+                      ? "btn-danger shadow-sm"
+                      : "btn-light border text-secondary"
                   }`}
                 >
                   Expenses
                 </button>
                 <button
+                  type="button"
                   onClick={() => setFilterType("INCOME")}
-                  className={`px-3 py-1 text-xs font-semibold rounded-md transition-colors ${
+                  className={`btn btn-sm fw-bold ${
                     filterType === "INCOME"
-                      ? "bg-income text-white"
-                      : "text-slate-600 hover:text-slate-900"
+                      ? "btn-success shadow-sm"
+                      : "btn-light border text-secondary"
                   }`}
                 >
                   Income
@@ -452,8 +467,9 @@ export function StatementImporter() {
               </div>
 
               <button
+                type="button"
                 onClick={() => toggleSelectAll(selectedRows.length !== parsedRows.length)}
-                className="px-3 py-1.5 text-xs font-semibold border border-border bg-white rounded-btn hover:bg-slate-100 transition-colors"
+                className="btn btn-sm btn-light border rounded-btn fw-bold text-secondary"
               >
                 {selectedRows.length === parsedRows.length ? "Deselect All" : "Select All"}
               </button>
@@ -461,30 +477,30 @@ export function StatementImporter() {
           </div>
 
           {/* Metrics ribbon */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 border-b border-border divide-x divide-border bg-white">
-            <div className="p-3 text-center">
-              <span className="text-xs text-slate-500">Selected Rows</span>
-              <p className="text-sm font-bold text-slate-800">
+          <div className="row g-0 border-bottom text-center bg-surface">
+            <div className="col-6 col-sm-3 p-3 border-end">
+              <span className="small text-secondary d-block">Selected Rows</span>
+              <p className="fw-bold text-dark mb-0 small">
                 {selectedRows.length} / {parsedRows.length}
               </p>
             </div>
-            <div className="p-3 text-center">
-              <span className="text-xs text-slate-500">Total Outflow (Debit)</span>
-              <p className="text-sm font-bold text-expense">
+            <div className="col-6 col-sm-3 p-3 border-end">
+              <span className="small text-secondary d-block">Total Outflow (Debit)</span>
+              <p className="fw-bold text-danger mb-0 small">
                 -{formatCurrency(totalDebit)}
               </p>
             </div>
-            <div className="p-3 text-center">
-              <span className="text-xs text-slate-500">Total Inflow (Credit)</span>
-              <p className="text-sm font-bold text-income">
+            <div className="col-6 col-sm-3 p-3 border-end">
+              <span className="small text-secondary d-block">Total Inflow (Credit)</span>
+              <p className="fw-bold text-success mb-0 small">
                 +{formatCurrency(totalCredit)}
               </p>
             </div>
-            <div className="p-3 text-center">
-              <span className="text-xs text-slate-500">Net Impact</span>
+            <div className="col-6 col-sm-3 p-3">
+              <span className="small text-secondary d-block">Net Impact</span>
               <p
-                className={`text-sm font-bold ${
-                  totalCredit >= totalDebit ? "text-income" : "text-expense"
+                className={`fw-bold mb-0 small ${
+                  totalCredit >= totalDebit ? "text-success" : "text-danger"
                 }`}
               >
                 {totalCredit >= totalDebit ? "+" : ""}
@@ -494,103 +510,91 @@ export function StatementImporter() {
           </div>
 
           {/* Table */}
-          <div className="overflow-x-auto max-h-[460px]">
-            <table className="w-full text-left text-sm">
-              <thead className="sticky top-0 bg-slate-100 text-xs font-bold text-slate-600 border-b border-border z-10">
+          <div className="table-responsive" style={{ maxHeight: "460px" }}>
+            <table className="table table-hover align-middle mb-0 small">
+              <thead className="table-light sticky-top">
                 <tr>
-                  <th className="p-3 w-10 text-center">
+                  <th className="text-center" style={{ width: "40px" }}>
                     <input
                       type="checkbox"
                       checked={selectedRows.length === parsedRows.length && parsedRows.length > 0}
                       onChange={(e) => toggleSelectAll(e.target.checked)}
-                      className="rounded text-primary focus:ring-primary"
+                      className="form-check-input mt-0"
                     />
                   </th>
-                  <th className="p-3 w-28">Date</th>
-                  <th className="p-3">Description / Narration</th>
-                  <th className="p-3 w-28">Type</th>
-                  <th className="p-3 w-32 text-right">Amount</th>
-                  <th className="p-3 w-48">Category</th>
-                  <th className="p-3 w-12 text-center"></th>
+                  <th style={{ width: "120px" }}>Date</th>
+                  <th>Description / Narration</th>
+                  <th style={{ width: "110px" }}>Type</th>
+                  <th className="text-end" style={{ width: "130px" }}>Amount</th>
+                  <th style={{ width: "200px" }}>Category</th>
+                  <th className="text-center" style={{ width: "50px" }}></th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border">
+              <tbody>
                 {filteredRows.map((row) => {
                   const typeCats = categories.filter((c) => c.type === row.type);
 
                   return (
                     <tr
                       key={row.id}
-                      className={`hover:bg-slate-50 transition-colors ${
-                        !row.selected ? "opacity-40 bg-slate-50/50" : ""
-                      }`}
+                      className={!row.selected ? "opacity-50" : ""}
                     >
-                      <td className="p-3 text-center">
+                      <td className="text-center">
                         <input
                           type="checkbox"
                           checked={row.selected}
                           onChange={() => toggleRow(row.id)}
-                          className="rounded text-primary focus:ring-primary"
+                          className="form-check-input mt-0"
                         />
                       </td>
-                      <td className="p-3 text-xs font-medium text-slate-700 whitespace-nowrap">
+                      <td className="text-secondary text-nowrap">
                         {row.date ? row.date.toLocaleDateString() : row.rawDate}
                       </td>
-                      <td className="p-3 text-xs font-semibold text-slate-800 max-w-xs truncate" title={row.description}>
+                      <td className="fw-semibold text-dark text-truncate" style={{ maxWidth: "240px" }} title={row.description}>
                         {row.description}
                       </td>
-                      <td className="p-3">
+                      <td>
                         <span
-                          className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                          className={`badge rounded-pill ${
                             row.type === "INCOME"
-                              ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                              : "bg-red-50 text-red-700 border border-red-200"
+                              ? "bg-success-subtle text-success border border-success-subtle"
+                              : "bg-danger-subtle text-danger border border-danger-subtle"
                           }`}
                         >
                           {row.type}
                         </span>
                       </td>
                       <td
-                        className={`p-3 text-right text-xs font-bold whitespace-nowrap ${
-                          row.type === "INCOME" ? "text-income" : "text-expense"
+                        className={`text-end fw-bold text-nowrap ${
+                          row.type === "INCOME" ? "text-success" : "text-danger"
                         }`}
                       >
                         {row.type === "INCOME" ? "+" : "-"}
                         {formatCurrency(row.amount)}
                       </td>
-                      <td className="p-3">
-                        <div className="relative">
-                          <select
-                            value={row.suggestedCategoryId || ""}
-                            onChange={(e) => updateRowCategory(row.id, e.target.value)}
-                            disabled={!row.selected}
-                            className="w-full text-xs font-medium px-2 py-1.5 bg-slate-50 border border-border rounded-md focus:ring-1 focus:ring-primary focus:outline-none"
-                          >
-                            <option value="">-- Uncategorized --</option>
-                            {typeCats.map((c) => (
-                              <option key={c.id} value={c.id}>
-                                {c.name}
-                              </option>
-                            ))}
-                          </select>
-                          {row.suggestedCategoryName && (
-                            <span
-                              title="Smart auto-matched category"
-                              className="absolute -top-1 -right-1 flex h-2 w-2"
-                            >
-                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                              <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-                            </span>
-                          )}
-                        </div>
+                      <td>
+                        <select
+                          value={row.suggestedCategoryId || ""}
+                          onChange={(e) => updateRowCategory(row.id, e.target.value)}
+                          disabled={!row.selected}
+                          className="form-select form-select-sm rounded-btn small"
+                        >
+                          <option value="">-- Uncategorized --</option>
+                          {typeCats.map((c) => (
+                            <option key={c.id} value={c.id}>
+                              {c.name}
+                            </option>
+                          ))}
+                        </select>
                       </td>
-                      <td className="p-3 text-center">
+                      <td className="text-center">
                         <button
+                          type="button"
                           onClick={() => removeRow(row.id)}
-                          className="text-slate-400 hover:text-red-600 transition-colors p-1"
+                          className="btn btn-sm btn-link text-secondary p-0 text-decoration-none"
                           title="Remove row"
                         >
-                          <Trash2 className="w-3.5 h-3.5" />
+                          <Trash2 style={{ width: "16px", height: "16px" }} />
                         </button>
                       </td>
                     </tr>
@@ -601,36 +605,40 @@ export function StatementImporter() {
           </div>
 
           {/* Action Bar */}
-          <div className="p-4 sm:p-6 bg-slate-50/80 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="text-xs text-slate-600">
-              Target: <strong className="text-slate-900">{selectedAccount?.name}</strong> •{" "}
+          <div className="p-3 p-sm-4 bg-light border-top d-flex flex-column flex-sm-row align-items-center justify-content-between gap-3">
+            <div className="small text-secondary">
+              Target: <strong className="text-dark">{selectedAccount?.name}</strong> •{" "}
               {selectedRows.length} transaction(s) ready to import
             </div>
 
-            <div className="flex items-center gap-3 w-full sm:w-auto">
+            <div className="d-flex align-items-center gap-2 w-100 w-sm-auto">
               <button
+                type="button"
                 onClick={() => {
                   setFile(null);
                   setParsedRows([]);
                   if (fileInputRef.current) fileInputRef.current.value = "";
                 }}
                 disabled={importing}
-                className="flex-1 sm:flex-none px-4 py-2 border border-border bg-white text-slate-700 rounded-btn text-xs font-bold hover:bg-slate-100 transition-colors"
+                className="btn btn-sm btn-light border rounded-btn fw-bold px-3 py-2 text-dark flex-grow-1 flex-sm-grow-0"
               >
                 Reset
               </button>
               <button
+                type="button"
                 onClick={handleImport}
                 disabled={importing || selectedRows.length === 0}
-                className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-2.5 bg-primary text-white rounded-btn text-xs font-bold hover:bg-primary-hover disabled:opacity-50 transition-colors shadow-sm"
+                className="btn btn-sm btn-primary rounded-btn fw-bold px-4 py-2 d-inline-flex align-items-center justify-content-center gap-2 shadow-sm flex-grow-1 flex-sm-grow-0"
               >
                 {importing ? (
                   <>
-                    <RefreshCw className="w-4 h-4 animate-spin" /> Importing...
+                    <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true" />
+                    <span>Importing...</span>
                   </>
                 ) : (
                   <>
-                    <Check className="w-4 h-4" /> Import {selectedRows.length} Transactions
+                    <Check style={{ width: "16px", height: "16px" }} />
+                    <span>Import {selectedRows.length} Transactions</span>
                   </>
                 )}
               </button>
@@ -641,3 +649,4 @@ export function StatementImporter() {
     </div>
   );
 }
+

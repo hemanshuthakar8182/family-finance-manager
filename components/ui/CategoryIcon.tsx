@@ -183,7 +183,7 @@ const ICON_MAP: Record<string, LucideIcon> = {
   tag: Tag,
 };
 
-export function CategoryIcon({ name, categoryName, className = "w-5 h-5", size = 20 }: CategoryIconProps) {
+export function CategoryIcon({ name, categoryName, className = "", size = 20 }: CategoryIconProps) {
   // Normalize string to alphanumeric lowercase
   const normalized = (name || "").toLowerCase().replace(/[^a-z0-9]/g, "");
   let IconComponent = ICON_MAP[normalized];
@@ -200,3 +200,4 @@ export function CategoryIcon({ name, categoryName, className = "w-5 h-5", size =
   const FinalIcon = IconComponent || Tag;
   return <FinalIcon className={className} size={size} />;
 }
+

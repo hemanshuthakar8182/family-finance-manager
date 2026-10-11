@@ -57,13 +57,13 @@ export function IconPicker({
   );
 
   return (
-    <div className="space-y-2">
-      <div className="flex items-center justify-between">
-        <label className="block text-xs font-semibold text-slate-700">
+    <div className="d-flex flex-column gap-2">
+      <div className="d-flex align-items-center justify-content-between">
+        <label className="form-label small fw-semibold text-dark mb-0">
           Category Icon
         </label>
         {isAutoDetected && (
-          <span className="text-[11px] font-medium text-primary bg-primary/10 px-2 py-0.5 rounded-full border border-primary/25">
+          <span className="badge rounded-pill bg-primary-subtle text-primary border border-primary-subtle" style={{ fontSize: "11px" }}>
             Auto-suggested
           </span>
         )}
@@ -74,65 +74,67 @@ export function IconPicker({
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          "w-full flex items-center justify-between p-2.5 rounded-input border bg-white transition-all text-left",
-          isOpen
-            ? "border-primary ring-2 ring-primary/10 shadow-xs"
-            : "border-border hover:border-slate-300"
+          "w-100 d-flex align-items-center justify-content-between p-2.5 rounded-input border bg-surface text-start transition",
+          isOpen ? "border-primary shadow-sm" : ""
         )}
       >
-        <div className="flex items-center gap-2.5">
+        <div className="d-flex align-items-center gap-2.5">
           <div
-            className="w-8 h-8 rounded-full flex items-center justify-center text-white shrink-0 shadow-xs"
-            style={{ backgroundColor: color }}
+            className="rounded-circle d-flex align-items-center justify-content-center text-white flex-shrink-0 shadow-sm"
+            style={{ width: "34px", height: "34px", backgroundColor: color }}
           >
             <CategoryIcon name={value} size={16} />
           </div>
           <div>
-            <p className="text-xs font-semibold text-slate-900">
+            <p className="small fw-bold text-dark mb-0">
               {currentIconItem?.label || value || "Select Icon"}
             </p>
-            <p className="text-[10px] text-slate-400">
+            <p className="small text-secondary mb-0" style={{ fontSize: "11px" }}>
               {isOpen ? "Click to close picker" : "Click to choose custom icon"}
             </p>
           </div>
         </div>
-        <div className="flex items-center text-slate-400">
+        <div className="text-secondary">
           {isOpen ? (
-            <ChevronUp className="w-4 h-4" />
+            <ChevronUp style={{ width: "16px", height: "16px" }} />
           ) : (
-            <ChevronDown className="w-4 h-4" />
+            <ChevronDown style={{ width: "16px", height: "16px" }} />
           )}
         </div>
       </button>
 
       {/* Expandable Icon Selection Grid */}
       {isOpen && (
-        <div className="p-3 bg-slate-50/80 rounded-card border border-border/80 space-y-2.5 animate-in fade-in duration-150">
+        <div className="p-3 bg-light rounded-card border d-flex flex-column gap-2 shadow-sm">
           {/* Search bar */}
-          <div className="relative">
-            <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
+          <div className="position-relative">
+            <Search
+              style={{ width: "14px", height: "14px", left: "10px", top: "50%", transform: "translateY(-50%)" }}
+              className="position-absolute text-secondary"
+            />
             <input
               type="text"
               placeholder="Search 50+ icons (e.g. food, fuel, gym, pet)..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full h-8 pl-8 pr-3 bg-white rounded-input border border-border text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-primary"
+              className="form-control form-control-sm rounded-input ps-4 small"
             />
           </div>
 
           {/* Category Tabs */}
-          <div className="flex gap-1 overflow-x-auto pb-1 no-scrollbar">
+          <div className="d-flex gap-1 overflow-x-auto pb-1">
             {CATEGORIES.map((cat) => (
               <button
                 key={cat}
                 type="button"
                 onClick={() => setSelectedGroup(cat)}
                 className={cn(
-                  "px-2 py-0.5 rounded-full text-[10px] font-semibold whitespace-nowrap transition-all shrink-0",
+                  "badge rounded-pill border px-2.5 py-1 small fw-semibold text-nowrap transition",
                   selectedGroup === cat
-                    ? "bg-primary text-primary-foreground shadow-xs"
-                    : "bg-surface text-slate-600 border border-border hover:bg-surface-muted"
+                    ? "bg-primary text-white border-primary"
+                    : "bg-surface text-secondary border"
                 )}
+                style={{ fontSize: "11px", textDecoration: "none", cursor: "pointer" }}
               >
                 {cat}
               </button>
@@ -140,9 +142,9 @@ export function IconPicker({
           </div>
 
           {/* Grid of icons */}
-          <div className="grid grid-cols-4 sm:grid-cols-5 gap-1.5 max-h-48 overflow-y-auto p-1 bg-surface rounded-input border border-border">
+          <div className="row g-1 overflow-y-auto p-1 bg-surface rounded-input border" style={{ maxHeight: "200px" }}>
             {filteredIcons.length === 0 ? (
-              <div className="col-span-full py-6 text-center text-xs text-slate-400">
+              <div className="col-12 py-4 text-center small text-secondary">
                 No matching icons found
               </div>
             ) : (
@@ -150,35 +152,37 @@ export function IconPicker({
                 const isSelected =
                   value.toLowerCase() === item.name.toLowerCase();
                 return (
-                  <button
-                    key={item.name}
-                    type="button"
-                    onClick={() => {
-                      onChange(item.name);
-                      setIsOpen(false);
-                    }}
-                    title={item.label}
-                    className={cn(
-                      "flex flex-col items-center justify-center p-2 rounded-btn border transition-all text-center group",
-                      isSelected
-                        ? "bg-primary/10 border-primary text-primary font-bold shadow-xs"
-                        : "bg-surface border-transparent hover:border-border text-slate-700 hover:bg-surface-muted"
-                    )}
-                  >
-                    <div
+                  <div key={item.name} className="col-3 col-sm-2 text-center">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onChange(item.name);
+                        setIsOpen(false);
+                      }}
+                      title={item.label}
                       className={cn(
-                        "w-7 h-7 rounded-full flex items-center justify-center mb-1 transition-transform group-hover:scale-110",
+                        "btn btn-sm w-100 p-1.5 rounded-btn d-flex flex-column align-items-center justify-content-center border transition",
                         isSelected
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-surface-muted text-slate-600"
+                          ? "btn-primary text-white shadow-sm"
+                          : "btn-light border-0 text-dark"
                       )}
                     >
-                      <CategoryIcon name={item.name} size={15} />
-                    </div>
-                    <span className="text-[9px] line-clamp-1 leading-tight">
-                      {item.label}
-                    </span>
-                  </button>
+                      <div
+                        className={cn(
+                          "rounded-circle d-flex align-items-center justify-content-center mb-1",
+                          isSelected
+                            ? "bg-white bg-opacity-25 text-white"
+                            : "bg-light text-secondary"
+                        )}
+                        style={{ width: "26px", height: "26px" }}
+                      >
+                        <CategoryIcon name={item.name} size={14} />
+                      </div>
+                      <span className="text-truncate d-block w-100" style={{ fontSize: "9px", lineHeight: 1.1 }}>
+                        {item.label}
+                      </span>
+                    </button>
+                  </div>
                 );
               })
             )}
@@ -203,19 +207,19 @@ export function ColorPicker({
   isAutoDetected = false,
 }: ColorPickerProps) {
   return (
-    <div className="space-y-1.5">
-      <div className="flex items-center justify-between">
-        <label className="block text-xs font-semibold text-slate-700">
+    <div className="d-flex flex-column gap-1">
+      <div className="d-flex align-items-center justify-content-between">
+        <label className="form-label small fw-semibold text-dark mb-0">
           Theme Color
         </label>
         {isAutoDetected && (
-          <span className="text-[11px] font-medium text-primary bg-primary/10 px-2 py-0.5 rounded-full border border-primary/25">
+          <span className="badge rounded-pill bg-primary-subtle text-primary border border-primary-subtle" style={{ fontSize: "11px" }}>
             Auto-suggested
           </span>
         )}
       </div>
 
-      <div className="flex flex-wrap items-center gap-1.5 p-2 bg-surface-muted rounded-input border border-border">
+      <div className="d-flex flex-wrap align-items-center gap-2 p-2 bg-light rounded-input border">
         {presetColors.map((color) => {
           const isSelected = value.toLowerCase() === color.hex.toLowerCase();
           return (
@@ -224,15 +228,17 @@ export function ColorPicker({
               type="button"
               onClick={() => onChange(color.hex)}
               title={color.label}
-              className={cn(
-                "w-6 h-6 rounded-full flex items-center justify-center text-white transition-all transform hover:scale-110 shadow-xs",
-                isSelected
-                  ? "ring-2 ring-offset-2 ring-primary scale-110"
-                  : "hover:opacity-90"
-              )}
-              style={{ backgroundColor: color.hex }}
+              className="rounded-circle d-flex align-items-center justify-content-center text-white border-0 shadow-sm p-0"
+              style={{
+                width: "28px",
+                height: "28px",
+                backgroundColor: color.hex,
+                outline: isSelected ? "2px solid var(--primary)" : "none",
+                outlineOffset: "2px",
+                cursor: "pointer",
+              }}
             >
-              {isSelected && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+              {isSelected && <Check style={{ width: "14px", height: "14px" }} />}
             </button>
           );
         })}
@@ -240,17 +246,19 @@ export function ColorPicker({
         {/* Native color picker for custom colors */}
         <label
           title="Pick custom hex color"
-          className="relative w-6 h-6 rounded-full border-2 border-dashed border-slate-300 flex items-center justify-center cursor-pointer hover:border-slate-500 bg-white"
+          className="position-relative rounded-circle border-2 border-dashed d-flex align-items-center justify-content-center cursor-pointer bg-white"
+          style={{ width: "28px", height: "28px", cursor: "pointer" }}
         >
           <input
             type="color"
             value={value}
             onChange={(e) => onChange(e.target.value)}
-            className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+            className="position-absolute top-0 start-0 opacity-0 w-100 h-100 cursor-pointer"
           />
-          <span className="text-[10px] text-slate-500 font-bold">+</span>
+          <span className="small text-secondary fw-bold">+</span>
         </label>
       </div>
     </div>
   );
 }
+

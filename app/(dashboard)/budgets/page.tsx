@@ -148,11 +148,11 @@ export default function BudgetsPage() {
   const getStatusConfig = (status: string) => {
     switch (status) {
       case "EXCEEDED":
-        return { icon: XCircle, color: "text-expense", bg: "bg-red-50", border: "border-red-200", barColor: "#DC2626" };
+        return { icon: XCircle, color: "text-danger", bg: "bg-danger-subtle", border: "border-danger-subtle", barColor: "#DC2626" };
       case "WARNING":
-        return { icon: AlertTriangle, color: "text-warning", bg: "bg-amber-50", border: "border-amber-200", barColor: "#D97706" };
+        return { icon: AlertTriangle, color: "text-warning", bg: "bg-warning-subtle", border: "border-warning-subtle", barColor: "#D97706" };
       default:
-        return { icon: CheckCircle2, color: "text-income", bg: "bg-green-50", border: "border-green-100", barColor: "#16A34A" };
+        return { icon: CheckCircle2, color: "text-success", bg: "bg-success-subtle", border: "border-success-subtle", barColor: "#16A34A" };
     }
   };
 
@@ -164,29 +164,30 @@ export default function BudgetsPage() {
   const overallStatus = overallPct >= 100 ? "EXCEEDED" : overallPct >= 80 ? "WARNING" : "SAFE";
 
   return (
-    <div className="space-y-6">
+    <div className="d-flex flex-column gap-4">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+          <h1 className="h4 fw-bold text-dark mb-1">
             Monthly Budgets
           </h1>
-          <p className="text-xs sm:text-sm text-muted mt-0.5">
+          <p className="small text-secondary mb-0">
             Set category spending limits and track progress
           </p>
         </div>
-        <Button size="md" onClick={() => setIsAddOpen(true)} className="w-full sm:w-auto justify-center font-semibold shadow-sm">
-          <Plus className="w-4 h-4 mr-1.5" />
-          Set Budget
+        <Button size="md" onClick={() => setIsAddOpen(true)} className="fw-semibold shadow-sm gap-2">
+          <Plus style={{ width: "16px", height: "16px" }} />
+          <span>Set Budget</span>
         </Button>
       </div>
 
       {/* Month-Year Selector */}
-      <div className="flex items-center gap-3 p-3 rounded-card border border-border bg-surface shadow-soft">
+      <div className="card rounded-card border bg-surface p-3 shadow-sm d-flex flex-row align-items-center gap-2 flex-wrap">
         <select
           value={selectedMonth}
           onChange={(e) => setSelectedMonth(Number(e.target.value))}
-          className="h-9 px-3 rounded-btn border border-border text-sm font-semibold text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-primary"
+          className="form-select form-select-sm rounded-btn fw-bold text-dark"
+          style={{ width: "140px" }}
         >
           {MONTH_NAMES.map((m, idx) => (
             <option key={idx} value={idx + 1}>{m}</option>
@@ -196,14 +197,15 @@ export default function BudgetsPage() {
         <select
           value={selectedYear}
           onChange={(e) => setSelectedYear(Number(e.target.value))}
-          className="h-9 px-3 rounded-btn border border-border text-sm font-semibold text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-primary"
+          className="form-select form-select-sm rounded-btn fw-bold text-dark"
+          style={{ width: "100px" }}
         >
           {[now.getFullYear() - 1, now.getFullYear(), now.getFullYear() + 1].map((y) => (
             <option key={y} value={y}>{y}</option>
           ))}
         </select>
 
-        <span className="text-xs text-slate-400 font-medium ml-auto">
+        <span className="small text-secondary fw-medium ms-auto">
           {budgets.length} budget{budgets.length !== 1 ? "s" : ""} set
         </span>
       </div>
@@ -211,49 +213,53 @@ export default function BudgetsPage() {
       {/* ── Household Budget Aggregate Summary ── */}
       {!isLoading && budgets.length > 0 && (
         <div className={cn(
-          "p-4 rounded-card border shadow-soft",
-          overallStatus === "EXCEEDED" ? "border-red-200 bg-red-50/50" :
-          overallStatus === "WARNING" ? "border-amber-200 bg-amber-50/50" :
-          "border-primary/20 bg-primary/5"
+          "card rounded-card border shadow-sm p-3 p-sm-4",
+          overallStatus === "EXCEEDED" ? "border-danger-subtle bg-danger-subtle" :
+          overallStatus === "WARNING" ? "border-warning-subtle bg-warning-subtle" :
+          "border-primary-subtle bg-primary-subtle"
         )}>
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-bold text-slate-700">
+          <div className="d-flex align-items-center justify-content-between mb-2">
+            <span className="small fw-bold text-dark">
               Household Budget — {MONTH_NAMES[selectedMonth - 1]} {selectedYear}
             </span>
             <span className={cn(
-              "text-xs font-bold px-2 py-0.5 rounded-full",
-              overallStatus === "EXCEEDED" ? "bg-red-100 text-expense" :
-              overallStatus === "WARNING" ? "bg-amber-100 text-amber-700" :
-              "bg-primary/10 text-primary"
+              "badge rounded-pill fw-bold",
+              overallStatus === "EXCEEDED" ? "bg-danger text-white" :
+              overallStatus === "WARNING" ? "bg-warning text-dark" :
+              "bg-primary text-white"
             )}>
               {overallPct}% used
             </span>
           </div>
 
-          {/* Progress bar */}
-          <div className="w-full h-2.5 rounded-full bg-surface-muted overflow-hidden mb-3">
+          {/* Bootstrap Progress bar */}
+          <div className="progress mb-3" style={{ height: "10px" }}>
             <div
-              className="h-full rounded-full transition-all duration-500"
+              className="progress-bar"
+              role="progressbar"
               style={{
                 width: `${overallPct}%`,
                 backgroundColor: overallStatus === "EXCEEDED" ? "#DC2626" : overallStatus === "WARNING" ? "#D97706" : "var(--primary)",
               }}
+              aria-valuenow={overallPct}
+              aria-valuemin={0}
+              aria-valuemax={100}
             />
           </div>
 
           {/* Three KPI chips */}
-          <div className="grid grid-cols-3 gap-2 text-center">
-            <div>
-              <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">Total Budget</p>
-              <p className="text-sm font-bold font-amount text-slate-900">{formatCurrency(totalBudgeted)}</p>
+          <div className="row g-2 text-center">
+            <div className="col-4">
+              <p className="small text-secondary fw-semibold text-uppercase mb-0" style={{ fontSize: "10px" }}>Total Budget</p>
+              <p className="h6 fw-bold text-dark mb-0">{formatCurrency(totalBudgeted)}</p>
             </div>
-            <div>
-              <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">Spent</p>
-              <p className={cn("text-sm font-bold font-amount", overallStatus === "EXCEEDED" ? "text-expense" : "text-slate-900")}>{formatCurrency(totalSpent)}</p>
+            <div className="col-4">
+              <p className="small text-secondary fw-semibold text-uppercase mb-0" style={{ fontSize: "10px" }}>Spent</p>
+              <p className={cn("h6 fw-bold mb-0", overallStatus === "EXCEEDED" ? "text-danger" : "text-dark")}>{formatCurrency(totalSpent)}</p>
             </div>
-            <div>
-              <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">Remaining</p>
-              <p className={cn("text-sm font-bold font-amount", totalRemaining > 0 ? "text-primary" : "text-expense")}>{formatCurrency(totalRemaining)}</p>
+            <div className="col-4">
+              <p className="small text-secondary fw-semibold text-uppercase mb-0" style={{ fontSize: "10px" }}>Remaining</p>
+              <p className={cn("h6 fw-bold mb-0", totalRemaining > 0 ? "text-success" : "text-danger")}>{formatCurrency(totalRemaining)}</p>
             </div>
           </div>
         </div>
@@ -261,121 +267,133 @@ export default function BudgetsPage() {
 
       {/* Budget Cards */}
       {isLoading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-pulse">
+        <div className="row g-3">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-28 bg-slate-200 rounded-card" />
+            <div key={i} className="col-12 col-md-6">
+              <div className="card rounded-card border p-4 bg-light placeholder-glow" style={{ height: "120px" }}>
+                <span className="placeholder col-6"></span>
+                <span className="placeholder col-8 mt-2"></span>
+              </div>
+            </div>
           ))}
         </div>
       ) : budgets.length === 0 ? (
-        <div className="py-14 text-center bg-surface rounded-card border border-border shadow-soft">
-          <Target className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-          <h3 className="text-sm font-bold text-slate-700">No budgets set for this period</h3>
-          <p className="text-xs text-slate-400 mt-1">
+        <div className="card rounded-card border p-5 text-center bg-surface shadow-sm">
+          <Target className="text-secondary mx-auto mb-3" style={{ width: "40px", height: "40px" }} />
+          <h3 className="h6 fw-bold text-dark mb-1">No budgets set for this period</h3>
+          <p className="small text-secondary mb-3">
             Set spending limits for your most common expense categories.
           </p>
-          <button
-            onClick={() => setIsAddOpen(true)}
-            className="mt-4 px-4 py-2 bg-primary text-primary-foreground text-xs font-semibold rounded-btn shadow-sm hover:bg-primary-hover transition-colors"
-          >
-            + Create First Budget
-          </button>
+          <div>
+            <button
+              onClick={() => setIsAddOpen(true)}
+              className="btn btn-sm btn-primary rounded-btn fw-bold px-3 py-2 shadow-sm"
+            >
+              + Create First Budget
+            </button>
+          </div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="row g-3">
           {budgets.map((budget) => {
             const statusCfg = getStatusConfig(budget.status);
             const StatusIcon = statusCfg.icon;
 
             return (
-              <div
-                key={budget.id}
-                className={`p-4 rounded-card border ${statusCfg.border} bg-surface shadow-soft`}
-              >
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2.5">
+              <div key={budget.id} className="col-12 col-md-6">
+                <div className={`card rounded-card border ${statusCfg.border} bg-surface p-3 shadow-sm h-100`}>
+                  <div className="d-flex align-items-center justify-content-between mb-3">
+                    <div className="d-flex align-items-center gap-2.5">
+                      <div
+                        className="rounded-circle d-flex align-items-center justify-content-center text-white flex-shrink-0"
+                        style={{ width: "36px", height: "36px", backgroundColor: budget.category.color || "#0F766E" }}
+                      >
+                        <CategoryIcon name={budget.category.icon} size={16} />
+                      </div>
+                      <div>
+                        <h4 className="h6 fw-bold text-dark mb-0">
+                          {budget.category.name}
+                        </h4>
+                        <p className="small text-secondary mb-0" style={{ fontSize: "11px" }}>
+                          {MONTH_NAMES[selectedMonth - 1]} {selectedYear}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="d-flex align-items-center gap-1">
+                      <StatusIcon style={{ width: "16px", height: "16px" }} className={statusCfg.color} />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditBudget(budget);
+                          setEditAmount(String(budget.budgetAmount));
+                        }}
+                        className="btn btn-sm btn-link text-secondary p-1 text-decoration-none"
+                        title="Edit Budget Limit"
+                      >
+                        <Pencil style={{ width: "14px", height: "14px" }} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(budget.id)}
+                        className="btn btn-sm btn-link text-danger p-1 text-decoration-none"
+                        title="Delete Budget"
+                      >
+                        <Trash2 style={{ width: "14px", height: "14px" }} />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Progress Bar */}
+                  <div className="progress mb-2" style={{ height: "8px" }}>
                     <div
-                      className="w-9 h-9 rounded-full flex items-center justify-center text-white shrink-0"
-                      style={{ backgroundColor: budget.category.color || "#0F766E" }}
-                    >
-                      <CategoryIcon name={budget.category.icon} size={16} />
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-bold text-slate-900">
-                        {budget.category.name}
-                      </h4>
-                      <p className="text-[11px] text-slate-500">
-                        {MONTH_NAMES[selectedMonth - 1]} {selectedYear}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-1">
-                    <StatusIcon className={cn("w-4 h-4", statusCfg.color)} />
-                    <button
-                      onClick={() => {
-                        setEditBudget(budget);
-                        setEditAmount(String(budget.budgetAmount));
+                      className="progress-bar"
+                      role="progressbar"
+                      style={{
+                        width: `${Math.min(100, budget.percentage)}%`,
+                        backgroundColor: statusCfg.barColor,
                       }}
-                      className="text-slate-400 hover:text-primary p-1 rounded-btn hover:bg-slate-100 transition-colors"
-                      title="Edit Budget Limit"
-                    >
-                      <Pencil className="w-3.5 h-3.5" />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(budget.id)}
-                      className="text-slate-400 hover:text-expense p-1 rounded-btn hover:bg-red-50 transition-colors"
-                      title="Delete Budget"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
+                      aria-valuenow={budget.percentage}
+                      aria-valuemin={0}
+                      aria-valuemax={100}
+                    />
                   </div>
-                </div>
 
-                {/* Progress Bar */}
-                <div className="w-full h-2 rounded-full bg-slate-100 mb-2 overflow-hidden">
-                  <div
-                    className="h-full rounded-full transition-all duration-300"
-                    style={{
-                      width: `${Math.min(100, budget.percentage)}%`,
-                      backgroundColor: statusCfg.barColor,
-                    }}
-                  />
-                </div>
-
-                {/* Stats Row */}
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-slate-600 font-medium">
-                    Spent{" "}
-                    <span className="font-bold text-slate-900">
-                      {formatCurrency(budget.spent)}
+                  {/* Stats Row */}
+                  <div className="d-flex align-items-center justify-content-between small">
+                    <span className="text-secondary fw-medium">
+                      Spent{" "}
+                      <strong className="text-dark">
+                        {formatCurrency(budget.spent)}
+                      </strong>
+                      {" "}of{" "}
+                      <span>{formatCurrency(budget.budgetAmount)}</span>
                     </span>
-                    {" "}of{" "}
-                    <span className="font-medium">{formatCurrency(budget.budgetAmount)}</span>
-                  </span>
 
-                  <Badge
-                    variant={
-                      budget.status === "EXCEEDED"
-                        ? "expense"
-                        : budget.status === "WARNING"
-                        ? "warning"
-                        : "income"
-                    }
-                  >
-                    {budget.percentage}%
-                  </Badge>
+                    <Badge
+                      variant={
+                        budget.status === "EXCEEDED"
+                          ? "expense"
+                          : budget.status === "WARNING"
+                          ? "warning"
+                          : "income"
+                      }
+                    >
+                      {budget.percentage}%
+                    </Badge>
+                  </div>
+
+                  {budget.status !== "EXCEEDED" && (
+                    <p className="small text-secondary mt-1 mb-0" style={{ fontSize: "11px" }}>
+                      {formatCurrency(budget.remaining)} remaining
+                    </p>
+                  )}
+                  {budget.status === "EXCEEDED" && (
+                    <p className="small text-danger fw-semibold mt-1 mb-0" style={{ fontSize: "11px" }}>
+                      Over budget by {formatCurrency(budget.spent - budget.budgetAmount)}
+                    </p>
+                  )}
                 </div>
-
-                {budget.status !== "EXCEEDED" && (
-                  <p className="text-[11px] text-slate-400 mt-1">
-                    {formatCurrency(budget.remaining)} remaining
-                  </p>
-                )}
-                {budget.status === "EXCEEDED" && (
-                  <p className="text-[11px] text-expense font-semibold mt-1">
-                    Over budget by {formatCurrency(budget.spent - budget.budgetAmount)}
-                  </p>
-                )}
               </div>
             );
           })}
@@ -389,16 +407,16 @@ export default function BudgetsPage() {
         title="Set Monthly Budget"
         description={`Budget limit for ${MONTH_NAMES[selectedMonth - 1]} ${selectedYear}`}
       >
-        <form onSubmit={handleSaveBudget} className="space-y-4 pt-2">
+        <form onSubmit={handleSaveBudget} className="d-flex flex-column gap-3 pt-2">
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+            <label className="form-label small fw-semibold text-dark mb-1">
               Expense Category *
             </label>
             <select
               required
               value={formData.categoryId}
               onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
-              className="w-full h-11 px-3 rounded-input border border-border text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary"
+              className="form-select rounded-input py-2 small"
             >
               <option value="">Select a category</option>
               {expenseCategories.map((c) => (
@@ -410,11 +428,11 @@ export default function BudgetsPage() {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
+            <label className="form-label small fw-semibold text-dark mb-1">
               Monthly Budget Limit (₹) *
             </label>
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 font-bold text-slate-400">
+            <div className="input-group">
+              <span className="input-group-text bg-light fw-bold text-secondary">
                 ₹
               </span>
               <input
@@ -424,32 +442,32 @@ export default function BudgetsPage() {
                 value={formData.amount}
                 onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
                 placeholder="e.g. 8000"
-                className="w-full h-11 pl-8 pr-3 rounded-input border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                className="form-control rounded-end-2 py-2 fw-semibold"
               />
             </div>
           </div>
 
-          <p className="text-[11px] text-slate-400">
+          <p className="small text-secondary mb-0" style={{ fontSize: "11px" }}>
             You&apos;ll get a visual warning when spending reaches 80% and an alert when exceeded.
           </p>
 
-          <div className="sticky bottom-0 -mx-4 -mb-3.5 sm:-mx-6 sm:-mb-4 px-4 sm:px-6 py-3 bg-surface/95 backdrop-blur-md border-t border-border mt-auto flex gap-2 z-20">
-            <Button
-              type="submit"
-              variant="primary"
-              size="lg"
-              isLoading={submitting}
-              className="flex-1 font-bold"
-            >
-              Save Budget
-            </Button>
+          <div className="d-flex align-items-center justify-content-end gap-2 pt-2 border-top mt-2">
             <Button
               type="button"
               variant="outline"
-              size="lg"
+              size="md"
               onClick={() => setIsAddOpen(false)}
             >
               Cancel
+            </Button>
+            <Button
+              type="submit"
+              variant="primary"
+              size="md"
+              isLoading={submitting}
+              className="fw-bold px-4"
+            >
+              Save Budget
             </Button>
           </div>
         </form>
@@ -462,12 +480,12 @@ export default function BudgetsPage() {
         title="Edit Monthly Budget"
         description={`Adjust spending limit for ${editBudget?.category?.name || "category"} in ${MONTH_NAMES[selectedMonth - 1]} ${selectedYear}`}
       >
-        <form onSubmit={handleUpdateBudget} className="space-y-4 pt-2">
+        <form onSubmit={handleUpdateBudget} className="d-flex flex-column gap-3 pt-2">
           {editBudget && (
-            <div className="flex items-center gap-3 p-3 rounded-card border border-border bg-slate-50">
+            <div className="d-flex align-items-center gap-3 p-3 rounded-card border bg-light">
               <div
-                className="w-10 h-10 rounded-full flex items-center justify-center text-white shrink-0 shadow-xs"
-                style={{ backgroundColor: editBudget.category?.color || "#0F766E" }}
+                className="rounded-circle d-flex align-items-center justify-content-center text-white flex-shrink-0"
+                style={{ width: "38px", height: "38px", backgroundColor: editBudget.category?.color || "#0F766E" }}
               >
                 <CategoryIcon
                   name={editBudget.category?.icon || "tag"}
@@ -476,10 +494,10 @@ export default function BudgetsPage() {
                 />
               </div>
               <div>
-                <p className="text-sm font-bold text-slate-900">
+                <p className="small fw-bold text-dark mb-0">
                   {editBudget.category?.name}
                 </p>
-                <p className="text-[11px] text-slate-500">
+                <p className="small text-secondary mb-0" style={{ fontSize: "11px" }}>
                   Spent so far: {formatCurrency(editBudget.spent)}
                 </p>
               </div>
@@ -487,11 +505,11 @@ export default function BudgetsPage() {
           )}
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
+            <label className="form-label small fw-semibold text-dark mb-1">
               Monthly Limit Amount (₹) *
             </label>
-            <div className="relative">
-              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 font-bold text-slate-400">
+            <div className="input-group">
+              <span className="input-group-text bg-light fw-bold text-secondary">
                 ₹
               </span>
               <input
@@ -501,28 +519,28 @@ export default function BudgetsPage() {
                 value={editAmount}
                 onChange={(e) => setEditAmount(e.target.value)}
                 placeholder="10000"
-                className="w-full h-11 pl-8 pr-3 rounded-input border border-border text-sm font-semibold font-amount focus:outline-none focus:ring-2 focus:ring-primary"
+                className="form-control rounded-end-2 py-2 fw-semibold"
               />
             </div>
           </div>
 
-          <div className="sticky bottom-0 -mx-4 -mb-3.5 sm:-mx-6 sm:-mb-4 px-4 sm:px-6 py-3 bg-surface/95 backdrop-blur-md border-t border-border mt-auto flex gap-2 z-20">
-            <Button
-              type="submit"
-              variant="primary"
-              size="lg"
-              isLoading={editSubmitting}
-              className="flex-1 font-bold shadow-xs"
-            >
-              Update Budget
-            </Button>
+          <div className="d-flex align-items-center justify-content-end gap-2 pt-2 border-top mt-2">
             <Button
               type="button"
               variant="outline"
-              size="lg"
+              size="md"
               onClick={() => setEditBudget(null)}
             >
               Cancel
+            </Button>
+            <Button
+              type="submit"
+              variant="primary"
+              size="md"
+              isLoading={editSubmitting}
+              className="fw-bold px-4 shadow-sm"
+            >
+              Update Budget
             </Button>
           </div>
         </form>
@@ -530,3 +548,4 @@ export default function BudgetsPage() {
     </div>
   );
 }
+

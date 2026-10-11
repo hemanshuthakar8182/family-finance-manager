@@ -133,87 +133,93 @@ export function SplitExpenseForm({
   const exactDiff = Math.round((totalAmount - currentTotal) * 100) / 100;
 
   return (
-    <div className="space-y-3">
+    <div className="d-flex flex-column gap-3">
       {/* Split Toggle Switch */}
-      <div className="flex items-center justify-between p-3 rounded-card bg-slate-50 border border-border">
-        <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg bg-teal-100 text-teal-800 flex items-center justify-center">
-            <Users className="w-4 h-4" />
+      <div className="d-flex align-items-center justify-content-between p-3 rounded-card bg-light border">
+        <div className="d-flex align-items-center gap-3">
+          <div
+            className="rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center flex-shrink-0"
+            style={{ width: "34px", height: "34px" }}
+          >
+            <Users style={{ width: "18px", height: "18px" }} />
           </div>
           <div>
             <label
               htmlFor="split-toggle"
-              className="text-xs font-bold text-slate-800 cursor-pointer block"
+              className="small fw-bold text-dark cursor-pointer d-block mb-0"
             >
               Split with Family
             </label>
-            <p className="text-[10px] text-slate-500">
+            <p className="small text-secondary mb-0" style={{ fontSize: "11px" }}>
               Share cost with other family members
             </p>
           </div>
         </div>
 
-        <input
-          id="split-toggle"
-          type="checkbox"
-          checked={isSplit}
-          onChange={(e) => setIsSplit(e.target.checked)}
-          className="w-4 h-4 text-primary rounded focus:ring-primary cursor-pointer"
-        />
+        <div className="form-check form-switch mb-0">
+          <input
+            id="split-toggle"
+            type="checkbox"
+            role="switch"
+            checked={isSplit}
+            onChange={(e) => setIsSplit(e.target.checked)}
+            className="form-check-input fs-5 cursor-pointer"
+          />
+        </div>
       </div>
 
       {isSplit && (
-        <div className="p-3 bg-white rounded-card border border-border space-y-3 animate-in fade-in">
+        <div className="p-3 bg-surface rounded-card border d-flex flex-column gap-3 shadow-sm">
           {/* Method selector */}
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-700">Split Method:</span>
-            <div className="inline-flex rounded-lg border border-border p-0.5 bg-slate-50">
+          <div className="d-flex align-items-center justify-content-between">
+            <span className="small fw-semibold text-dark">Split Method:</span>
+            <div className="btn-group btn-group-sm">
               <button
                 type="button"
                 onClick={() => setSplitMethod("EQUAL")}
-                className={`px-2.5 py-1 rounded-md text-[11px] font-bold flex items-center gap-1 transition-colors ${
+                className={`btn btn-sm fw-bold d-flex align-items-center gap-1 ${
                   splitMethod === "EQUAL"
-                    ? "bg-white text-slate-900 shadow-2xs"
-                    : "text-slate-500 hover:text-slate-900"
+                    ? "btn-primary shadow-sm"
+                    : "btn-light border text-secondary"
                 }`}
               >
-                <Divide className="w-3 h-3" /> Equally
+                <Divide style={{ width: "12px", height: "12px" }} /> Equally
               </button>
               <button
                 type="button"
                 onClick={() => setSplitMethod("EXACT")}
-                className={`px-2.5 py-1 rounded-md text-[11px] font-bold flex items-center gap-1 transition-colors ${
+                className={`btn btn-sm fw-bold d-flex align-items-center gap-1 ${
                   splitMethod === "EXACT"
-                    ? "bg-white text-slate-900 shadow-2xs"
-                    : "text-slate-500 hover:text-slate-900"
+                    ? "btn-primary shadow-sm"
+                    : "btn-light border text-secondary"
                 }`}
               >
-                <Sliders className="w-3 h-3" /> Custom
+                <Sliders style={{ width: "12px", height: "12px" }} /> Custom
               </button>
             </div>
           </div>
 
           {/* Members Checklist / Shares */}
-          <div className="space-y-2">
-            <span className="text-[11px] font-semibold text-slate-500 block">
+          <div className="d-flex flex-column gap-2">
+            <span className="small fw-semibold text-secondary" style={{ fontSize: "11px" }}>
               Participating Members:
             </span>
 
             {members.map((member) => (
               <div
                 key={member.memberId}
-                className="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-100 text-xs"
+                className="d-flex align-items-center justify-content-between p-2 rounded-btn bg-light border small"
               >
-                <label className="flex items-center gap-2 cursor-pointer select-none">
+                <label className="d-flex align-items-center gap-2 cursor-pointer user-select-none mb-0">
                   <input
                     type="checkbox"
                     checked={member.included}
                     onChange={() => toggleMember(member.memberId)}
-                    className="rounded text-primary focus:ring-primary w-3.5 h-3.5"
+                    className="form-check-input mt-0"
                   />
                   <span
-                    className={`font-semibold ${
-                      member.included ? "text-slate-800" : "text-slate-400 line-through"
+                    className={`fw-semibold ${
+                      member.included ? "text-dark" : "text-secondary text-decoration-line-through"
                     }`}
                   >
                     {member.name}
@@ -223,12 +229,12 @@ export function SplitExpenseForm({
                 {member.included && (
                   <div>
                     {splitMethod === "EQUAL" ? (
-                      <span className="font-bold text-slate-900 text-xs">
+                      <span className="fw-bold text-dark small">
                         {formatCurrency(member.amount)}
                       </span>
                     ) : (
-                      <div className="flex items-center gap-1">
-                        <span className="text-slate-400 text-xs">₹</span>
+                      <div className="d-flex align-items-center gap-1">
+                        <span className="text-secondary small">₹</span>
                         <input
                           type="number"
                           step="any"
@@ -237,7 +243,8 @@ export function SplitExpenseForm({
                           onChange={(e) =>
                             updateExactAmount(member.memberId, e.target.value)
                           }
-                          className="w-20 px-1.5 py-0.5 rounded border border-border text-right font-bold text-xs focus:ring-1 focus:ring-primary focus:outline-none"
+                          className="form-control form-control-sm text-end fw-bold py-1 px-2 rounded-input"
+                          style={{ width: "95px" }}
                         />
                       </div>
                     )}
@@ -250,10 +257,10 @@ export function SplitExpenseForm({
           {/* Custom Split Balancing Alert */}
           {splitMethod === "EXACT" && exactDiff !== 0 && (
             <div
-              className={`p-2 rounded-lg text-[11px] font-medium ${
+              className={`p-2 rounded-btn small fw-medium mb-0 ${
                 exactDiff > 0
-                  ? "bg-amber-50 text-amber-900 border border-amber-200"
-                  : "bg-red-50 text-red-900 border border-red-200"
+                  ? "alert alert-warning py-1.5 px-3 mb-0"
+                  : "alert alert-danger py-1.5 px-3 mb-0"
               }`}
             >
               {exactDiff > 0
@@ -266,3 +273,4 @@ export function SplitExpenseForm({
     </div>
   );
 }
+

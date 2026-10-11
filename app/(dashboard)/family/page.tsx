@@ -114,14 +114,14 @@ export default function FamilyPage() {
   const isAdmin = currentUser?.role === "ADMIN";
 
   return (
-    <div className="space-y-6">
+    <div className="d-flex flex-column gap-4">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+          <h1 className="h4 fw-bold text-dark mb-1">
             Family Management
           </h1>
-          <p className="text-xs sm:text-sm text-muted mt-0.5">
+          <p className="small text-secondary mb-0">
             Manage household members and access roles
           </p>
         </div>
@@ -129,42 +129,43 @@ export default function FamilyPage() {
           <Button
             size="md"
             onClick={() => setIsAddMemberOpen(true)}
-            className="w-full sm:w-auto justify-center font-semibold shadow-sm"
+            className="fw-semibold shadow-sm gap-2"
           >
-            <UserPlus className="w-4 h-4 mr-1.5" />
-            Add Member
+            <UserPlus style={{ width: "16px", height: "16px" }} />
+            <span>Add Member</span>
           </Button>
         )}
       </div>
 
       {/* Family Info Banner */}
       {family && (
-        <div className="p-5 rounded-card bg-primary/10 border border-primary/20">
-          <div className="flex items-start justify-between">
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <div className="w-9 h-9 rounded-full bg-primary text-primary-foreground font-bold text-base flex items-center justify-center">
-                  {family.name.charAt(0)}
-                </div>
-                <div>
-                  <h3 className="font-bold text-slate-900 text-base">{family.name}</h3>
-                  <p className="text-[11px] text-slate-500">
-                    {members.length} active member{members.length !== 1 ? "s" : ""} •{" "}
-                    {family._count?.transactions || 0} total transactions
-                  </p>
-                </div>
+        <div className="card rounded-card border border-primary-subtle bg-primary-subtle p-3 p-sm-4 shadow-sm">
+          <div className="d-flex align-items-start justify-content-between">
+            <div className="d-flex align-items-center gap-3">
+              <div
+                className="rounded-circle bg-primary text-white fw-bold d-flex align-items-center justify-content-center flex-shrink-0"
+                style={{ width: "40px", height: "40px", fontSize: "18px" }}
+              >
+                {family.name.charAt(0)}
+              </div>
+              <div>
+                <h3 className="h6 fw-bold text-dark mb-0">{family.name}</h3>
+                <p className="small text-secondary mb-0" style={{ fontSize: "11px" }}>
+                  {members.length} active member{members.length !== 1 ? "s" : ""} •{" "}
+                  {family._count?.transactions || 0} total transactions
+                </p>
               </div>
             </div>
-            <Badge variant="income" className="shrink-0">
+            <Badge variant="income" className="flex-shrink-0">
               Active
             </Badge>
           </div>
 
           {isAdmin && (
-            <div className="mt-3 pt-3 border-t border-primary/20">
-              <p className="text-[11px] text-primary font-medium">
+            <div className="mt-3 pt-2 border-top border-primary-subtle">
+              <p className="small text-primary fw-medium mb-0" style={{ fontSize: "11px" }}>
                 Invite Code:{" "}
-                <span className="font-mono font-bold text-teal-900 bg-white/70 px-2 py-0.5 rounded">
+                <span className="font-monospace fw-bold bg-white px-2 py-0.5 rounded border border-primary-subtle text-dark">
                   {family.inviteCode}
                 </span>
               </p>
@@ -181,18 +182,20 @@ export default function FamilyPage() {
         </CardHeader>
 
         {isLoading ? (
-          <div className="space-y-3 animate-pulse">
+          <div className="d-flex flex-column gap-3">
             {[1, 2].map((i) => (
-              <div key={i} className="h-20 bg-slate-200 rounded-card" />
+              <div key={i} className="card rounded-card border p-3 bg-light placeholder-glow" style={{ height: "70px" }}>
+                <span className="placeholder col-6"></span>
+              </div>
             ))}
           </div>
         ) : members.length === 0 ? (
-          <div className="py-8 text-center text-xs text-slate-400">
-            <Users className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+          <div className="py-4 text-center small text-secondary">
+            <Users className="text-secondary mx-auto mb-2" style={{ width: "32px", height: "32px" }} />
             No family members yet.
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="d-flex flex-column gap-2">
             {members.map((m) => {
               const isSelf = m.userId === currentUser?.id;
               const isAdminRole = m.role === "ADMIN";
@@ -200,32 +203,35 @@ export default function FamilyPage() {
               return (
                 <div
                   key={m.id}
-                  className="flex items-center justify-between p-3.5 rounded-card border border-border bg-surface hover:bg-surface-muted transition-all gap-2"
+                  className="card rounded-card border bg-surface p-3 d-flex flex-row align-items-center justify-content-between gap-3 shadow-none"
                 >
-                  <div className="flex items-center gap-3 min-w-0">
+                  <div className="d-flex align-items-center gap-3 overflow-hidden">
                     {/* Avatar */}
-                    <div className="w-10 h-10 rounded-full bg-primary/10 text-primary font-bold flex items-center justify-center text-sm border-2 border-surface shadow-sm shrink-0">
+                    <div
+                      className="rounded-circle bg-primary bg-opacity-10 text-primary fw-bold d-flex align-items-center justify-content-center flex-shrink-0 small border"
+                      style={{ width: "40px", height: "40px" }}
+                    >
                       {m.user.name.charAt(0).toUpperCase()}
                     </div>
 
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-sm font-bold text-foreground truncate">
+                    <div className="overflow-hidden">
+                      <div className="d-flex align-items-center gap-2 flex-wrap">
+                        <span className="small fw-bold text-dark text-truncate">
                           {m.user.name}
                         </span>
                         {isSelf && (
-                          <Badge variant="info" className="text-[10px] py-0 px-1.5 shrink-0">
+                          <Badge variant="info" style={{ fontSize: "10px" }}>
                             You
                           </Badge>
                         )}
                       </div>
-                      <p className="text-[11px] text-muted mt-0.5 truncate">
+                      <p className="small text-secondary mb-0 text-truncate" style={{ fontSize: "11px" }}>
                         {m.user.email} •{" "}
-                        <span className={isAdminRole ? "text-primary font-semibold" : ""}>
+                        <span className={isAdminRole ? "text-primary fw-bold" : ""}>
                           {isAdminRole ? "Family Admin" : "Member"}
                         </span>
                       </p>
-                      <p className="text-[10px] text-muted/70 truncate">
+                      <p className="small text-secondary mb-0 text-truncate" style={{ fontSize: "10px" }}>
                         Joined {formatShortDate(m.joinedAt)} •{" "}
                         {m._count?.transactions || 0} transactions
                       </p>
@@ -234,20 +240,22 @@ export default function FamilyPage() {
 
                   {/* Actions (Admin only, not on self for safety) */}
                   {isAdmin && !isSelf && (
-                    <div className="flex items-center gap-1 shrink-0">
+                    <div className="d-flex align-items-center gap-1 flex-shrink-0">
                       <button
+                        type="button"
                         onClick={() => handleRoleToggle(m.id, m.role)}
                         title={isAdminRole ? "Remove Admin" : "Make Admin"}
-                        className="p-1.5 rounded-btn text-muted hover:bg-surface-muted hover:text-foreground transition-colors"
+                        className="btn btn-sm btn-link text-secondary p-1 text-decoration-none"
                       >
-                        <Crown className="w-4 h-4" />
+                        <Crown style={{ width: "16px", height: "16px" }} />
                       </button>
                       <button
+                        type="button"
                         onClick={() => handleDeactivate(m.id, m.user.name)}
                         title="Deactivate Member"
-                        className="p-1.5 rounded-btn text-muted hover:bg-red-50 hover:text-expense transition-colors"
+                        className="btn btn-sm btn-link text-danger p-1 text-decoration-none"
                       >
-                        <UserMinus className="w-4 h-4" />
+                        <UserMinus style={{ width: "16px", height: "16px" }} />
                       </button>
                     </div>
                   )}
@@ -266,9 +274,9 @@ export default function FamilyPage() {
           title="Add Family Member"
           description="Create a new login for a family member"
         >
-          <form onSubmit={handleAddMember} className="space-y-4 pt-2">
+          <form onSubmit={handleAddMember} className="d-flex flex-column gap-3 pt-2">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="form-label small fw-semibold text-dark mb-1">
                 Full Name *
               </label>
               <input
@@ -276,12 +284,12 @@ export default function FamilyPage() {
                 value={newMember.name}
                 onChange={(e) => setNewMember({ ...newMember, name: e.target.value })}
                 placeholder="e.g. Priya Sharma"
-                className="w-full h-11 px-3 rounded-input border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                className="form-control rounded-input py-2"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="form-label small fw-semibold text-dark mb-1">
                 Email Address *
               </label>
               <input
@@ -290,12 +298,12 @@ export default function FamilyPage() {
                 value={newMember.email}
                 onChange={(e) => setNewMember({ ...newMember, email: e.target.value })}
                 placeholder="priya@family.local"
-                className="w-full h-11 px-3 rounded-input border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                className="form-control rounded-input py-2"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
+              <label className="form-label small fw-semibold text-dark mb-1">
                 Temporary Password *
               </label>
               <input
@@ -304,69 +312,73 @@ export default function FamilyPage() {
                 value={newMember.password}
                 onChange={(e) => setNewMember({ ...newMember, password: e.target.value })}
                 placeholder="Min 6 characters"
-                className="w-full h-11 px-3 rounded-input border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                className="form-control rounded-input py-2"
               />
-              <p className="text-[11px] text-slate-400 mt-1">
+              <p className="small text-secondary mt-1 mb-0" style={{ fontSize: "11px" }}>
                 They can change their password later from Settings.
               </p>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+              <label className="form-label small fw-semibold text-dark mb-1">
                 Access Role
               </label>
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  onClick={() => setNewMember({ ...newMember, role: "MEMBER" })}
-                  className={`p-3 rounded-btn border text-left transition-all ${
-                    newMember.role === "MEMBER"
-                      ? "border-primary bg-primary/10"
-                      : "border-border bg-surface hover:bg-surface-muted"
-                  }`}
-                >
-                  <Users className="w-4 h-4 text-slate-500 mb-1" />
-                  <p className="text-xs font-bold text-slate-900">Member</p>
-                  <p className="text-[10px] text-slate-400 mt-0.5">
-                    Add transactions, view reports
-                  </p>
-                </button>
+              <div className="row g-2">
+                <div className="col-6">
+                  <button
+                    type="button"
+                    onClick={() => setNewMember({ ...newMember, role: "MEMBER" })}
+                    className={`btn btn-sm w-100 p-2.5 rounded-btn border text-start transition ${
+                      newMember.role === "MEMBER"
+                        ? "btn-primary text-white shadow-sm"
+                        : "btn-light border text-dark"
+                    }`}
+                  >
+                    <Users style={{ width: "16px", height: "16px" }} className="mb-1" />
+                    <p className="small fw-bold mb-0">Member</p>
+                    <p className="small opacity-75 mb-0" style={{ fontSize: "10px" }}>
+                      Add transactions, view reports
+                    </p>
+                  </button>
+                </div>
 
-                <button
-                  type="button"
-                  onClick={() => setNewMember({ ...newMember, role: "ADMIN" })}
-                  className={`p-3 rounded-btn border text-left transition-all ${
-                    newMember.role === "ADMIN"
-                      ? "border-primary bg-primary/10"
-                      : "border-border bg-surface hover:bg-surface-muted"
-                  }`}
-                >
-                  <Shield className="w-4 h-4 text-primary mb-1" />
-                  <p className="text-xs font-bold text-slate-900">Admin</p>
-                  <p className="text-[10px] text-slate-400 mt-0.5">
-                    Full control, manage family
-                  </p>
-                </button>
+                <div className="col-6">
+                  <button
+                    type="button"
+                    onClick={() => setNewMember({ ...newMember, role: "ADMIN" })}
+                    className={`btn btn-sm w-100 p-2.5 rounded-btn border text-start transition ${
+                      newMember.role === "ADMIN"
+                        ? "btn-primary text-white shadow-sm"
+                        : "btn-light border text-dark"
+                    }`}
+                  >
+                    <Shield style={{ width: "16px", height: "16px" }} className="mb-1" />
+                    <p className="small fw-bold mb-0">Admin</p>
+                    <p className="small opacity-75 mb-0" style={{ fontSize: "10px" }}>
+                      Full control, manage family
+                    </p>
+                  </button>
+                </div>
               </div>
             </div>
 
-            <div className="sticky bottom-0 -mx-4 -mb-3.5 sm:-mx-6 sm:-mb-4 px-4 sm:px-6 py-3 bg-surface/95 backdrop-blur-md border-t border-border mt-auto flex gap-2 z-20">
-              <Button
-                type="submit"
-                variant="primary"
-                size="lg"
-                isLoading={submitting}
-                className="flex-1 font-bold"
-              >
-                Add to Family
-              </Button>
+            <div className="d-flex align-items-center justify-content-end gap-2 pt-2 border-top mt-2">
               <Button
                 type="button"
                 variant="outline"
-                size="lg"
+                size="md"
                 onClick={() => setIsAddMemberOpen(false)}
               >
                 Cancel
+              </Button>
+              <Button
+                type="submit"
+                variant="primary"
+                size="md"
+                isLoading={submitting}
+                className="fw-bold px-4"
+              >
+                Add to Family
               </Button>
             </div>
           </form>
