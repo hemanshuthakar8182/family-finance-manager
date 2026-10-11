@@ -193,14 +193,18 @@ export function ForecastingWidget({
         <div className="col-12 col-md-4">
           <div 
             className="p-3.5 rounded-card border shadow-xs hover-lift d-flex flex-column justify-content-between h-100"
-            style={{ background: "linear-gradient(180deg, rgba(16, 185, 129, 0.04) 0%, var(--surface) 100%)" }}
+            style={{ 
+              background: numBalance < 0 
+                ? "linear-gradient(180deg, rgba(239, 68, 68, 0.04) 0%, var(--surface) 100%)" 
+                : "linear-gradient(180deg, rgba(16, 185, 129, 0.04) 0%, var(--surface) 100%)" 
+            }}
           >
             <div className="d-flex align-items-center justify-content-between mb-2">
               <span className="small fw-bold text-secondary text-uppercase" style={{ fontSize: "11px", letterSpacing: "0.04em" }}>
                 Safe Daily Spending Cap
               </span>
               <div 
-                className="rounded-circle d-flex align-items-center justify-content-center bg-success-soft flex-shrink-0 shadow-xs"
+                className={cn("rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 shadow-xs", numBalance < 0 ? "bg-danger-soft" : "bg-success-soft")}
                 style={{ width: "30px", height: "30px" }}
               >
                 <Calendar style={{ width: "15px", height: "15px" }} />
@@ -213,8 +217,8 @@ export function ForecastingWidget({
                   / day
                 </span>
               </div>
-              <p className="small text-secondary mb-0 pt-1.5 border-top border-light-subtle" style={{ fontSize: "11px" }}>
-                Daily allowance from liquid reserves
+              <p className={cn("small mb-0 pt-1.5 border-top border-light-subtle", numBalance < 0 ? "text-danger" : "text-secondary")} style={{ fontSize: "11px" }}>
+                {numBalance < 0 ? "Reserves overdrawn (add funds to unlock cap)" : "Daily allowance from liquid reserves"}
               </p>
             </div>
           </div>

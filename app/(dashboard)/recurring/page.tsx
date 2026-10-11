@@ -308,7 +308,7 @@ export default function RecurringPage() {
                       <h4 className="h6 fw-bold text-foreground mb-0">
                         {item.category?.name}
                       </h4>
-                      <span className="badge bg-primary-subtle text-primary fw-bold text-uppercase mt-1" style={{ fontSize: "10px", letterSpacing: "0.05em" }}>
+                      <span className="badge rounded-pill bg-primary-soft fw-bold text-uppercase mt-1" style={{ fontSize: "10px", letterSpacing: "0.05em" }}>
                         {item.frequency}
                       </span>
                     </div>

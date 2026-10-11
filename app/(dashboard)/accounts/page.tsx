@@ -216,6 +216,14 @@ export default function AccountsPage() {
             const displayName = acc.name.toLowerCase() === "case" ? "Cash" : acc.name;
             const isCreditCard = acc.type === "CREDIT_CARD";
 
+            const bal = Number(acc.currentBalance || 0);
+            const isOverdrawn = !isCreditCard && bal < 0;
+            const balanceLabel = isCreditCard
+              ? "Total Due"
+              : isOverdrawn
+              ? "Current Deficit"
+              : "Available Balance";
+
             const ambientBg = ACCOUNT_AMBIENT_BG[acc.type] || "var(--surface)";
             const colSpanClass =
               accounts.length === 1
@@ -229,22 +237,27 @@ export default function AccountsPage() {
             return (
               <div key={acc.id} className={colSpanClass}>
                 <div 
-                  className="card-elevated p-3.5 h-100 hover-lift d-flex flex-column justify-content-between border"
+                  className="card-elevated p-3 h-100 hover-lift d-flex flex-column justify-content-between border"
                   style={{ background: ambientBg }}
                 >
                   <div>
-                    {/* Top Row: Icon + Type Pill + Action Buttons */}
-                    <div className="d-flex align-items-center justify-content-between mb-3">
-                      <div className="d-flex align-items-center gap-2">
+                    {/* Top Row: Icon + Type Pill + Overdraft Tag + Action Buttons */}
+                    <div className="d-flex align-items-center justify-content-between mb-2.5">
+                      <div className="d-flex align-items-center gap-1.5 flex-wrap">
                         <div
                           className={cn("rounded-3 d-flex align-items-center justify-content-center flex-shrink-0 shadow-xs", config.badgeClass)}
-                          style={{ width: "38px", height: "38px" }}
+                          style={{ width: "34px", height: "34px" }}
                         >
-                          <Icon style={{ width: "19px", height: "19px" }} />
+                          <Icon style={{ width: "17px", height: "17px" }} />
                         </div>
-                        <span className="badge rounded-pill bg-light border text-secondary fw-semibold px-2 py-1" style={{ fontSize: "10px" }}>
+                        <span className="badge rounded-pill bg-light border text-secondary fw-semibold px-2 py-0.5" style={{ fontSize: "10px" }}>
                           {config.label}
                         </span>
+                        {isOverdrawn && (
+                          <span className="badge rounded-pill bg-danger-soft text-danger fw-semibold px-2 py-0.5" style={{ fontSize: "10px" }}>
+                            Overdrawn
+                          </span>
+                        )}
                       </div>
 
                       <div className="d-flex align-items-center gap-1">
@@ -257,7 +270,7 @@ export default function AccountsPage() {
                           title="Edit Account Details"
                           className="btn btn-sm btn-link text-secondary p-1 text-decoration-none"
                         >
-                          <Pencil style={{ width: "15px", height: "15px" }} />
+                          <Pencil style={{ width: "14px", height: "14px" }} />
                         </button>
                         <button
                           type="button"
@@ -265,7 +278,7 @@ export default function AccountsPage() {
                           title="Reconcile balance with statement"
                           className="btn btn-sm btn-link text-secondary p-1 text-decoration-none"
                         >
-                          <Sliders style={{ width: "15px", height: "15px" }} />
+                          <Sliders style={{ width: "14px", height: "14px" }} />
                         </button>
                         <button
                           type="button"
@@ -273,24 +286,32 @@ export default function AccountsPage() {
                           title="Archive Account"
                           className="btn btn-sm btn-link text-secondary p-1 text-decoration-none"
                         >
-                          <Archive style={{ width: "15px", height: "15px" }} />
+                          <Archive style={{ width: "14px", height: "14px" }} />
                         </button>
                       </div>
                     </div>
 
-                    <h3 className="h6 fw-bold text-foreground text-truncate mb-0">{displayName}</h3>
-                    <p className="small text-secondary mb-0" style={{ fontSize: "11px" }}>
-                      {isCreditCard ? "Credit Facility" : "Liquid Asset Account"}
+                    <h3 className="h6 fw-bold text-foreground text-truncate mb-0" style={{ fontSize: "14px" }}>
+                      {displayName}
+                    </h3>
+                    <p className={cn("small mb-0", isOverdrawn ? "text-danger fw-medium" : "text-secondary")} style={{ fontSize: "11px" }}>
+                      {isOverdrawn ? "Overdrawn Reserve" : isCreditCard ? "Credit Facility" : "Liquid Asset Account"}
                     </p>
                   </div>
 
                   {/* Bottom Row: Balance & Meta */}
-                  <div className="mt-3 pt-2.5 border-top border-light-subtle">
-                    <div>
+                  <div className="mt-2.5 pt-2 border-top border-light-subtle">
+                    <span 
+                      className={cn("small fw-semibold text-uppercase d-block", isOverdrawn ? "text-danger" : "text-secondary")} 
+                      style={{ fontSize: "10px", letterSpacing: "0.04em" }}
+                    >
+                      {balanceLabel}
+                    </span>
+                    <div className="mt-0.5">
                       <CurrencyDisplay
                         amount={acc.currentBalance}
                         size="lg"
-                        type={isCreditCard ? "EXPENSE" : "DEFAULT"}
+                        type={isCreditCard || isOverdrawn ? "EXPENSE" : "DEFAULT"}
                       />
                     </div>
                     <p className="small text-secondary mb-0 mt-1" style={{ fontSize: "11px" }}>

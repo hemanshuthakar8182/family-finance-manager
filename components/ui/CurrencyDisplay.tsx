@@ -33,11 +33,11 @@ export function CurrencyDisplay({
 
   // Determine sign
   let sign = "";
-  if (showSign) {
+  if (numericAmount < 0) {
+    sign = "-";
+  } else if (showSign) {
     if (type === "INCOME" || numericAmount > 0) {
       sign = "+";
-    } else if (type === "EXPENSE" || numericAmount < 0) {
-      sign = "-";
     } else if (type === "TRANSFER") {
       sign = "⇄ ";
     }
@@ -45,9 +45,11 @@ export function CurrencyDisplay({
 
   // Color classes
   let colorClass = "text-foreground";
-  if (type === "INCOME" || (type === "DEFAULT" && numericAmount > 0 && showSign)) {
+  if (numericAmount < 0) {
+    colorClass = "text-danger";
+  } else if (type === "INCOME" || (type === "DEFAULT" && numericAmount > 0 && showSign)) {
     colorClass = "text-income";
-  } else if (type === "EXPENSE" || (type === "DEFAULT" && numericAmount < 0 && showSign)) {
+  } else if (type === "EXPENSE") {
     colorClass = "text-expense";
   } else if (type === "TRANSFER") {
     colorClass = "text-primary";

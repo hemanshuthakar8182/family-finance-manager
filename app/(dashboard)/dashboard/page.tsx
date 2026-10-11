@@ -218,6 +218,21 @@ export default function DashboardPage() {
               const typeLabel = ACCOUNT_TYPE_LABEL[acc.type] || acc.type.replace("_", " ");
               const isCreditCard = acc.type === "CREDIT_CARD";
               const displayName = acc.name.toLowerCase() === "case" ? "Cash" : acc.name;
+              const bal = Number(acc.currentBalance || 0);
+              const isOverdrawn = !isCreditCard && bal < 0;
+              const balanceLabel = isCreditCard
+                ? "Total Due"
+                : isOverdrawn
+                ? "Current Deficit"
+                : "Available Balance";
+              const statusText = isCreditCard
+                ? "Active Card"
+                : isOverdrawn
+                ? "Overdrawn"
+                : bal === 0
+                ? "Zero Balance"
+                : "Ready to Spend";
+
               const colSpanClass =
                 accounts.length === 1
                   ? "col-12"
@@ -230,29 +245,29 @@ export default function DashboardPage() {
               return (
                 <div key={acc.id} className={colSpanClass}>
                   <div 
-                    className="card-elevated border p-3.5 rounded-card hover-lift shadow-xs h-100 d-flex flex-column justify-content-between"
+                    className="card-elevated border p-3 rounded-card hover-lift shadow-xs h-100 d-flex flex-column justify-content-between"
                     style={{ background: ambientBg }}
                   >
                     {/* Header: Icon + Name + Subtitle grouped on Left <----> Type Pill on Right */}
-                    <div className="d-flex align-items-center justify-content-between mb-3">
-                      <div className="d-flex align-items-center gap-2.5 overflow-hidden">
+                    <div className="d-flex align-items-center justify-content-between mb-2.5">
+                      <div className="d-flex align-items-center gap-2 overflow-hidden">
                         <div 
                           className={cn("rounded-3 d-flex align-items-center justify-content-center flex-shrink-0 shadow-xs", colCls)}
-                          style={{ width: "38px", height: "38px" }}
+                          style={{ width: "34px", height: "34px" }}
                         >
-                          <Icon style={{ width: "19px", height: "19px" }} />
+                          <Icon style={{ width: "17px", height: "17px" }} />
                         </div>
                         <div className="overflow-hidden">
-                          <p className="small fw-bold text-foreground text-truncate mb-0" style={{ fontSize: "14px", letterSpacing: "-0.01em" }}>
+                          <p className="small fw-bold text-foreground text-truncate mb-0" style={{ fontSize: "13px", letterSpacing: "-0.01em" }}>
                             {displayName}
                           </p>
-                          <span className="small text-secondary" style={{ fontSize: "11px" }}>
-                            {isCreditCard ? "Credit Facility" : "Liquid Reserve"}
+                          <span className={cn("small", isOverdrawn ? "text-danger fw-medium" : "text-secondary")} style={{ fontSize: "11px" }}>
+                            {isOverdrawn ? "Overdrawn Reserve" : isCreditCard ? "Credit Facility" : "Liquid Reserve"}
                           </span>
                         </div>
                       </div>
                       <span 
-                        className={cn("badge rounded-pill border fw-bold px-2.5 py-1 flex-shrink-0", badgeCls)}
+                        className={cn("badge rounded-pill border fw-bold px-2 py-0.5 flex-shrink-0", badgeCls)}
                         style={{ fontSize: "10px", letterSpacing: "0.02em" }}
                       >
                         {typeLabel}
@@ -260,21 +275,34 @@ export default function DashboardPage() {
                     </div>
 
                     {/* Body: Prominent Tabular Balance */}
-                    <div className="mt-1 pt-2 border-top border-light-subtle d-flex align-items-end justify-content-between">
+                    <div className="pt-2 border-top border-light-subtle d-flex align-items-end justify-content-between">
                       <div>
-                        <span className="small text-secondary fw-semibold text-uppercase d-block" style={{ fontSize: "10px", letterSpacing: "0.04em" }}>
-                          {isCreditCard ? "Total Due" : "Available Balance"}
+                        <span 
+                          className={cn("small fw-semibold text-uppercase d-block", isOverdrawn ? "text-danger" : "text-secondary")} 
+                          style={{ fontSize: "10px", letterSpacing: "0.04em" }}
+                        >
+                          {balanceLabel}
                         </span>
                         <div className="mt-0.5">
                           <CurrencyDisplay
                             amount={acc.currentBalance}
                             size="lg"
-                            type={isCreditCard ? "EXPENSE" : "DEFAULT"}
+                            type={isCreditCard || isOverdrawn ? "EXPENSE" : "DEFAULT"}
                           />
                         </div>
                       </div>
-                      <span className="small text-secondary" style={{ fontSize: "11px" }}>
-                        {isCreditCard ? "Active Card" : "Ready to Spend"}
+                      <span 
+                        className={cn(
+                          "small d-inline-flex align-items-center gap-1.5 pb-0.5", 
+                          isOverdrawn ? "text-danger fw-semibold" : bal > 0 ? "text-success fw-medium" : "text-secondary"
+                        )} 
+                        style={{ fontSize: "11px" }}
+                      >
+                        <span 
+                          className={cn("rounded-circle flex-shrink-0", isOverdrawn ? "bg-danger" : bal > 0 ? "bg-success" : "bg-secondary")} 
+                          style={{ width: "6px", height: "6px" }} 
+                        />
+                        {statusText}
                       </span>
                     </div>
                   </div>
