@@ -10,10 +10,12 @@ import {
   RefreshCw,
   Clock,
   Check,
+  QrCode,
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils/currency";
 import { useToast } from "@/components/ui/Toast";
 import { Modal } from "@/components/ui/Modal";
+import { UPIPaymentModal } from "@/components/splits/UPIPaymentModal";
 
 interface DebtorCreditor {
   id: string;
@@ -286,9 +288,10 @@ export function SettlementHub() {
                     </span>
                     <button
                       onClick={() => openSettleModal(debt)}
-                      className="btn btn-sm btn-primary rounded-btn fw-bold px-2.5 py-1 shadow-sm small"
+                      className="btn btn-sm btn-primary rounded-btn fw-bold px-2.5 py-1 shadow-sm small d-inline-flex align-items-center gap-1"
                     >
-                      Settle Up
+                      <QrCode style={{ width: "13px", height: "13px" }} />
+                      <span>Settle / UPI</span>
                     </button>
                   </div>
                 </div>
@@ -375,74 +378,14 @@ export function SettlementHub() {
         )}
       </div>
 
-      {/* ── 4. Settle Up Confirmation Modal ── */}
+      {/* ── 4. Settle Up with UPI QR & Deep Links ── */}
       {settleTarget && (
-        <Modal
+        <UPIPaymentModal
           isOpen={true}
           onClose={() => setSettleTarget(null)}
-          title="Settle Up Family Balance"
-        >
-          <div className="d-flex flex-column gap-3 pt-2">
-            <div className="p-3 bg-light rounded-card border small text-dark d-flex align-items-center justify-content-between">
-              <div>
-                <span className="fw-bold">{settleTarget.debtor.name}</span>
-                <span className="text-secondary"> pays </span>
-                <span className="fw-bold">{settleTarget.creditor.name}</span>
-              </div>
-              <span className="fw-bold small text-dark">
-                {formatCurrency(settleTarget.amount)}
-              </span>
-            </div>
-
-            <div>
-              <label className="form-label small fw-semibold text-dark mb-1">
-                Settlement Amount (₹)
-              </label>
-              <input
-                type="number"
-                step="any"
-                min="0.01"
-                max={settleTarget.amount}
-                value={settleAmount}
-                onChange={(e) => setSettleAmount(e.target.value)}
-                className="form-control rounded-input fw-bold"
-              />
-            </div>
-
-            <p className="small text-secondary mb-0" style={{ fontSize: "11px" }}>
-              Recording this settlement marks pending split shares as settled and aligns the family ledger.
-            </p>
-
-            <div className="d-flex align-items-center justify-content-end gap-2 pt-2 border-top">
-              <button
-                type="button"
-                onClick={() => setSettleTarget(null)}
-                disabled={isSettling}
-                className="btn btn-sm btn-light border rounded-btn fw-semibold px-3 py-2 text-secondary"
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                onClick={handleConfirmSettle}
-                disabled={isSettling || !settleAmount || parseFloat(settleAmount) <= 0}
-                className="btn btn-sm btn-primary rounded-btn fw-bold px-4 py-2 d-flex align-items-center gap-2 shadow-sm"
-              >
-                {isSettling ? (
-                  <>
-                    <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true" />
-                    <span>Settling...</span>
-                  </>
-                ) : (
-                  <>
-                    <Check style={{ width: "16px", height: "16px" }} />
-                    <span>Confirm Settlement</span>
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
-        </Modal>
+          debt={settleTarget}
+          onSuccess={fetchLedger}
+        />
       )}
     </div>
   );

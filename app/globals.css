@@ -734,3 +734,42 @@ body {
   background-size: 200% 100%;
 }
 
+/* Modal Max-Width Breakpoints */
+.modal-max-sm { max-width: 380px !important; }
+.modal-max-md { max-width: 540px !important; }
+.modal-max-lg { max-width: 720px !important; }
+.modal-max-xl { max-width: 900px !important; }
+
+/* Native Bottom Sheet & Dialog Entrance Animation */
+@keyframes slideUpSheet {
+  from {
+    transform: translateY(100%);
+    opacity: 0.7;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes modalScaleIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.bottom-sheet-modal {
+  animation: slideUpSheet 0.26s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@media (min-width: 576px) {
+  .bottom-sheet-modal {
+    animation: modalScaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+}
+

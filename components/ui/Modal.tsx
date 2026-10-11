@@ -46,16 +46,16 @@ export function Modal({
   if (!isOpen) return null;
 
   const maxWidthStyles = {
-    sm: "max-w-sm",
-    md: "max-w-md",
-    lg: "max-w-lg",
-    xl: "max-w-xl",
+    sm: "modal-max-sm",
+    md: "modal-max-md",
+    lg: "modal-max-lg",
+    xl: "modal-max-xl",
   };
 
   return (
     <div 
       className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-end align-items-sm-center justify-content-center p-0 p-sm-3"
-      style={{ zIndex: 1060, backgroundColor: "rgba(15, 23, 42, 0.6)", backdropFilter: "blur(4px)" }}
+      style={{ zIndex: 1060, backgroundColor: "rgba(15, 23, 42, 0.6)", backdropFilter: "blur(6px)" }}
     >
       <div
         className="position-fixed top-0 start-0 w-100 h-100"
@@ -64,10 +64,10 @@ export function Modal({
       />
       <div
         className={cn(
-          "modal-content position-relative w-100 rounded-top-4 rounded-sm-modal bg-surface shadow-lg border overflow-hidden d-flex flex-column z-10",
+          "modal-content bottom-sheet-modal position-relative w-100 rounded-top-4 rounded-sm-modal bg-surface shadow-card border overflow-hidden d-flex flex-column z-10",
           maxWidthStyles[maxWidth]
         )}
-        style={{ maxHeight: "92dvh" }}
+        style={{ maxHeight: "90dvh" }}
       >
         {/* Pinned Top: Drag Handle + Header */}
         <div className="flex-shrink-0 px-3 px-sm-4 pt-3 pb-3 border-bottom bg-surface user-select-none">

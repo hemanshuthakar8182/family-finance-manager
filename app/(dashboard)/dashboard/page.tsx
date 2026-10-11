@@ -8,6 +8,7 @@ import { IncomeExpenseChart } from "@/components/dashboard/IncomeExpenseChart";
 import { CategoryExpenseChart } from "@/components/dashboard/CategoryExpenseChart";
 import { MemberSpendingList } from "@/components/dashboard/MemberSpendingList";
 import { RecentTransactionsWidget } from "@/components/dashboard/RecentTransactionsWidget";
+import { ForecastingWidget } from "@/components/dashboard/ForecastingWidget";
 import { CurrencyDisplay } from "@/components/ui/CurrencyDisplay";
 import { Card, CardHeader, CardTitle } from "@/components/ui/Card";
 import { formatMonthYear, formatCurrency } from "@/lib/utils/formatters";
@@ -158,6 +159,13 @@ export default function DashboardPage() {
           currentBalance: metrics?.currentBalance || 0,
           todayExpense: metrics?.todayExpense || 0,
         }}
+      />
+
+      {/* ── Smart Cashflow Forecasting & Burn Rate ── */}
+      <ForecastingWidget
+        totalExpense={metrics?.totalExpense || 0}
+        totalIncome={metrics?.totalIncome || 0}
+        currentBalance={metrics?.currentBalance || 0}
       />
 
       {/* ── Quick Account Balances Strip ── */}
