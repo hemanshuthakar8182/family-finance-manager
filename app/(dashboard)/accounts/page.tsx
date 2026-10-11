@@ -166,7 +166,7 @@ export default function AccountsPage() {
             Manage family bank accounts, UPI wallets and cash
           </p>
         </div>
-        <Button size="md" onClick={() => setIsAddOpen(true)} className="fw-semibold shadow-sm gap-2">
+        <Button size="md" onClick={() => setIsAddOpen(true)} className="fw-semibold shadow-sm gap-2 flex-shrink-0">
           <Plus style={{ width: "16px", height: "16px" }} />
           <span>Add Account</span>
         </Button>

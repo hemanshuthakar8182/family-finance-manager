@@ -238,7 +238,7 @@ export default function CategoriesPage() {
             Manage family expense and income categories
           </p>
         </div>
-        <Button size="md" onClick={openAddModal} className="fw-semibold shadow-sm gap-2">
+        <Button size="md" onClick={openAddModal} className="fw-semibold shadow-sm gap-2 flex-shrink-0">
           <Plus style={{ width: "16px", height: "16px" }} />
           <span>New Category</span>
         </Button>

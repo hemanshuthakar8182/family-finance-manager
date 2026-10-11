@@ -221,7 +221,7 @@ export default function RecurringPage() {
   return (
     <div className="d-flex flex-column gap-4">
       {/* Header */}
-      <div className="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3">
+      <div className="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3">
         <div>
           <h1 className="h4 fw-bold text-foreground mb-1">
             Recurring Bills &amp; Subscriptions
@@ -231,7 +231,7 @@ export default function RecurringPage() {
           </p>
         </div>
 
-        <div className="d-flex flex-column flex-sm-row align-items-stretch align-items-sm-center gap-2 w-100 w-sm-auto">
+        <div className="d-flex align-items-center gap-2 flex-wrap flex-shrink-0">
           <Button
             variant="outline"
             size="md"

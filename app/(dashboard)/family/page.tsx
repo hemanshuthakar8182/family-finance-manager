@@ -129,7 +129,7 @@ export default function FamilyPage() {
           <Button
             size="md"
             onClick={() => setIsAddMemberOpen(true)}
-            className="fw-semibold shadow-sm gap-2"
+            className="fw-semibold shadow-sm gap-2 flex-shrink-0"
           >
             <UserPlus style={{ width: "16px", height: "16px" }} />
             <span>Add Member</span>

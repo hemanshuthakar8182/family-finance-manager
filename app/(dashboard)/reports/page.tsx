@@ -126,7 +126,7 @@ export default function ReportsPage() {
           </p>
         </div>
 
-        <div className="d-flex flex-column flex-sm-row align-items-stretch align-items-sm-center gap-2 w-100 w-lg-auto">
+        <div className="d-flex flex-column flex-sm-row align-items-stretch align-items-sm-center gap-2 flex-shrink-0">
           {/* Period Selector Tabs */}
           <div className="d-flex align-items-center gap-1 bg-surface-muted p-1 rounded-btn overflow-x-auto text-nowrap">
             {periods.map((p) => (
