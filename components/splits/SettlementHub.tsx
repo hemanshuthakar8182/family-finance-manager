@@ -13,6 +13,7 @@ import {
   QrCode,
 } from "lucide-react";
 import { formatCurrency } from "@/lib/utils/currency";
+import { CurrencyDisplay } from "@/components/ui/CurrencyDisplay";
 import { useToast } from "@/components/ui/Toast";
 import { Modal } from "@/components/ui/Modal";
 import { UPIPaymentModal } from "@/components/splits/UPIPaymentModal";
@@ -151,21 +152,24 @@ export function SettlementHub() {
       <div className="row g-3">
         {/* You are owed */}
         <div className="col-12 col-md-4">
-          <div className="card rounded-card border border-success-subtle bg-success-subtle p-3 h-100 shadow-sm">
+          <div 
+            className="card-elevated rounded-card border border-success-subtle p-3.5 h-100 shadow-sm"
+            style={{ background: "linear-gradient(180deg, rgba(16, 185, 129, 0.05) 0%, var(--surface) 100%)" }}
+          >
             <div className="d-flex align-items-center justify-content-between">
               <div>
-                <span className="small fw-bold text-success text-uppercase">
+                <span className="small fw-bold text-success text-uppercase" style={{ fontSize: "11px", letterSpacing: "0.04em" }}>
                   YOU ARE OWED
                 </span>
-                <div className="h3 fw-bold text-success-emphasis mb-0 mt-1">
-                  +{formatCurrency(userBalance.youAreOwed)}
+                <div className="my-1">
+                  <CurrencyDisplay amount={userBalance.youAreOwed} size="xl" type="INCOME" />
                 </div>
-                <span className="small text-success-emphasis" style={{ fontSize: "11px" }}>
+                <span className="small text-secondary" style={{ fontSize: "11px" }}>
                   from family members
                 </span>
               </div>
               <div
-                className="rounded-circle bg-success text-white d-flex align-items-center justify-content-center flex-shrink-0"
+                className="rounded-3 bg-success-soft text-success d-flex align-items-center justify-content-center flex-shrink-0 shadow-xs"
                 style={{ width: "42px", height: "42px" }}
               >
                 <CheckCircle2 style={{ width: "22px", height: "22px" }} />
@@ -176,21 +180,24 @@ export function SettlementHub() {
 
         {/* You owe */}
         <div className="col-12 col-md-4">
-          <div className="card rounded-card border border-danger-subtle bg-danger-subtle p-3 h-100 shadow-sm">
+          <div 
+            className="card-elevated rounded-card border border-danger-subtle p-3.5 h-100 shadow-sm"
+            style={{ background: "linear-gradient(180deg, rgba(239, 68, 68, 0.05) 0%, var(--surface) 100%)" }}
+          >
             <div className="d-flex align-items-center justify-content-between">
               <div>
-                <span className="small fw-bold text-danger text-uppercase">
+                <span className="small fw-bold text-danger text-uppercase" style={{ fontSize: "11px", letterSpacing: "0.04em" }}>
                   YOU OWE
                 </span>
-                <div className="h3 fw-bold text-danger-emphasis mb-0 mt-1">
-                  -{formatCurrency(userBalance.youOwe)}
+                <div className="my-1">
+                  <CurrencyDisplay amount={userBalance.youOwe} size="xl" type="EXPENSE" />
                 </div>
-                <span className="small text-danger-emphasis" style={{ fontSize: "11px" }}>
+                <span className="small text-secondary" style={{ fontSize: "11px" }}>
                   to family members
                 </span>
               </div>
               <div
-                className="rounded-circle bg-danger text-white d-flex align-items-center justify-content-center flex-shrink-0"
+                className="rounded-3 bg-danger-soft text-danger d-flex align-items-center justify-content-center flex-shrink-0 shadow-xs"
                 style={{ width: "42px", height: "42px" }}
               >
                 <AlertCircle style={{ width: "22px", height: "22px" }} />
@@ -201,26 +208,29 @@ export function SettlementHub() {
 
         {/* Net position */}
         <div className="col-12 col-md-4">
-          <div className="card rounded-card border bg-surface p-3 h-100 shadow-sm">
+          <div 
+            className="card-elevated rounded-card border bg-surface p-3.5 h-100 shadow-sm"
+            style={{ background: "linear-gradient(180deg, rgba(79, 70, 229, 0.04) 0%, var(--surface) 100%)" }}
+          >
             <div className="d-flex align-items-center justify-content-between">
               <div>
-                <span className="small fw-bold text-secondary text-uppercase">
+                <span className="small fw-bold text-secondary text-uppercase" style={{ fontSize: "11px", letterSpacing: "0.04em" }}>
                   NET POSITION
                 </span>
-                <div
-                  className={`h3 fw-bold mb-0 mt-1 ${
-                    userBalance.netBalance >= 0 ? "text-income" : "text-expense"
-                  }`}
-                >
-                  {userBalance.netBalance >= 0 ? "+" : ""}
-                  {formatCurrency(userBalance.netBalance)}
+                <div className="my-1">
+                  <CurrencyDisplay
+                    amount={Math.abs(userBalance.netBalance)}
+                    size="xl"
+                    type={userBalance.netBalance >= 0 ? "INCOME" : "EXPENSE"}
+                    showSign={true}
+                  />
                 </div>
                 <span className="small text-secondary" style={{ fontSize: "11px" }}>
                   {userBalance.netBalance >= 0 ? "Overall in credit" : "Overall in debit"}
                 </span>
               </div>
               <div
-                className="rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center flex-shrink-0"
+                className="rounded-3 bg-primary-soft text-primary d-flex align-items-center justify-content-center flex-shrink-0 shadow-xs"
                 style={{ width: "42px", height: "42px" }}
               >
                 <HandCoins style={{ width: "22px", height: "22px" }} />
@@ -262,16 +272,16 @@ export function SettlementHub() {
           <div className="row g-3">
             {nettedDebts.map((debt, idx) => (
               <div key={idx} className="col-12 col-md-6">
-                <div className="card rounded-card border bg-light p-3 d-flex flex-row align-items-center justify-content-between gap-3 shadow-none">
+                <div className="card-elevated rounded-card border bg-surface p-3 d-flex flex-row align-items-center justify-content-between gap-3 shadow-xs hover-lift">
                   <div className="d-flex align-items-center gap-3 overflow-hidden">
                     <div
-                      className="rounded-circle bg-secondary bg-opacity-10 text-dark fw-bold d-flex align-items-center justify-content-center flex-shrink-0 small"
-                      style={{ width: "36px", height: "36px" }}
+                      className="rounded-3 bg-primary-soft text-primary fw-bold d-flex align-items-center justify-content-center flex-shrink-0 small shadow-xs"
+                      style={{ width: "38px", height: "38px", fontSize: "14px" }}
                     >
                       {debt.debtor.name.charAt(0)}
                     </div>
                     <div className="overflow-hidden">
-                      <div className="d-flex align-items-center gap-1 small fw-semibold text-dark text-truncate">
+                      <div className="d-flex align-items-center gap-1.5 small fw-semibold text-foreground text-truncate">
                         <span className="fw-bold">{debt.debtor.name}</span>
                         <ArrowRight style={{ width: "12px", height: "12px" }} className="text-secondary flex-shrink-0" />
                         <span className="fw-bold">{debt.creditor.name}</span>
@@ -282,13 +292,11 @@ export function SettlementHub() {
                     </div>
                   </div>
 
-                  <div className="d-flex align-items-center gap-2 flex-shrink-0">
-                    <span className="fw-bold text-dark small">
-                      {formatCurrency(debt.amount)}
-                    </span>
+                  <div className="d-flex align-items-center gap-2.5 flex-shrink-0">
+                    <CurrencyDisplay amount={debt.amount} size="md" />
                     <button
                       onClick={() => openSettleModal(debt)}
-                      className="btn btn-sm btn-primary rounded-btn fw-bold px-2.5 py-1 shadow-sm small d-inline-flex align-items-center gap-1"
+                      className="btn btn-sm btn-primary rounded-btn fw-bold px-2.5 py-1.5 shadow-xs small d-inline-flex align-items-center gap-1"
                     >
                       <QrCode style={{ width: "13px", height: "13px" }} />
                       <span>Settle / UPI</span>

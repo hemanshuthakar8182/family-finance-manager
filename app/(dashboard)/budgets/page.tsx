@@ -301,14 +301,14 @@ export default function BudgetsPage() {
 
             return (
               <div key={budget.id} className="col-12 col-md-6">
-                <div className={`card rounded-card border ${statusCfg.border} bg-surface p-3 shadow-sm h-100`}>
+                <div className={cn("card-elevated rounded-card border bg-surface p-3.5 shadow-xs hover-lift h-100", statusCfg.border)}>
                   <div className="d-flex align-items-center justify-content-between mb-3">
                     <div className="d-flex align-items-center gap-2.5">
                       <div
-                        className="rounded-circle d-flex align-items-center justify-content-center text-white flex-shrink-0"
-                        style={{ width: "36px", height: "36px", backgroundColor: budget.category.color || "#0F766E" }}
+                        className="rounded-3 d-flex align-items-center justify-content-center text-white flex-shrink-0 shadow-xs"
+                        style={{ width: "38px", height: "38px", backgroundColor: budget.category.color || "#0F766E" }}
                       >
-                        <CategoryIcon name={budget.category.icon} size={16} />
+                        <CategoryIcon name={budget.category.icon} size={18} />
                       </div>
                       <div>
                         <h4 className="h6 fw-bold text-dark mb-0">

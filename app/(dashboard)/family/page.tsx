@@ -203,13 +203,13 @@ export default function FamilyPage() {
               return (
                 <div
                   key={m.id}
-                  className="card rounded-card border bg-surface p-3 d-flex flex-row align-items-center justify-content-between gap-3 shadow-none"
+                  className="card-elevated rounded-card border bg-surface p-3 d-flex flex-row align-items-center justify-content-between gap-3 shadow-xs hover-lift"
                 >
                   <div className="d-flex align-items-center gap-3 overflow-hidden">
                     {/* Avatar */}
                     <div
-                      className="rounded-circle bg-primary bg-opacity-10 text-primary fw-bold d-flex align-items-center justify-content-center flex-shrink-0 small border"
-                      style={{ width: "40px", height: "40px" }}
+                      className="rounded-3 bg-primary-soft text-primary fw-bold d-flex align-items-center justify-content-center flex-shrink-0 small shadow-xs"
+                      style={{ width: "40px", height: "40px", fontSize: "15px" }}
                     >
                       {m.user.name.charAt(0).toUpperCase()}
                     </div>

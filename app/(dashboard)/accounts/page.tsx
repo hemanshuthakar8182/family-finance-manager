@@ -14,6 +14,7 @@ import {
   Banknote,
   Smartphone,
   Wallet,
+  Building2,
   Archive,
   Sliders,
   Pencil,
@@ -22,11 +23,11 @@ import { ReconciliationModal } from "@/components/accounts/ReconciliationModal";
 import { cn } from "@/lib/utils/cn";
 
 const ACCOUNT_TYPE_CONFIG: Record<string, { label: string; icon: any; badgeClass: string }> = {
-  CASH: { label: "Cash", icon: Banknote, badgeClass: "bg-warning-soft" },
-  BANK: { label: "Bank Account", icon: CreditCard, badgeClass: "bg-primary-soft" },
-  UPI: { label: "UPI / Wallet", icon: Smartphone, badgeClass: "bg-info-soft" },
-  CREDIT_CARD: { label: "Credit Card", icon: CreditCard, badgeClass: "bg-danger-soft" },
-  WALLET: { label: "Digital Wallet", icon: Wallet, badgeClass: "bg-success-soft" },
+  CASH: { label: "Cash Wallet", icon: Banknote, badgeClass: "bg-warning-soft text-warning" },
+  BANK: { label: "Bank Account", icon: Building2, badgeClass: "bg-primary-soft text-primary" },
+  UPI: { label: "UPI Digital", icon: Smartphone, badgeClass: "bg-info-soft text-info" },
+  CREDIT_CARD: { label: "Credit Card", icon: CreditCard, badgeClass: "bg-danger-soft text-danger" },
+  WALLET: { label: "Digital Wallet", icon: Wallet, badgeClass: "bg-success-soft text-success" },
 };
 
 export default function AccountsPage() {
@@ -204,57 +205,75 @@ export default function AccountsPage() {
           {accounts.map((acc) => {
             const config = ACCOUNT_TYPE_CONFIG[acc.type] || ACCOUNT_TYPE_CONFIG.BANK;
             const Icon = config.icon;
+            const displayName = acc.name.toLowerCase() === "case" ? "Cash" : acc.name;
+            const isCreditCard = acc.type === "CREDIT_CARD";
+
             return (
               <div key={acc.id} className="col-12 col-sm-6 col-lg-4">
-                <div className="card-elevated p-3.5 h-100 hover-lift">
-                  <div className="d-flex align-items-center justify-content-between mb-3">
-                    <div
-                      className={cn("rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 shadow-xs", config.badgeClass)}
-                      style={{ width: "38px", height: "38px" }}
-                    >
-                      <Icon style={{ width: "18px", height: "18px" }} />
+                <div className="card-elevated p-3.5 h-100 hover-lift d-flex flex-column justify-content-between">
+                  <div>
+                    {/* Top Row: Icon + Type Pill + Action Buttons */}
+                    <div className="d-flex align-items-center justify-content-between mb-3">
+                      <div className="d-flex align-items-center gap-2">
+                        <div
+                          className={cn("rounded-3 d-flex align-items-center justify-content-center flex-shrink-0 shadow-xs", config.badgeClass)}
+                          style={{ width: "38px", height: "38px" }}
+                        >
+                          <Icon style={{ width: "19px", height: "19px" }} />
+                        </div>
+                        <span className="badge rounded-pill bg-light border text-secondary fw-semibold px-2 py-1" style={{ fontSize: "10px" }}>
+                          {config.label}
+                        </span>
+                      </div>
+
+                      <div className="d-flex align-items-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setEditAccount(acc);
+                            setEditFormData({ name: displayName, type: acc.type });
+                          }}
+                          title="Edit Account Details"
+                          className="btn btn-sm btn-link text-secondary p-1 text-decoration-none"
+                        >
+                          <Pencil style={{ width: "15px", height: "15px" }} />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setReconcileAccount(acc)}
+                          title="Reconcile balance with statement"
+                          className="btn btn-sm btn-link text-secondary p-1 text-decoration-none"
+                        >
+                          <Sliders style={{ width: "15px", height: "15px" }} />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleArchive(acc.id, displayName)}
+                          title="Archive Account"
+                          className="btn btn-sm btn-link text-secondary p-1 text-decoration-none"
+                        >
+                          <Archive style={{ width: "15px", height: "15px" }} />
+                        </button>
+                      </div>
                     </div>
-                    <div className="d-flex align-items-center gap-1">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setEditAccount(acc);
-                          setEditFormData({ name: acc.name, type: acc.type });
-                        }}
-                        title="Edit Account Details"
-                        className="btn btn-sm btn-link text-secondary p-1 text-decoration-none"
-                      >
-                        <Pencil style={{ width: "15px", height: "15px" }} />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setReconcileAccount(acc)}
-                        title="Reconcile balance with statement"
-                        className="btn btn-sm btn-link text-secondary p-1 text-decoration-none"
-                      >
-                        <Sliders style={{ width: "15px", height: "15px" }} />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleArchive(acc.id, acc.name)}
-                        title="Archive Account"
-                        className="btn btn-sm btn-link text-secondary p-1 text-decoration-none"
-                      >
-                        <Archive style={{ width: "15px", height: "15px" }} />
-                      </button>
-                    </div>
+
+                    <h3 className="h6 fw-bold text-foreground text-truncate mb-0">{displayName}</h3>
+                    <p className="small text-secondary mb-0" style={{ fontSize: "11px" }}>
+                      {isCreditCard ? "Credit Facility" : "Liquid Asset Account"}
+                    </p>
                   </div>
 
-                  <h3 className="h6 fw-bold text-foreground text-truncate mb-0">{acc.name}</h3>
-                  <p className="small text-secondary mb-0" style={{ fontSize: "11px" }}>{config.label}</p>
-
-                  <div className="mt-3 pt-2 border-top">
+                  {/* Bottom Row: Balance & Meta */}
+                  <div className="mt-3 pt-2.5 border-top border-light-subtle">
                     <div>
-                      <CurrencyDisplay amount={acc.currentBalance} size="lg" />
+                      <CurrencyDisplay
+                        amount={acc.currentBalance}
+                        size="lg"
+                        type={isCreditCard ? "EXPENSE" : "DEFAULT"}
+                      />
                     </div>
                     <p className="small text-secondary mb-0 mt-1" style={{ fontSize: "11px" }}>
-                      {acc._count?.transactions || 0} transactions •{" "}
-                      Opening: {formatCurrency(acc.openingBalance)}
+                      {acc._count?.transactions || 0} transactions &bull; Opening: {formatCurrency(acc.openingBalance)}
                     </p>
                   </div>
                 </div>

@@ -8,6 +8,7 @@ import { Modal } from "@/components/ui/Modal";
 import { CategoryIcon } from "@/components/ui/CategoryIcon";
 import { useToast } from "@/components/ui/Toast";
 import { formatCurrency, formatShortDate } from "@/lib/utils/formatters";
+import { CurrencyDisplay } from "@/components/ui/CurrencyDisplay";
 import {
   Repeat,
   Plus,
@@ -314,19 +315,23 @@ export default function RecurringPage() {
                   </div>
 
                   <div className="text-end">
-                    <div className="fs-6 fw-bold font-amount text-foreground">
-                      {formatCurrency(item.amount)}
+                    <CurrencyDisplay
+                      amount={item.amount}
+                      size="md"
+                      type={item.type}
+                    />
+                    <div>
+                      <Badge variant={item.type === "INCOME" ? "income" : "expense"} style={{ fontSize: "9px" }}>
+                        {item.type}
+                      </Badge>
                     </div>
-                    <Badge variant={item.type === "INCOME" ? "income" : "expense"}>
-                      {item.type}
-                    </Badge>
                   </div>
                 </div>
 
                 {/* Meta information */}
-                <div className="pt-2 border-top d-flex align-items-center justify-content-between small text-muted mt-auto">
-                  <div className="d-flex align-items-center gap-1.5">
-                    <CreditCard style={{ width: "14px", height: "14px" }} className="text-secondary" />
+                <div className="pt-2 border-top border-light-subtle d-flex align-items-center justify-content-between small text-secondary mt-auto">
+                  <div className="d-flex align-items-center gap-1.5" style={{ fontSize: "11px" }}>
+                    <CreditCard style={{ width: "13px", height: "13px" }} className="text-secondary" />
                     <span>{item.account?.name || "Unassigned"}</span>
                   </div>
 

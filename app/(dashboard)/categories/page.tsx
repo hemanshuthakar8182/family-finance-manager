@@ -172,13 +172,13 @@ export default function CategoriesPage() {
       ) : (
         items.map((cat) => (
           <div key={cat.id} className="col-12 col-sm-6">
-            <div className="card rounded-card border bg-surface p-3 shadow-sm d-flex flex-row align-items-center justify-content-between h-100">
+            <div className="card-elevated rounded-card border bg-surface p-3 shadow-xs hover-lift d-flex flex-row align-items-center justify-content-between h-100">
               <div className="d-flex align-items-center gap-3 overflow-hidden">
                 <div
-                  className="rounded-circle d-flex align-items-center justify-content-center text-white flex-shrink-0 shadow-sm"
-                  style={{ width: "36px", height: "36px", backgroundColor: cat.color }}
+                  className="rounded-3 d-flex align-items-center justify-content-center text-white flex-shrink-0 shadow-xs"
+                  style={{ width: "38px", height: "38px", backgroundColor: cat.color }}
                 >
-                  <CategoryIcon name={cat.icon} categoryName={cat.name} size={16} />
+                  <CategoryIcon name={cat.icon} categoryName={cat.name} size={18} />
                 </div>
                 <div className="overflow-hidden">
                   <p className="h6 fw-bold text-dark text-truncate mb-0">{cat.name}</p>

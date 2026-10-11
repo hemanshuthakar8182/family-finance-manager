@@ -12,23 +12,39 @@ import { ForecastingWidget } from "@/components/dashboard/ForecastingWidget";
 import { CurrencyDisplay } from "@/components/ui/CurrencyDisplay";
 import { Card, CardHeader, CardTitle } from "@/components/ui/Card";
 import { formatMonthYear, formatCurrency } from "@/lib/utils/formatters";
-import { Calendar, Plus, RefreshCw, CreditCard, Banknote, Smartphone, Wallet, ArrowUpRight } from "lucide-react";
+import { Calendar, Plus, RefreshCw, CreditCard, Banknote, Smartphone, Wallet, Building2, ArrowUpRight } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 
 const ACCOUNT_ICON: Record<string, any> = {
   CASH: Banknote,
-  BANK: CreditCard,
+  BANK: Building2,
   UPI: Smartphone,
   CREDIT_CARD: CreditCard,
   WALLET: Wallet,
 };
 
 const ACCOUNT_COLOR: Record<string, string> = {
-  CASH: "bg-warning-soft",
-  BANK: "bg-primary-soft",
-  UPI: "bg-info-soft",
-  CREDIT_CARD: "bg-danger-soft",
-  WALLET: "bg-success-soft",
+  CASH: "bg-warning-soft text-warning",
+  BANK: "bg-primary-soft text-primary",
+  UPI: "bg-info-soft text-info",
+  CREDIT_CARD: "bg-danger-soft text-danger",
+  WALLET: "bg-success-soft text-success",
+};
+
+const ACCOUNT_TYPE_LABEL: Record<string, string> = {
+  CASH: "Cash Wallet",
+  BANK: "Bank Account",
+  UPI: "UPI Digital",
+  CREDIT_CARD: "Credit Card",
+  WALLET: "Digital Wallet",
+};
+
+const ACCOUNT_BADGE_CLASS: Record<string, string> = {
+  CASH: "bg-warning-soft text-dark border-warning-subtle",
+  BANK: "bg-primary-soft text-primary border-primary-subtle",
+  UPI: "bg-info-soft text-dark border-info-subtle",
+  CREDIT_CARD: "bg-danger-soft text-danger border-danger-subtle",
+  WALLET: "bg-success-soft text-success border-success-subtle",
 };
 
 export default function DashboardPage() {
@@ -156,7 +172,9 @@ export default function DashboardPage() {
         metrics={{
           totalIncome: metrics?.totalIncome || 0,
           totalExpense: metrics?.totalExpense || 0,
-          currentBalance: metrics?.currentBalance || 0,
+          currentBalance:
+            metrics?.currentBalance ??
+            accounts.reduce((s, a) => s + Number(a.currentBalance || 0), 0),
           todayExpense: metrics?.todayExpense || 0,
         }}
       />
@@ -165,51 +183,69 @@ export default function DashboardPage() {
       <ForecastingWidget
         totalExpense={metrics?.totalExpense || 0}
         totalIncome={metrics?.totalIncome || 0}
-        currentBalance={metrics?.currentBalance || 0}
+        currentBalance={
+          metrics?.currentBalance ??
+          accounts.reduce((s, a) => s + Number(a.currentBalance || 0), 0)
+        }
       />
 
       {/* ── Quick Account Balances Strip ── */}
       {accounts.length > 0 && (
-        <div className="d-flex flex-column gap-2">
+        <div className="d-flex flex-column gap-2.5">
           <div className="d-flex align-items-center justify-content-between px-1">
-            <span className="small fw-bold text-secondary text-uppercase" style={{ fontSize: "11px", letterSpacing: "0.05em" }}>
+            <span className="small fw-bold text-secondary text-uppercase" style={{ fontSize: "11px", letterSpacing: "0.06em" }}>
               Wallets &amp; Bank Accounts
             </span>
-            <span className="small text-secondary" style={{ fontSize: "11px" }}>
+            <span className="badge rounded-pill bg-light border text-secondary fw-semibold px-2 py-0.5" style={{ fontSize: "10px" }}>
               {accounts.length} active
             </span>
           </div>
 
-          <div className="row g-2.5">
+          <div className="row g-3">
             {accounts.map((acc) => {
               const Icon = ACCOUNT_ICON[acc.type] || CreditCard;
-              const colCls = ACCOUNT_COLOR[acc.type] || "bg-primary-soft";
+              const colCls = ACCOUNT_COLOR[acc.type] || "bg-primary-soft text-primary";
+              const badgeCls = ACCOUNT_BADGE_CLASS[acc.type] || "bg-light border text-secondary";
+              const typeLabel = ACCOUNT_TYPE_LABEL[acc.type] || acc.type.replace("_", " ");
               const isCreditCard = acc.type === "CREDIT_CARD";
+              const displayName = acc.name.toLowerCase() === "case" ? "Cash" : acc.name;
+
               return (
                 <div key={acc.id} className="col-12 col-sm-6 col-md-4 col-xl-3">
-                  <div className="card-elevated bg-surface border d-flex align-items-center justify-content-between p-3 rounded-card hover-lift shadow-xs h-100">
-                    <div className="d-flex align-items-center gap-2.5 overflow-hidden">
+                  <div className="card-elevated bg-surface border p-3.5 rounded-card hover-lift shadow-xs h-100 d-flex flex-column justify-content-between">
+                    {/* Top Row: Icon on left, Type Pill on right */}
+                    <div className="d-flex align-items-center justify-content-between mb-3">
                       <div 
-                        className={cn("rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 shadow-xs", colCls)}
+                        className={cn("rounded-3 d-flex align-items-center justify-content-center flex-shrink-0 shadow-xs", colCls)}
                         style={{ width: "38px", height: "38px" }}
                       >
-                        <Icon style={{ width: "18px", height: "18px" }} />
+                        <Icon style={{ width: "19px", height: "19px" }} />
                       </div>
+                      <span 
+                        className={cn("badge rounded-pill border fw-bold px-2 py-1", badgeCls)}
+                        style={{ fontSize: "10px", letterSpacing: "0.02em" }}
+                      >
+                        {typeLabel}
+                      </span>
+                    </div>
+
+                    {/* Bottom Row: Name on left, Balance on right */}
+                    <div className="d-flex align-items-end justify-content-between gap-2 pt-2 border-top border-light-subtle">
                       <div className="overflow-hidden">
                         <p className="small fw-bold text-foreground text-truncate mb-0" style={{ fontSize: "13px" }}>
-                          {acc.name}
+                          {displayName}
                         </p>
-                        <span className="badge rounded-pill bg-light border text-secondary text-uppercase fw-semibold" style={{ fontSize: "9px" }}>
-                          {acc.type.replace("_", " ")}
+                        <span className="small text-secondary" style={{ fontSize: "10px" }}>
+                          {isCreditCard ? "Due Outflow" : "Liquid Reserve"}
                         </span>
                       </div>
-                    </div>
-                    <div className="text-end flex-shrink-0 ms-2">
-                      <CurrencyDisplay
-                        amount={acc.currentBalance}
-                        size="sm"
-                        type={isCreditCard ? "EXPENSE" : "DEFAULT"}
-                      />
+                      <div className="text-end flex-shrink-0">
+                        <CurrencyDisplay
+                          amount={acc.currentBalance}
+                          size="md"
+                          type={isCreditCard ? "EXPENSE" : "DEFAULT"}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
