@@ -10,7 +10,8 @@ export async function GET(req: Request) {
     const refDateStr = searchParams.get("date");
     const refDate = refDateStr ? new Date(refDateStr) : new Date();
 
-    const metrics = await getDashboardMetrics(user.familyId, refDate);
+    const memberId = user.role !== "ADMIN" ? user.memberId : undefined;
+    const metrics = await getDashboardMetrics(user.familyId, refDate, memberId);
     return NextResponse.json(metrics);
   } catch (error: any) {
     return NextResponse.json(

@@ -448,7 +448,11 @@ export async function getTransactions(
   };
 }
 
-export async function getDashboardMetrics(familyId: string, referenceDate = new Date()) {
+export async function getDashboardMetrics(
+  familyId: string,
+  referenceDate = new Date(),
+  memberId?: string
+) {
   const startMonth = startOfMonth(referenceDate);
   const endMonth = endOfMonth(referenceDate);
   const todayStart = startOfDay(referenceDate);
@@ -460,6 +464,7 @@ export async function getDashboardMetrics(familyId: string, referenceDate = new 
     prisma.transaction.findMany({
       where: {
         familyId,
+        ...(memberId ? { memberId } : {}),
         date: { gte: startMonth, lte: endMonth },
         deletedAt: null,
       },
@@ -480,7 +485,11 @@ export async function getDashboardMetrics(familyId: string, referenceDate = new 
 
     // 3. Recent 6 transactions
     prisma.transaction.findMany({
-      where: { familyId, deletedAt: null },
+      where: {
+        familyId,
+        ...(memberId ? { memberId } : {}),
+        deletedAt: null,
+      },
       orderBy: { date: "desc" },
       take: 6,
       include: {
@@ -497,6 +506,7 @@ export async function getDashboardMetrics(familyId: string, referenceDate = new 
     prisma.transaction.findMany({
       where: {
         familyId,
+        ...(memberId ? { memberId } : {}),
         date: { gte: sixMonthsAgoStart, lte: endMonth },
         deletedAt: null,
       },

@@ -22,6 +22,12 @@ export async function GET(req: Request) {
     if (searchParams.get("limit")) queryParams.limit = searchParams.get("limit");
 
     const validatedFilters = transactionFilterSchema.parse(queryParams);
+
+    // RBAC: Non-admin members can strictly only view their own transactions
+    if (user.role !== "ADMIN") {
+      validatedFilters.memberId = user.memberId;
+    }
+
     const data = await getTransactions(user.familyId, validatedFilters);
 
     return NextResponse.json(data);

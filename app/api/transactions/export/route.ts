@@ -36,7 +36,10 @@ export async function GET(req: Request) {
     if (accountId) {
       where.accountId = accountId;
     }
-    if (memberId) {
+    // RBAC: Non-admin members can strictly only export their own transactions
+    if (user.role !== "ADMIN") {
+      where.memberId = user.memberId;
+    } else if (memberId) {
       where.memberId = memberId;
     }
     if (startDate || endDate) {

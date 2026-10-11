@@ -11,7 +11,8 @@ export async function GET(req: Request) {
     const customStart = searchParams.get("customStart") || undefined;
     const customEnd = searchParams.get("customEnd") || undefined;
 
-    const data = await getFinancialReports(user.familyId, period, customStart, customEnd);
+    const memberId = user.role !== "ADMIN" ? user.memberId : undefined;
+    const data = await getFinancialReports(user.familyId, period, customStart, customEnd, memberId);
     return NextResponse.json(data);
   } catch (error: any) {
     return NextResponse.json(

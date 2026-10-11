@@ -347,10 +347,10 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* ── Secondary Row: Recent Transactions + Member Spending ── */}
+      {/* ── Secondary Row: Recent Transactions + Member Spending (Admin only) ── */}
       <div className="row g-4">
         {/* DESKTOP: Recent Transactions */}
-        <div className="d-none d-lg-block col-12 col-lg-8">
+        <div className={cn("d-none d-lg-block", user?.role === "ADMIN" ? "col-12 col-lg-8" : "col-12")}>
           <RecentTransactionsWidget
             transactions={metrics?.recentTransactions || []}
             onSelectTransaction={onSelectTransaction}
@@ -358,19 +358,21 @@ export default function DashboardPage() {
           />
         </div>
 
-        {/* Family Member Spending */}
-        <div className="col-12 col-lg-4">
-          <Card className="h-100 card-elevated">
-            <CardHeader>
-              <CardTitle>Family Member Spending</CardTitle>
-              <span className="small text-secondary" style={{ fontSize: "11px" }}>{currentMonthStr}</span>
-            </CardHeader>
-            <MemberSpendingList
-              data={metrics?.memberBreakdown || []}
-              totalExpense={metrics?.totalExpense || 0}
-            />
-          </Card>
-        </div>
+        {/* Family Member Spending - Admins only */}
+        {user?.role === "ADMIN" && (
+          <div className="col-12 col-lg-4">
+            <Card className="h-100 card-elevated">
+              <CardHeader>
+                <CardTitle>Family Member Spending</CardTitle>
+                <span className="small text-secondary" style={{ fontSize: "11px" }}>{currentMonthStr}</span>
+              </CardHeader>
+              <MemberSpendingList
+                data={metrics?.memberBreakdown || []}
+                totalExpense={metrics?.totalExpense || 0}
+              />
+            </Card>
+          </div>
+        )}
       </div>
     </div>
   );

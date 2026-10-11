@@ -30,6 +30,7 @@ interface TransactionFiltersProps {
   onChange: (filters: FilterOptions) => void;
   onReset: () => void;
   totalResults?: number;
+  isAdmin?: boolean;
 }
 
 export function TransactionFilters({
@@ -40,6 +41,7 @@ export function TransactionFilters({
   onChange,
   onReset,
   totalResults,
+  isAdmin = true,
 }: TransactionFiltersProps) {
   const [isFilterSheetOpen, setIsFilterSheetOpen] = useState(false);
   const [showCustomDate, setShowCustomDate] = useState(Boolean(filters.startDate || filters.endDate));
@@ -79,7 +81,7 @@ export function TransactionFilters({
     filters.type !== "ALL" ? 1 : 0,
     filters.categoryId ? 1 : 0,
     filters.accountId ? 1 : 0,
-    filters.memberId ? 1 : 0,
+    filters.memberId && isAdmin !== false ? 1 : 0,
     filters.startDate || filters.endDate ? 1 : 0,
     filters.search ? 1 : 0,
   ].reduce((a, b) => a + b, 0);
@@ -237,7 +239,7 @@ export function TransactionFilters({
           </select>
 
           {/* Member Dropdown */}
-          {members.length > 1 && (
+          {members.length > 1 && isAdmin !== false && (
             <select
               value={filters.memberId}
               onChange={(e) => onChange({ ...filters, memberId: e.target.value })}
@@ -345,7 +347,7 @@ export function TransactionFilters({
             </span>
           )}
 
-          {activeMember && (
+          {activeMember && isAdmin !== false && (
             <span className="badge bg-light text-dark border rounded-pill d-inline-flex align-items-center gap-1 py-1 px-2.5 small fw-semibold">
               Member: {activeMember.user?.name}
               <button
@@ -580,6 +582,27 @@ export function TransactionFilters({
               ))}
             </select>
           </div>
+
+          {/* Member (Admin only) */}
+          {members.length > 1 && isAdmin !== false && (
+            <div>
+              <label className="form-label small fw-semibold text-dark mb-1">
+                Family Member
+              </label>
+              <select
+                value={filters.memberId}
+                onChange={(e) => onChange({ ...filters, memberId: e.target.value })}
+                className="form-select form-select-sm rounded-input py-2 ps-3 pe-4 small border bg-white"
+              >
+                <option value="">All Members</option>
+                {members.map((m) => (
+                  <option key={m.id} value={m.id}>
+                    {m.user?.name || "Member"}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           {/* Actions */}
           <div 

@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { formatCurrency } from "@/lib/utils/formatters";
 import { Plus, Receipt, ChevronLeft, ChevronRight, Download, UploadCloud } from "lucide-react";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 function getDateLabel(dateStr: string): string {
   const txDate = new Date(dateStr);
@@ -37,6 +38,9 @@ function groupTransactionsByDate(transactions: any[]) {
 
 export default function TransactionsPage() {
   const { openQuickAdd: onOpenQuickAdd, openTransaction: onSelectTransaction, refreshTrigger } = useDashboard();
+  const { data: session } = useSession();
+  const isAdmin = (session?.user as any)?.role === "ADMIN";
+
   const [transactions, setTransactions] = useState<any[]>([]);
   const [pagination, setPagination] = useState({ page: 1, limit: 20, totalPages: 1, totalCount: 0 });
   const [isLoading, setIsLoading] = useState(true);
@@ -143,10 +147,12 @@ export default function TransactionsPage() {
       <div className="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3">
         <div>
           <h1 className="h4 fw-bold text-dark mb-1">
-            Family Transactions
+            {isAdmin ? "Family Transactions" : "My Transactions"}
           </h1>
           <p className="small text-secondary mb-0">
-            Search, filter, and audit all family spending &amp; earnings
+            {isAdmin
+              ? "Search, filter, and audit all family spending & earnings"
+              : "Search, filter, and review your personal income & expenses"}
           </p>
         </div>
 
@@ -187,6 +193,7 @@ export default function TransactionsPage() {
         categories={categories}
         accounts={accounts}
         members={members}
+        isAdmin={isAdmin}
         totalResults={pagination.totalCount}
         onChange={(newFilters) => setFilters(newFilters)}
         onReset={() => setFilters(initialFilters)}

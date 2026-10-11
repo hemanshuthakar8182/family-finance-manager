@@ -18,7 +18,8 @@ export async function getFinancialReports(
   familyId: string,
   period: ReportPeriod = "THIS_MONTH",
   customStart?: string,
-  customEnd?: string
+  customEnd?: string,
+  memberId?: string
 ) {
   const now = new Date();
   let startDate: Date;
@@ -57,6 +58,7 @@ export async function getFinancialReports(
     prisma.transaction.findMany({
       where: {
         familyId,
+        ...(memberId ? { memberId } : {}),
         date: { gte: startDate, lte: endDate },
         deletedAt: null,
       },

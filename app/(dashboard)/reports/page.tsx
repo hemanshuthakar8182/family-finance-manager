@@ -22,8 +22,11 @@ import {
 } from "lucide-react";
 import { generateMonthlyPDFReport } from "@/lib/utils/pdf-generator";
 import { cn } from "@/lib/utils/cn";
+import { useSession } from "next-auth/react";
 
 export default function ReportsPage() {
+  const { data: session } = useSession();
+  const isAdmin = (session?.user as any)?.role === "ADMIN";
   const now = new Date();
   const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
     .toISOString()
@@ -119,10 +122,12 @@ export default function ReportsPage() {
       <div className="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center gap-3">
         <div>
           <h1 className="h4 fw-bold text-foreground mb-1">
-            Financial Reports
+            {isAdmin ? "Financial Reports" : "My Financial Reports"}
           </h1>
           <p className="small text-muted mb-0">
-            Deep dive into family spending trends, savings rate, and category distribution
+            {isAdmin
+              ? "Deep dive into family spending trends, savings rate, and category distribution"
+              : "Deep dive into your personal spending trends, savings rate, and category distribution"}
           </p>
         </div>
 
@@ -372,41 +377,43 @@ export default function ReportsPage() {
 
       {/* Member and Account Breakdown Grid */}
       <div className="row g-3">
-        {/* Spending by Member */}
-        <div className="col-12 col-md-6">
-          <Card className="h-100">
-            <CardHeader>
-              <CardTitle>Spending by Family Member</CardTitle>
-            </CardHeader>
-            <div className="d-flex flex-column gap-3">
-              {report?.memberBreakdown && report.memberBreakdown.length > 0 ? (
-                report.memberBreakdown.map((m: any, idx: number) => (
-                  <div key={idx} className="d-flex flex-column gap-1">
-                    <div className="d-flex align-items-center justify-content-between small">
-                      <span className="fw-semibold text-foreground">{m.name}</span>
-                      <span className="fw-bold font-amount text-foreground">
-                        {formatCurrency(m.amount)} ({m.percentage}%)
-                      </span>
+        {/* Spending by Member (Admin only) */}
+        {isAdmin && (
+          <div className="col-12 col-md-6">
+            <Card className="h-100">
+              <CardHeader>
+                <CardTitle>Spending by Family Member</CardTitle>
+              </CardHeader>
+              <div className="d-flex flex-column gap-3">
+                {report?.memberBreakdown && report.memberBreakdown.length > 0 ? (
+                  report.memberBreakdown.map((m: any, idx: number) => (
+                    <div key={idx} className="d-flex flex-column gap-1">
+                      <div className="d-flex align-items-center justify-content-between small">
+                        <span className="fw-semibold text-foreground">{m.name}</span>
+                        <span className="fw-bold font-amount text-foreground">
+                          {formatCurrency(m.amount)} ({m.percentage}%)
+                        </span>
+                      </div>
+                      <div className="progress rounded-pill bg-light" style={{ height: "6px" }}>
+                        <div
+                          className="progress-bar rounded-pill bg-primary"
+                          style={{ width: `${m.percentage}%` }}
+                        />
+                      </div>
                     </div>
-                    <div className="progress rounded-pill bg-light" style={{ height: "6px" }}>
-                      <div
-                        className="progress-bar rounded-pill bg-primary"
-                        style={{ width: `${m.percentage}%` }}
-                      />
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <p className="text-center small text-secondary py-4 mb-0">
-                  No member spending in this period
-                </p>
-              )}
-            </div>
-          </Card>
-        </div>
+                  ))
+                ) : (
+                  <p className="text-center small text-secondary py-4 mb-0">
+                    No member spending in this period
+                  </p>
+                )}
+              </div>
+            </Card>
+          </div>
+        )}
 
         {/* Spending by Account */}
-        <div className="col-12 col-md-6">
+        <div className={isAdmin ? "col-12 col-md-6" : "col-12"}>
           <Card className="h-100">
             <CardHeader>
               <CardTitle>Spending by Account / Wallet</CardTitle>
