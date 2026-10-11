@@ -203,7 +203,7 @@ export default function FamilyPage() {
               return (
                 <div
                   key={m.id}
-                  className="card-elevated rounded-card border bg-surface p-3 d-flex flex-row align-items-center justify-content-between gap-3 shadow-xs hover-lift"
+                  className="rounded-card border bg-surface-muted p-3 d-flex flex-row align-items-center justify-content-between gap-3 shadow-xs hover-lift transition"
                 >
                   <div className="d-flex align-items-center gap-3 overflow-hidden">
                     {/* Avatar */}

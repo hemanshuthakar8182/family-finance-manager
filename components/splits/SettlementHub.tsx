@@ -272,7 +272,7 @@ export function SettlementHub() {
           <div className="row g-3">
             {nettedDebts.map((debt, idx) => (
               <div key={idx} className="col-12 col-md-6">
-                <div className="card-elevated rounded-card border bg-surface p-3 d-flex flex-row align-items-center justify-content-between gap-3 shadow-xs hover-lift">
+                <div className="rounded-card border bg-surface-muted p-3 d-flex flex-row align-items-center justify-content-between gap-3 shadow-xs hover-lift transition">
                   <div className="d-flex align-items-center gap-3 overflow-hidden">
                     <div
                       className="rounded-3 bg-primary-soft text-primary fw-bold d-flex align-items-center justify-content-center flex-shrink-0 small shadow-xs"

@@ -172,7 +172,7 @@ export default function CategoriesPage() {
       ) : (
         items.map((cat) => (
           <div key={cat.id} className="col-12 col-sm-6">
-            <div className="card-elevated rounded-card border bg-surface p-3 shadow-xs hover-lift d-flex flex-row align-items-center justify-content-between h-100">
+            <div className="rounded-card border bg-surface-muted p-3 shadow-xs hover-lift d-flex flex-row align-items-center justify-content-between h-100 transition">
               <div className="d-flex align-items-center gap-3 overflow-hidden">
                 <div
                   className="rounded-3 d-flex align-items-center justify-content-center text-white flex-shrink-0 shadow-xs"
