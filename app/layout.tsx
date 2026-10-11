@@ -37,10 +37,22 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               try {
-                var savedTheme = localStorage.getItem('app_theme') || 'classic-teal';
-                document.documentElement.setAttribute('data-theme', savedTheme);
+                var isSystem = localStorage.getItem('app_theme_mode') === 'system';
+                var savedTheme = localStorage.getItem('app_theme');
+                if (!savedTheme) {
+                  var m = document.cookie.match(/app_theme=([^;]+)/);
+                  if (m) savedTheme = m[1];
+                }
                 var darkThemes = ['midnight-obsidian', 'dark-emerald', 'dark-amethyst', 'carbon-titanium'];
-                var isDark = darkThemes.indexOf(savedTheme) !== -1;
+                var activeTheme = 'classic-teal';
+                if (isSystem) {
+                  var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                  activeTheme = prefersDark ? 'dark-emerald' : 'classic-teal';
+                } else if (savedTheme) {
+                  activeTheme = savedTheme;
+                }
+                document.documentElement.setAttribute('data-theme', activeTheme);
+                var isDark = darkThemes.indexOf(activeTheme) !== -1;
                 document.documentElement.setAttribute('data-is-dark', isDark ? 'true' : 'false');
                 if (isDark) {
                   document.documentElement.classList.add('dark');

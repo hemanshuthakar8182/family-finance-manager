@@ -11,6 +11,7 @@ import {
   Legend,
 } from "recharts";
 import { formatCurrency } from "@/lib/utils/formatters";
+import { useTheme } from "@/components/theme/ThemeProvider";
 
 interface MonthlyTrendItem {
   month: string;
@@ -23,6 +24,8 @@ interface IncomeExpenseChartProps {
 }
 
 export function IncomeExpenseChart({ data }: IncomeExpenseChartProps) {
+  const { isDark } = useTheme();
+
   if (!data || data.length === 0) {
     return (
       <div className="d-flex align-items-center justify-content-center text-secondary small" style={{ height: "256px" }}>
@@ -55,15 +58,25 @@ export function IncomeExpenseChart({ data }: IncomeExpenseChartProps) {
           data={data}
           margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
         >
+          <defs>
+            <linearGradient id="chartIncomeGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#16A34A" stopOpacity={0.95} />
+              <stop offset="100%" stopColor="#16A34A" stopOpacity={0.65} />
+            </linearGradient>
+            <linearGradient id="chartExpenseGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#DC2626" stopOpacity={0.95} />
+              <stop offset="100%" stopColor="#DC2626" stopOpacity={0.65} />
+            </linearGradient>
+          </defs>
           <XAxis
             dataKey="month"
-            stroke="#94a3b8"
+            stroke={isDark ? "#64748b" : "#94a3b8"}
             fontSize={12}
             tickLine={false}
             axisLine={false}
           />
           <YAxis
-            stroke="#94a3b8"
+            stroke={isDark ? "#64748b" : "#94a3b8"}
             fontSize={11}
             tickLine={false}
             axisLine={false}
@@ -79,15 +92,15 @@ export function IncomeExpenseChart({ data }: IncomeExpenseChartProps) {
           <Bar
             dataKey="income"
             name="Income"
-            fill="#16A34A"
-            radius={[4, 4, 0, 0]}
+            fill="url(#chartIncomeGrad)"
+            radius={[6, 6, 0, 0]}
             maxBarSize={32}
           />
           <Bar
             dataKey="expense"
             name="Expense"
-            fill="#DC2626"
-            radius={[4, 4, 0, 0]}
+            fill="url(#chartExpenseGrad)"
+            radius={[6, 6, 0, 0]}
             maxBarSize={32}
           />
         </BarChart>

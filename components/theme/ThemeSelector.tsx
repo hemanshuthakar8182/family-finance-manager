@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { Palette, Check, Sparkles, Moon, Sun, ShieldCheck } from "lucide-react";
+import { Palette, Check, Sparkles, Moon, Sun, ShieldCheck, Monitor } from "lucide-react";
 import { useTheme } from "./ThemeProvider";
 import { THEMES, THEME_CATEGORIES, ThemeCategory } from "./theme-config";
 import { cn } from "@/lib/utils/cn";
 
 export function ThemeSelector() {
-  const { theme, setTheme, themeConfig } = useTheme();
+  const { theme, setTheme, previewTheme, cancelPreview, themeConfig, isAutoSystem, toggleAutoSystem } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState<ThemeCategory>(themeConfig.category);
   const popoverRef = useRef<HTMLDivElement>(null);
@@ -17,10 +17,11 @@ export function ThemeSelector() {
     setActiveCategory(themeConfig.category);
   }, [themeConfig.category]);
 
-  // Click outside to close
+  // Click outside to close and revert any active preview
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (popoverRef.current && !popoverRef.current.contains(event.target as Node)) {
+        cancelPreview();
         setIsOpen(false);
       }
     }
@@ -30,7 +31,7 @@ export function ThemeSelector() {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isOpen]);
+  }, [isOpen, cancelPreview]);
 
   const filteredThemes = THEMES.filter((t) => t.category === activeCategory);
 
@@ -52,7 +53,10 @@ export function ThemeSelector() {
       {/* Trigger Button */}
       <button
         type="button"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => {
+          if (isOpen) cancelPreview();
+          setIsOpen(!isOpen);
+        }}
         title="Change System Theme"
         aria-label="Change System Theme"
         className={cn(
@@ -65,10 +69,10 @@ export function ThemeSelector() {
         <Palette style={{ width: "16px", height: "16px" }} />
         {/* Dynamic color pip */}
         <span
-          className="position-absolute top-0 end-0 rounded-circle border border-2 border-white"
+          className="position-absolute top-0 end-0 rounded-circle border border-2 border-white shadow-xs"
           style={{
-            width: "10px",
-            height: "10px",
+            width: "11px",
+            height: "11px",
             background: themeConfig.gradient || themeConfig.primaryColor,
             transform: "translate(25%, -25%)",
           }}
@@ -81,15 +85,16 @@ export function ThemeSelector() {
           className="theme-popover-dropdown rounded-card bg-surface border p-3 overflow-y-auto"
           style={{
             zIndex: 1070,
-            maxHeight: "80vh",
-            backdropFilter: "blur(12px)",
+            maxHeight: "82vh",
+            backdropFilter: "blur(14px)",
           }}
+          onMouseLeave={cancelPreview}
         >
           {/* Header */}
           <div className="d-flex align-items-center justify-content-between pb-2 border-bottom">
             <div className="d-flex align-items-center gap-2">
               <div
-                className="rounded-btn d-flex align-items-center justify-content-center text-white shadow-sm"
+                className="rounded-btn d-flex align-items-center justify-content-center text-white shadow-sm flex-shrink-0"
                 style={{
                   width: "28px",
                   height: "28px",
@@ -111,14 +116,35 @@ export function ThemeSelector() {
               </div>
             </div>
 
-            <button
-              onClick={() => setTheme("classic-teal")}
-              type="button"
-              className="btn btn-sm btn-link text-secondary text-decoration-none py-0 px-2 small"
-              style={{ fontSize: "11px" }}
-            >
-              Reset
-            </button>
+            <div className="d-flex align-items-center gap-1">
+              <button
+                onClick={() => {
+                  toggleAutoSystem();
+                }}
+                type="button"
+                title="Automatically match operating system theme"
+                className={cn(
+                  "btn btn-sm py-0.5 px-2 rounded-pill small fw-semibold d-inline-flex align-items-center gap-1 transition",
+                  isAutoSystem
+                    ? "btn-primary text-white shadow-xs"
+                    : "btn-light border text-secondary"
+                )}
+                style={{ fontSize: "10px" }}
+              >
+                <Monitor style={{ width: "11px", height: "11px" }} />
+                <span>Auto OS</span>
+              </button>
+
+              <button
+                onClick={() => setTheme("classic-teal")}
+                type="button"
+                className="btn btn-sm btn-link text-secondary text-decoration-none py-0 px-1.5 small"
+                style={{ fontSize: "11px" }}
+                title="Reset to default theme"
+              >
+                Reset
+              </button>
+            </div>
           </div>
 
           {/* Category Tabs */}
@@ -131,7 +157,7 @@ export function ThemeSelector() {
                     type="button"
                     onClick={() => setActiveCategory(cat.id)}
                     className={cn(
-                      "btn btn-sm w-100 d-flex align-items-center justify-content-center gap-1 py-1 px-1 rounded-btn fw-semibold",
+                      "btn btn-sm w-100 d-flex align-items-center justify-content-center gap-1 py-1 px-1 rounded-btn fw-semibold transition",
                       isActive
                         ? "btn-light shadow-sm text-dark border"
                         : "btn-link text-secondary text-decoration-none"
@@ -146,7 +172,7 @@ export function ThemeSelector() {
             })}
           </div>
 
-          {/* Theme Grid */}
+          {/* Theme Grid with Hover Live-Preview */}
           <div className="d-flex flex-column gap-1 overflow-y-auto pe-1" style={{ maxHeight: "260px" }}>
             {filteredThemes.map((item) => {
               const isSelected = theme === item.id;
@@ -155,10 +181,11 @@ export function ThemeSelector() {
                   key={item.id}
                   type="button"
                   onClick={() => setTheme(item.id)}
+                  onMouseEnter={() => previewTheme(item.id)}
                   className={cn(
                     "btn btn-sm w-100 d-flex align-items-center justify-content-between p-2 rounded-btn border text-start transition",
                     isSelected
-                      ? "btn-light border-primary bg-primary-subtle text-primary"
+                      ? "btn-light border-primary bg-primary-subtle text-primary shadow-xs"
                       : "btn-light border-0 text-dark"
                   )}
                 >
@@ -211,8 +238,12 @@ export function ThemeSelector() {
 
           {/* Footer note */}
           <div className="pt-2 mt-2 border-top d-flex align-items-center justify-content-between text-secondary" style={{ fontSize: "10px" }}>
-            <span>✨ Realtime Theme Adaptation</span>
-            <span className="fw-medium">Auto-saved</span>
+            <span className="d-inline-flex align-items-center gap-1">
+              <span>✨ Hover to preview</span>
+            </span>
+            <span className="fw-medium">
+              {isAutoSystem ? "OS Sync Active" : "Auto-saved"}
+            </span>
           </div>
         </div>
       )}
