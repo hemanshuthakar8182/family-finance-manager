@@ -47,6 +47,14 @@ const ACCOUNT_BADGE_CLASS: Record<string, string> = {
   WALLET: "bg-success-soft text-success border-success-subtle",
 };
 
+const ACCOUNT_AMBIENT_BG: Record<string, string> = {
+  CASH: "linear-gradient(180deg, rgba(245, 158, 11, 0.05) 0%, var(--surface) 100%)",
+  BANK: "linear-gradient(180deg, rgba(79, 70, 229, 0.05) 0%, var(--surface) 100%)",
+  UPI: "linear-gradient(180deg, rgba(6, 182, 212, 0.05) 0%, var(--surface) 100%)",
+  CREDIT_CARD: "linear-gradient(180deg, rgba(239, 68, 68, 0.05) 0%, var(--surface) 100%)",
+  WALLET: "linear-gradient(180deg, rgba(16, 185, 129, 0.05) 0%, var(--surface) 100%)",
+};
+
 export default function DashboardPage() {
   const { openQuickAdd: onOpenQuickAdd, openTransaction: onSelectTransaction, refreshTrigger } = useDashboard();
   const { data: session } = useSession();
@@ -173,7 +181,7 @@ export default function DashboardPage() {
           totalIncome: metrics?.totalIncome || 0,
           totalExpense: metrics?.totalExpense || 0,
           currentBalance:
-            metrics?.currentBalance ??
+            (Number(metrics?.currentBalance) > 0 ? Number(metrics.currentBalance) : 0) ||
             accounts.reduce((s, a) => s + Number(a.currentBalance || 0), 0),
           todayExpense: metrics?.todayExpense || 0,
         }}
@@ -184,7 +192,7 @@ export default function DashboardPage() {
         totalExpense={metrics?.totalExpense || 0}
         totalIncome={metrics?.totalIncome || 0}
         currentBalance={
-          metrics?.currentBalance ??
+          (Number(metrics?.currentBalance) > 0 ? Number(metrics.currentBalance) : 0) ||
           accounts.reduce((s, a) => s + Number(a.currentBalance || 0), 0)
         }
       />
@@ -206,46 +214,68 @@ export default function DashboardPage() {
               const Icon = ACCOUNT_ICON[acc.type] || CreditCard;
               const colCls = ACCOUNT_COLOR[acc.type] || "bg-primary-soft text-primary";
               const badgeCls = ACCOUNT_BADGE_CLASS[acc.type] || "bg-light border text-secondary";
+              const ambientBg = ACCOUNT_AMBIENT_BG[acc.type] || "var(--surface)";
               const typeLabel = ACCOUNT_TYPE_LABEL[acc.type] || acc.type.replace("_", " ");
               const isCreditCard = acc.type === "CREDIT_CARD";
               const displayName = acc.name.toLowerCase() === "case" ? "Cash" : acc.name;
+              const colSpanClass =
+                accounts.length === 1
+                  ? "col-12"
+                  : accounts.length === 2
+                  ? "col-12 col-sm-6"
+                  : accounts.length === 3
+                  ? "col-12 col-md-4"
+                  : "col-12 col-sm-6 col-md-4 col-xl-3";
 
               return (
-                <div key={acc.id} className="col-12 col-sm-6 col-md-4 col-xl-3">
-                  <div className="card-elevated bg-surface border p-3.5 rounded-card hover-lift shadow-xs h-100 d-flex flex-column justify-content-between">
-                    {/* Top Row: Icon on left, Type Pill on right */}
+                <div key={acc.id} className={colSpanClass}>
+                  <div 
+                    className="card-elevated border p-3.5 rounded-card hover-lift shadow-xs h-100 d-flex flex-column justify-content-between"
+                    style={{ background: ambientBg }}
+                  >
+                    {/* Header: Icon + Name + Subtitle grouped on Left <----> Type Pill on Right */}
                     <div className="d-flex align-items-center justify-content-between mb-3">
-                      <div 
-                        className={cn("rounded-3 d-flex align-items-center justify-content-center flex-shrink-0 shadow-xs", colCls)}
-                        style={{ width: "38px", height: "38px" }}
-                      >
-                        <Icon style={{ width: "19px", height: "19px" }} />
+                      <div className="d-flex align-items-center gap-2.5 overflow-hidden">
+                        <div 
+                          className={cn("rounded-3 d-flex align-items-center justify-content-center flex-shrink-0 shadow-xs", colCls)}
+                          style={{ width: "38px", height: "38px" }}
+                        >
+                          <Icon style={{ width: "19px", height: "19px" }} />
+                        </div>
+                        <div className="overflow-hidden">
+                          <p className="small fw-bold text-foreground text-truncate mb-0" style={{ fontSize: "14px", letterSpacing: "-0.01em" }}>
+                            {displayName}
+                          </p>
+                          <span className="small text-secondary" style={{ fontSize: "11px" }}>
+                            {isCreditCard ? "Credit Facility" : "Liquid Reserve"}
+                          </span>
+                        </div>
                       </div>
                       <span 
-                        className={cn("badge rounded-pill border fw-bold px-2 py-1", badgeCls)}
+                        className={cn("badge rounded-pill border fw-bold px-2.5 py-1 flex-shrink-0", badgeCls)}
                         style={{ fontSize: "10px", letterSpacing: "0.02em" }}
                       >
                         {typeLabel}
                       </span>
                     </div>
 
-                    {/* Bottom Row: Name on left, Balance on right */}
-                    <div className="d-flex align-items-end justify-content-between gap-2 pt-2 border-top border-light-subtle">
-                      <div className="overflow-hidden">
-                        <p className="small fw-bold text-foreground text-truncate mb-0" style={{ fontSize: "13px" }}>
-                          {displayName}
-                        </p>
-                        <span className="small text-secondary" style={{ fontSize: "10px" }}>
-                          {isCreditCard ? "Due Outflow" : "Liquid Reserve"}
+                    {/* Body: Prominent Tabular Balance */}
+                    <div className="mt-1 pt-2 border-top border-light-subtle d-flex align-items-end justify-content-between">
+                      <div>
+                        <span className="small text-secondary fw-semibold text-uppercase d-block" style={{ fontSize: "10px", letterSpacing: "0.04em" }}>
+                          {isCreditCard ? "Total Due" : "Available Balance"}
                         </span>
+                        <div className="mt-0.5">
+                          <CurrencyDisplay
+                            amount={acc.currentBalance}
+                            size="lg"
+                            type={isCreditCard ? "EXPENSE" : "DEFAULT"}
+                          />
+                        </div>
                       </div>
-                      <div className="text-end flex-shrink-0">
-                        <CurrencyDisplay
-                          amount={acc.currentBalance}
-                          size="md"
-                          type={isCreditCard ? "EXPENSE" : "DEFAULT"}
-                        />
-                      </div>
+                      <span className="small text-secondary" style={{ fontSize: "11px" }}>
+                        {isCreditCard ? "Active Card" : "Ready to Spend"}
+                      </span>
                     </div>
                   </div>
                 </div>

@@ -30,6 +30,14 @@ const ACCOUNT_TYPE_CONFIG: Record<string, { label: string; icon: any; badgeClass
   WALLET: { label: "Digital Wallet", icon: Wallet, badgeClass: "bg-success-soft text-success" },
 };
 
+const ACCOUNT_AMBIENT_BG: Record<string, string> = {
+  CASH: "linear-gradient(180deg, rgba(245, 158, 11, 0.05) 0%, var(--surface) 100%)",
+  BANK: "linear-gradient(180deg, rgba(79, 70, 229, 0.05) 0%, var(--surface) 100%)",
+  UPI: "linear-gradient(180deg, rgba(6, 182, 212, 0.05) 0%, var(--surface) 100%)",
+  CREDIT_CARD: "linear-gradient(180deg, rgba(239, 68, 68, 0.05) 0%, var(--surface) 100%)",
+  WALLET: "linear-gradient(180deg, rgba(16, 185, 129, 0.05) 0%, var(--surface) 100%)",
+};
+
 export default function AccountsPage() {
   const { showToast } = useToast();
 
@@ -208,9 +216,22 @@ export default function AccountsPage() {
             const displayName = acc.name.toLowerCase() === "case" ? "Cash" : acc.name;
             const isCreditCard = acc.type === "CREDIT_CARD";
 
+            const ambientBg = ACCOUNT_AMBIENT_BG[acc.type] || "var(--surface)";
+            const colSpanClass =
+              accounts.length === 1
+                ? "col-12"
+                : accounts.length === 2
+                ? "col-12 col-sm-6"
+                : accounts.length === 3
+                ? "col-12 col-sm-6 col-md-4"
+                : "col-12 col-sm-6 col-lg-4";
+
             return (
-              <div key={acc.id} className="col-12 col-sm-6 col-lg-4">
-                <div className="card-elevated p-3.5 h-100 hover-lift d-flex flex-column justify-content-between">
+              <div key={acc.id} className={colSpanClass}>
+                <div 
+                  className="card-elevated p-3.5 h-100 hover-lift d-flex flex-column justify-content-between border"
+                  style={{ background: ambientBg }}
+                >
                   <div>
                     {/* Top Row: Icon + Type Pill + Action Buttons */}
                     <div className="d-flex align-items-center justify-content-between mb-3">

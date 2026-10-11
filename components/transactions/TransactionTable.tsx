@@ -21,7 +21,7 @@ export function TransactionTable({ transactions, onSelectTransaction }: Transact
   return (
     <div className="table-responsive rounded-card border bg-surface shadow-sm">
       <table className="table table-hover align-middle mb-0 small">
-        <thead className="table-light border-bottom">
+        <thead className="table-light border-bottom sticky-top" style={{ zIndex: 2 }}>
           <tr className="text-secondary text-uppercase" style={{ fontSize: "11px", letterSpacing: "0.05em" }}>
             <th className="py-3 px-3">Date &amp; Time</th>
             <th className="py-3 px-3">Category / Direction</th>
