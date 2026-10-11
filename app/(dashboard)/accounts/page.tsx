@@ -19,13 +19,14 @@ import {
   Pencil,
 } from "lucide-react";
 import { ReconciliationModal } from "@/components/accounts/ReconciliationModal";
+import { cn } from "@/lib/utils/cn";
 
-const ACCOUNT_TYPE_CONFIG: Record<string, { label: string; icon: any; color: string; bg: string }> = {
-  CASH: { label: "Cash", icon: Banknote, color: "text-amber-700", bg: "bg-amber-50" },
-  BANK: { label: "Bank Account", icon: CreditCard, color: "text-blue-700", bg: "bg-blue-50" },
-  UPI: { label: "UPI / Wallet", icon: Smartphone, color: "text-violet-700", bg: "bg-violet-50" },
-  CREDIT_CARD: { label: "Credit Card", icon: CreditCard, color: "text-red-700", bg: "bg-red-50" },
-  WALLET: { label: "Digital Wallet", icon: Wallet, color: "text-teal-700", bg: "bg-teal-50" },
+const ACCOUNT_TYPE_CONFIG: Record<string, { label: string; icon: any; badgeClass: string }> = {
+  CASH: { label: "Cash", icon: Banknote, badgeClass: "bg-warning-soft" },
+  BANK: { label: "Bank Account", icon: CreditCard, badgeClass: "bg-primary-soft" },
+  UPI: { label: "UPI / Wallet", icon: Smartphone, badgeClass: "bg-info-soft" },
+  CREDIT_CARD: { label: "Credit Card", icon: CreditCard, badgeClass: "bg-danger-soft" },
+  WALLET: { label: "Digital Wallet", icon: Wallet, badgeClass: "bg-success-soft" },
 };
 
 export default function AccountsPage() {
@@ -208,7 +209,7 @@ export default function AccountsPage() {
                 <div className="card-elevated p-3.5 h-100 hover-lift">
                   <div className="d-flex align-items-center justify-content-between mb-3">
                     <div
-                      className="rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center flex-shrink-0 shadow-xs"
+                      className={cn("rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 shadow-xs", config.badgeClass)}
                       style={{ width: "38px", height: "38px" }}
                     >
                       <Icon style={{ width: "18px", height: "18px" }} />

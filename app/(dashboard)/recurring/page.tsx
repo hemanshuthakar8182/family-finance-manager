@@ -287,8 +287,8 @@ export default function RecurringPage() {
             <div key={item.id} className="col-12 col-sm-6">
               <div
                 className={cn(
-                  "card rounded-card border bg-surface shadow-sm p-3 h-100 transition",
-                  item.isActive ? "border-border" : "border-secondary-subtle opacity-75 bg-light"
+                  "card-elevated bg-surface p-3 h-100 hover-lift transition",
+                  item.isActive ? "border" : "border-secondary-subtle opacity-75 bg-light"
                 )}
               >
                 <div className="d-flex align-items-center justify-content-between mb-3">

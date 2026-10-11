@@ -122,33 +122,33 @@ export function SummaryCards({ metrics }: SummaryCardsProps) {
       {/* ── DESKTOP: 4-card elevated fintech grid (≥ lg) ── */}
       <div className="d-none d-lg-flex row g-3">
         {/* Balance Card */}
-        <div className="col-3">
-          <div className="p-3.5 card-elevated card-accent-primary d-flex flex-column justify-content-between h-100">
+        <div className="col-12 col-sm-6 col-lg-3">
+          <div className="p-3.5 card-elevated card-accent-balance d-flex flex-column justify-content-between h-100">
             <div className="d-flex align-items-center justify-content-between mb-3">
               <span className="small fw-bold text-secondary text-uppercase" style={{ fontSize: "11px", letterSpacing: "0.04em" }}>
                 Total Balance
               </span>
               <div 
-                className="rounded-circle d-flex align-items-center justify-content-center bg-primary-soft flex-shrink-0"
+                className="rounded-circle d-flex align-items-center justify-content-center bg-primary-soft flex-shrink-0 shadow-xs"
                 style={{ width: "36px", height: "36px" }}
               >
                 <Wallet style={{ width: "18px", height: "18px" }} />
               </div>
             </div>
             <div>
-              <div>
+              <div className="mb-2">
                 <CurrencyDisplay
                   amount={metrics.currentBalance}
                   size="xl"
                   type={balanceHealthy ? "DEFAULT" : "EXPENSE"}
                 />
               </div>
-              <div className="d-flex align-items-center gap-1.5 mt-2">
-                <span className="badge rounded-pill bg-light border text-secondary fw-medium" style={{ fontSize: "10px" }}>
+              <div className="d-flex align-items-center gap-1.5 pt-1 border-top border-light">
+                <span className="badge rounded-pill bg-primary-soft fw-semibold px-2 py-0.5" style={{ fontSize: "10px" }}>
                   All Accounts
                 </span>
-                <span className="small text-secondary" style={{ fontSize: "11px" }}>
-                  Family net liquid cash
+                <span className="small text-secondary text-truncate" style={{ fontSize: "11px" }}>
+                  Family net liquid reserves
                 </span>
               </div>
             </div>
@@ -156,28 +156,31 @@ export function SummaryCards({ metrics }: SummaryCardsProps) {
         </div>
 
         {/* Today Card */}
-        <div className="col-3">
+        <div className="col-12 col-sm-6 col-lg-3">
           <div className="p-3.5 card-elevated card-accent-warning d-flex flex-column justify-content-between h-100">
             <div className="d-flex align-items-center justify-content-between mb-3">
               <span className="small fw-bold text-secondary text-uppercase" style={{ fontSize: "11px", letterSpacing: "0.04em" }}>
                 Today&apos;s Spend
               </span>
               <div 
-                className="rounded-circle d-flex align-items-center justify-content-center bg-warning-soft flex-shrink-0"
+                className="rounded-circle d-flex align-items-center justify-content-center bg-warning-soft flex-shrink-0 shadow-xs"
                 style={{ width: "36px", height: "36px" }}
               >
                 <CalendarDays style={{ width: "18px", height: "18px" }} />
               </div>
             </div>
             <div>
-              <div>
+              <div className="mb-2">
                 <CurrencyDisplay
                   amount={metrics.todayExpense}
                   size="xl"
                 />
               </div>
-              <div className="d-flex align-items-center gap-1 mt-2">
-                <span className="small text-secondary" style={{ fontSize: "11px" }}>
+              <div className="d-flex align-items-center gap-1.5 pt-1 border-top border-light">
+                <span className="badge rounded-pill bg-warning-soft fw-semibold px-2 py-0.5" style={{ fontSize: "10px" }}>
+                  Today
+                </span>
+                <span className="small text-secondary text-truncate" style={{ fontSize: "11px" }}>
                   Daily household outflow
                 </span>
               </div>
@@ -186,32 +189,32 @@ export function SummaryCards({ metrics }: SummaryCardsProps) {
         </div>
 
         {/* Month Income Card */}
-        <div className="col-3">
+        <div className="col-12 col-sm-6 col-lg-3">
           <div className="p-3.5 card-elevated card-accent-success d-flex flex-column justify-content-between h-100">
             <div className="d-flex align-items-center justify-content-between mb-3">
               <span className="small fw-bold text-secondary text-uppercase" style={{ fontSize: "11px", letterSpacing: "0.04em" }}>
                 Month Income
               </span>
               <div 
-                className="rounded-circle d-flex align-items-center justify-content-center bg-success-soft flex-shrink-0"
+                className="rounded-circle d-flex align-items-center justify-content-center bg-success-soft flex-shrink-0 shadow-xs"
                 style={{ width: "36px", height: "36px" }}
               >
                 <TrendingUp style={{ width: "18px", height: "18px" }} />
               </div>
             </div>
             <div>
-              <div>
+              <div className="mb-2">
                 <CurrencyDisplay
                   amount={metrics.totalIncome}
                   size="xl"
                   type="INCOME"
                 />
               </div>
-              <div className="d-flex align-items-center gap-1.5 mt-2">
-                <span className="badge rounded-pill bg-success-subtle text-success fw-semibold" style={{ fontSize: "10px" }}>
+              <div className="d-flex align-items-center gap-1.5 pt-1 border-top border-light">
+                <span className="badge rounded-pill bg-success-soft fw-semibold px-2 py-0.5" style={{ fontSize: "10px" }}>
                   <ArrowUpRight style={{ width: "12px", height: "12px" }} /> Inflows
                 </span>
-                <span className="small text-secondary" style={{ fontSize: "11px" }}>
+                <span className="small text-secondary text-truncate" style={{ fontSize: "11px" }}>
                   Earned this month
                 </span>
               </div>
@@ -220,41 +223,34 @@ export function SummaryCards({ metrics }: SummaryCardsProps) {
         </div>
 
         {/* Month Expense Card */}
-        <div className="col-3">
+        <div className="col-12 col-sm-6 col-lg-3">
           <div className="p-3.5 card-elevated card-accent-danger d-flex flex-column justify-content-between h-100">
             <div className="d-flex align-items-center justify-content-between mb-3">
               <span className="small fw-bold text-secondary text-uppercase" style={{ fontSize: "11px", letterSpacing: "0.04em" }}>
                 Month Expense
               </span>
               <div 
-                className="rounded-circle d-flex align-items-center justify-content-center bg-danger-soft flex-shrink-0"
+                className="rounded-circle d-flex align-items-center justify-content-center bg-danger-soft flex-shrink-0 shadow-xs"
                 style={{ width: "36px", height: "36px" }}
               >
                 <TrendingDown style={{ width: "18px", height: "18px" }} />
               </div>
             </div>
             <div>
-              <div>
+              <div className="mb-2">
                 <CurrencyDisplay
                   amount={metrics.totalExpense}
                   size="xl"
+                  type="EXPENSE"
                 />
               </div>
-              <div className="d-flex align-items-center justify-content-between gap-1 mt-2">
-                <span className="small text-secondary" style={{ fontSize: "11px" }}>Total spent</span>
-                {metrics.totalIncome > 0 && (
-                  <span
-                    className={cn(
-                      "badge rounded-pill fw-bold",
-                      savingsHealthy
-                        ? "bg-success-subtle text-success"
-                        : "bg-warning-subtle text-warning-emphasis"
-                    )}
-                    style={{ fontSize: "10px" }}
-                  >
-                    {savingsRate}% saved
-                  </span>
-                )}
+              <div className="d-flex align-items-center gap-1.5 pt-1 border-top border-light">
+                <span className="badge rounded-pill bg-danger-soft fw-semibold px-2 py-0.5" style={{ fontSize: "10px" }}>
+                  <ArrowDownRight style={{ width: "12px", height: "12px" }} /> Outflows
+                </span>
+                <span className="small text-secondary text-truncate" style={{ fontSize: "11px" }}>
+                  Total spent this month
+                </span>
               </div>
             </div>
           </div>

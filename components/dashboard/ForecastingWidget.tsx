@@ -33,20 +33,24 @@ export function ForecastingWidget({
   const daysRemaining = Math.max(0, daysInMonth - dayOfMonth);
   const monthPercentElapsed = Math.min(100, Math.round((dayOfMonth / daysInMonth) * 100));
 
+  const numBalance = Number(currentBalance) || 0;
+  const numExpense = Number(totalExpense) || 0;
+  const numIncome = Number(totalIncome) || 0;
+
   // Daily burn calculations
-  const dailyBurnRate = totalExpense > 0 ? totalExpense / dayOfMonth : 0;
+  const dailyBurnRate = numExpense > 0 ? numExpense / dayOfMonth : 0;
   const projectedRemainingExpense = dailyBurnRate * daysRemaining;
-  const projectedMonthTotalExpense = totalExpense + projectedRemainingExpense;
-  const projectedClosingBalance = currentBalance - projectedRemainingExpense;
+  const projectedMonthTotalExpense = numExpense + projectedRemainingExpense;
+  const projectedClosingBalance = numBalance - projectedRemainingExpense;
 
   // Safe daily budget cap
   const safeDailyBudget =
-    daysRemaining > 0 ? Math.max(0, currentBalance / daysRemaining) : currentBalance;
+    daysRemaining > 0 ? Math.max(0, Math.round(numBalance / daysRemaining)) : numBalance;
 
   // Health assessment
   const isHealthyPace = projectedClosingBalance >= 0;
   const isThrivingPace =
-    totalIncome > 0 && projectedMonthTotalExpense <= totalIncome * 0.8;
+    numIncome > 0 && projectedMonthTotalExpense <= numIncome * 0.8;
 
   return (
     <div className="card-elevated p-3.5 p-sm-4 bg-surface position-relative overflow-hidden border">

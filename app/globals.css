@@ -734,6 +734,9 @@ body {
 .card-accent-primary {
   border-top: 3.5px solid var(--primary) !important;
 }
+.card-accent-balance {
+  border-top: 3.5px solid #4F46E5 !important;
+}
 .card-accent-success {
   border-top: 3.5px solid var(--income) !important;
 }
@@ -741,7 +744,7 @@ body {
   border-top: 3.5px solid var(--expense) !important;
 }
 .card-accent-warning {
-  border-top: 3.5px solid var(--warning) !important;
+  border-top: 3.5px solid #F59E0B !important;
 }
 
 /* Shimmer Skeleton Animation */

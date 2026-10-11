@@ -208,10 +208,12 @@ export default function ReportsPage() {
       {/* Summary KPI Cards */}
       <div className="row g-3">
         <div className="col-6 col-lg-3">
-          <div className="card rounded-card border border-success-subtle bg-surface shadow-sm p-3 h-100">
+          <div className="card-elevated hover-lift border-success-subtle bg-surface p-3 h-100">
             <div className="d-flex align-items-center justify-content-between text-secondary small mb-1">
               <span className="fw-semibold" style={{ fontSize: "11px" }}>Total Income</span>
-              <TrendingUp style={{ width: "16px", height: "16px" }} className="text-income" />
+              <div className="rounded-circle bg-success-soft d-flex align-items-center justify-content-center" style={{ width: "26px", height: "26px" }}>
+                <TrendingUp style={{ width: "14px", height: "14px" }} />
+              </div>
             </div>
             <div className="fs-5 fs-sm-4 fw-bold font-amount text-income">
               {formatCurrency(report?.totalIncome || 0)}
@@ -220,10 +222,12 @@ export default function ReportsPage() {
         </div>
 
         <div className="col-6 col-lg-3">
-          <div className="card rounded-card border border-danger-subtle bg-surface shadow-sm p-3 h-100">
+          <div className="card-elevated hover-lift border-danger-subtle bg-surface p-3 h-100">
             <div className="d-flex align-items-center justify-content-between text-secondary small mb-1">
               <span className="fw-semibold" style={{ fontSize: "11px" }}>Total Expense</span>
-              <TrendingDown style={{ width: "16px", height: "16px" }} className="text-expense" />
+              <div className="rounded-circle bg-danger-soft d-flex align-items-center justify-content-center" style={{ width: "26px", height: "26px" }}>
+                <TrendingDown style={{ width: "14px", height: "14px" }} />
+              </div>
             </div>
             <div className="fs-5 fs-sm-4 fw-bold font-amount text-expense">
               {formatCurrency(report?.totalExpense || 0)}
@@ -232,10 +236,12 @@ export default function ReportsPage() {
         </div>
 
         <div className="col-6 col-lg-3">
-          <div className="card rounded-card border bg-surface shadow-sm p-3 h-100">
+          <div className="card-elevated hover-lift bg-surface p-3 h-100">
             <div className="d-flex align-items-center justify-content-between text-secondary small mb-1">
               <span className="fw-semibold" style={{ fontSize: "11px" }}>Net Savings</span>
-              <PiggyBank style={{ width: "16px", height: "16px" }} className="text-primary" />
+              <div className="rounded-circle bg-primary-soft d-flex align-items-center justify-content-center" style={{ width: "26px", height: "26px" }}>
+                <PiggyBank style={{ width: "14px", height: "14px" }} />
+              </div>
             </div>
             <div className="fs-5 fs-sm-4 fw-bold font-amount text-foreground">
               {formatCurrency(report?.netSavings || 0)}
@@ -244,7 +250,7 @@ export default function ReportsPage() {
         </div>
 
         <div className="col-6 col-lg-3">
-          <div className="card rounded-card border bg-surface shadow-sm p-3 h-100">
+          <div className="card-elevated hover-lift bg-surface p-3 h-100">
             <div className="d-flex align-items-center justify-content-between text-secondary small mb-1">
               <span className="fw-semibold" style={{ fontSize: "11px" }}>Savings Rate</span>
               <Badge variant={report?.savingsRate >= 20 ? "income" : "warning"}>

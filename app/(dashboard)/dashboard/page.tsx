@@ -180,28 +180,31 @@ export default function DashboardPage() {
             </span>
           </div>
 
-          <div className="d-flex gap-2.5 overflow-x-auto pb-1 no-scrollbar">
+          <div className="row g-2.5">
             {accounts.map((acc) => {
               const Icon = ACCOUNT_ICON[acc.type] || CreditCard;
               const colCls = ACCOUNT_COLOR[acc.type] || "bg-primary-soft";
               const isCreditCard = acc.type === "CREDIT_CARD";
               return (
-                <div
-                  key={acc.id}
-                  className="card-elevated bg-surface border d-flex align-items-center gap-2.5 px-3 py-2.5 rounded-card flex-shrink-0 hover-lift shadow-xs"
-                  style={{ minWidth: "175px" }}
-                >
-                  <div 
-                    className={cn("rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 shadow-xs", colCls)}
-                    style={{ width: "36px", height: "36px" }}
-                  >
-                    <Icon style={{ width: "17px", height: "17px" }} />
-                  </div>
-                  <div className="overflow-hidden">
-                    <p className="small fw-bold text-foreground text-truncate mb-0" style={{ fontSize: "12px" }}>
-                      {acc.name}
-                    </p>
-                    <div className="mt-0.5">
+                <div key={acc.id} className="col-12 col-sm-6 col-md-4 col-xl-3">
+                  <div className="card-elevated bg-surface border d-flex align-items-center justify-content-between p-3 rounded-card hover-lift shadow-xs h-100">
+                    <div className="d-flex align-items-center gap-2.5 overflow-hidden">
+                      <div 
+                        className={cn("rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 shadow-xs", colCls)}
+                        style={{ width: "38px", height: "38px" }}
+                      >
+                        <Icon style={{ width: "18px", height: "18px" }} />
+                      </div>
+                      <div className="overflow-hidden">
+                        <p className="small fw-bold text-foreground text-truncate mb-0" style={{ fontSize: "13px" }}>
+                          {acc.name}
+                        </p>
+                        <span className="badge rounded-pill bg-light border text-secondary text-uppercase fw-semibold" style={{ fontSize: "9px" }}>
+                          {acc.type.replace("_", " ")}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="text-end flex-shrink-0 ms-2">
                       <CurrencyDisplay
                         amount={acc.currentBalance}
                         size="sm"
