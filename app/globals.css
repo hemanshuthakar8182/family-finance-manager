@@ -943,3 +943,30 @@ body {
   transform: scaleY(1.25);
 }
 
+/* Anchored Dynamic Theme Popover Dropdown */
+.theme-popover-dropdown {
+  position: absolute !important;
+  top: calc(100% + 8px) !important;
+  right: 0 !important;
+  left: auto !important;
+  bottom: auto !important;
+  width: 350px !important;
+  max-width: calc(100vw - 24px) !important;
+  animation: modalScaleIn 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.22), 0 0 0 1px var(--border) !important;
+}
+
+@media (max-width: 575.98px) {
+  .theme-popover-dropdown {
+    position: fixed !important;
+    top: auto !important;
+    bottom: 16px !important;
+    left: 12px !important;
+    right: 12px !important;
+    width: auto !important;
+    max-width: none !important;
+    animation: slideUpSheet 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+}
+
+

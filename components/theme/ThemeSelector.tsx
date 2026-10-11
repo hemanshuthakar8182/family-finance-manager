@@ -78,12 +78,11 @@ export function ThemeSelector() {
       {/* Popover Dropdown */}
       {isOpen && (
         <div
-          className="position-fixed bottom-0 start-0 end-0 m-3 position-sm-absolute bottom-sm-auto start-sm-auto end-sm-0 mt-sm-2 rounded-card bg-surface border shadow-lg p-3 overflow-y-auto"
+          className="theme-popover-dropdown rounded-card bg-surface border p-3 overflow-y-auto"
           style={{
             zIndex: 1070,
-            maxWidth: "380px",
             maxHeight: "80vh",
-            backdropFilter: "blur(8px)",
+            backdropFilter: "blur(12px)",
           }}
         >
           {/* Header */}
